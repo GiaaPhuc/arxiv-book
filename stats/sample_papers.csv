@@ -1,0 +1,2 @@
+arxiv_id,n_versions_expected,n_versions_observed,all_versions_recorded,source_processed,has_tex,n_refs,n_refs_arxiv,refs_complete_ratio
+2408.11045,1,1,True,True,True,2,1,0.5

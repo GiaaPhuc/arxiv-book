@@ -1,0 +1,15 @@
+title: "Thu thập arXiv — Milestone 1"
+author: "Nhóm Nhập môn KHDL"
+copyright: "2026"
+logo: ""
+execute:
+  execute_notebooks: auto
+  timeout: 120
+repository:
+  url: https://github.com/GiaaPhuc/arxiv-book
+  path_to_book: ""
+html:
+  use_issues_button: false
+  use_repository_button: true
+launch_buttons:
+  notebook_server: false
