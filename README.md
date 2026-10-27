@@ -1,4 +1,4 @@
-# Jupyter Book — Milestone 1 (arXiv crawler)
+# arxiv-book — Milestone 1 (arXiv crawler)
 
 Báo cáo Milestone 1 (tiếng Việt), build bằng [Jupyter Book v1](https://jupyterbook.org/) và GitHub Pages.
 
