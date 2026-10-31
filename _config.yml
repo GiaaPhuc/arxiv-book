@@ -1,6 +1,7 @@
 title: "Thu thập arXiv — Milestone 1"
 author: "Nhóm Nhập môn KHDL"
 copyright: "2026"
+exclude_patterns: [Y-TUONG-NOI-DUNG.md]
 logo: ""
 execute:
   execute_notebooks: auto

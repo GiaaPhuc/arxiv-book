@@ -1,4 +1,6 @@
 .venv/
+.venv*/
+.venv-check/
 _build/
 _jupyter_cache/
 .DS_Store
