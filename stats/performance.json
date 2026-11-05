@@ -1,0 +1,25 @@
+{
+  "active_seconds": 175435.57180294013,
+  "last_run_at": "2026-11-05T14:43:00+00:00",
+  "resources": {
+    "disk_final_bytes": 10804249326.0,
+    "disk_peak_bytes": 10825222397.0,
+    "ram_mean_bytes": 80489596.08889587,
+    "ram_peak_bytes": 234766336.0,
+    "ram_samples": 50891.0
+  },
+  "runs": 54,
+  "s2": {
+    "batches": 2816,
+    "http_429": 2592,
+    "papers_not_indexed": 17,
+    "papers_ok": 12070,
+    "retry_wait_seconds": 155520.0
+  },
+  "stage_seconds": {
+    "discovery": 3511.080878441958,
+    "download": 160825.29132339772,
+    "extract": 1476.4561723544327,
+    "s2": 9622.743428746026
+  }
+}

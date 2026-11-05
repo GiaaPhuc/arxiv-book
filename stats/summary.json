@@ -1,0 +1,99 @@
+{
+  "papers_total": 15000,
+  "ids_not_found": 0,
+  "ids_requested": 15000,
+  "pairs_total": 24734,
+  "pairs_by_status": {
+    "no_source": 1734,
+    "ok": 22921,
+    "corrupt": 14,
+    "not_found": 63,
+    "failed": 1,
+    "ok_no_tex": 1
+  },
+  "papers_success": 14928,
+  "papers_with_tex": 13742,
+  "success_rate_papers": 0.9952,
+  "success_rate_pairs": 0.9968464461874343,
+  "versions_per_paper": {
+    "1": 8636,
+    "2": 4176,
+    "3": 1487,
+    "4": 430,
+    "5": 172,
+    "6": 54,
+    "7": 25,
+    "8": 10,
+    "9": 3,
+    "10": 3,
+    "13": 2,
+    "17": 1,
+    "26": 1
+  },
+  "mean_versions_per_paper": 1.6489333333333334,
+  "mean_bytes_per_extracted_version": {
+    "raw_archive": 4552952.109327284,
+    "raw_uncompressed_with_images": 5724994.303333042,
+    "kept_tex_bib": 445082.46527353633
+  },
+  "kept_over_raw_uncompressed": 0.07774373941549831,
+  "mean_bytes_per_paper": {
+    "raw_archive": 7266080.109333334,
+    "raw_uncompressed_with_images": 8748554.628066666,
+    "kept_tex_bib": 680145.3512666667
+  },
+  "s2_states": {
+    "found": 14978,
+    "not_indexed": 22
+  },
+  "s2_coverage_papers": 0.9985333333333334,
+  "mean_refs_per_paper": 41.34733333333333,
+  "mean_refs_per_paper_with_s2": 41.408065162237946,
+  "mean_refs_complete_ratio": 0.8559972851813962,
+  "refs_total": 620210,
+  "refs_with_arxiv_id": 286448,
+  "share_refs_with_arxiv_id": 0.4618564679705261,
+  "top_errors": [
+    [
+      "Windows-reserved path component: 'aux'",
+      5
+    ],
+    [
+      "Windows-reserved path component: 'con.tex'",
+      2
+    ],
+    [
+      "duplicate output path: 'fig_texts/fig1.tex'",
+      2
+    ],
+    [
+      "Windows-reserved path component: 'AAAI25/LaTeX/con.pdf'",
+      2
+    ],
+    [
+      "Windows-reserved path component: 'Sections/con.tex'",
+      1
+    ],
+    [
+      "ChunkedEncodingError: ('Connection broken: IncompleteRead(33554432 bytes read, 1",
+      1
+    ],
+    [
+      "duplicate output path: 'Methodology.tex'",
+      1
+    ],
+    [
+      "duplicate output path: 'JSSC.bib'",
+      1
+    ]
+  ],
+  "definitions": {
+    "papers_success": "every version has status ok, ok_no_tex or no_source",
+    "success_rate_papers": "papers_success / papers_total (ids unknown to arXiv excluded)",
+    "success_rate_pairs": "pairs ok+ok_no_tex+no_source / all (paper, version) pairs",
+    "kept_tex_bib": "bytes of the .tex/.bib files kept; raw_uncompressed counts every archive member (images included), raw_archive is the downloaded size",
+    "s2_coverage_papers": "(a) share of papers S2 knows",
+    "mean_refs_complete_ratio": "(b) mean per paper of the share of references with title, authors and date (papers with at least one reference)",
+    "share_refs_with_arxiv_id": "(c) share of all references that carry an arXiv id"
+  }
+}

@@ -39,28 +39,23 @@ Kết quả biên dịch nằm tại `_build/html/index.html`.
 
 ---
 
-## 3. Checklist Hoàn thiện Khi Đã Có Tệp Trong `arxiv-book/stats/`
+## 3. Trạng thái Dữ liệu Hiện tại (`15.000 / 25.000 ID`) & Quy trình Cập nhật Khi Đủ `25.000 ID`
 
-Hiện tại sách được thiết kế **chống gãy build (graceful fallback)**: khi chưa có bộ tệp thống kê 25.000 ID trong `stats/`, lệnh `jupyter-book build .` vẫn biên dịch thành công 100% và hiển thị thẻ nhắc `⏳ Đang chờ tệp thống kê trong arxiv-book/stats/`.
+Hiện tại thư mục `arxiv-book/stats/` đã tích hợp đầy đủ 4 tệp thống kê thực nghiệm (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) từ **đợt thu thập hoàn chỉnh 15.000 ID đầu tiên** (`2408.01045` – `2408.16044`, trọn vẹn Dải 1, Dải 2 và Dải 3 thuộc tháng `2024-08`, đạt `60%` tổng quy mô). Toàn bộ bảng biểu, đồ thị và nhận xét tại Chương 1, Chương 3 và Chương 4 đã được biên dịch hoàn chỉnh với dữ liệu thật 100% và ghi chú minh bạch lộ trình cập nhật.
 
-Ngay khi đợt chạy 25.000 ID trên Google Colab CPU hoàn tất, thực hiện đúng 3 bước sau:
+Ngay khi tiến trình trên Google Colab CPU hoàn tất 10.000 ID còn lại (Dải 4 và Dải 5) để cán mốc **đủ 25.000 ID**, thực hiện 3 bước cập nhật cuối cùng sau:
 
-1. **Chép 4 tệp thống kê vào `arxiv-book/stats/`:**
+1. **Ghi đè 4 tệp thống kê mới vào `arxiv-book/stats/`:**
    - `summary.json`
    - `papers_stats.csv`
    - `versions_stats.csv`
    - `performance.json`
-   *(Có thể xóa 2 tệp mẫu cũ `sample_papers.csv` và `sample_versions.csv`).*
-   $\rightarrow$ **Toàn bộ 6 khối bảng tổng hợp và biểu đồ tại Chương 3 & Chương 4 sẽ tự động sinh số liệu và đồ thị thật 100%** mà không cần sửa bất kỳ dòng code Python nào.
+   $\rightarrow$ **Toàn bộ 6 khối bảng tổng hợp và biểu đồ tại Chương 3 & Chương 4 sẽ tự động sinh lại số liệu và đồ thị của 25.000 ID** mà không cần sửa bất kỳ dòng code Python nào.
 
-2. **Thay thế các hộp ghi chú `pending-stats` (`⏳`) bằng câu nhận xét chốt số liệu 25.000 ID:**
-   - `m1/03_data_statistics.md` — **Mục 3.1:** Nhận xét `papers_success`, `success_rate_papers`, `papers_with_tex` và `ids_not_found`.
-   - `m1/03_data_statistics.md` — **Mục 3.2:** Nhận xét tỷ lệ phần trăm `ok` vs `no_source` và số phiên bản trung bình $\bar{V}$.
-   - `m1/03_data_statistics.md` — **Mục 3.3:** Nhận xét số byte trung bình trước/sau khi lọc ảnh và mức tiết kiệm dung lượng.
-   - `m1/03_data_statistics.md` — **Mục 3.4:** Nhận xét số tham khảo trung bình/trung vị và 3 tỷ lệ Semantic Scholar `(a)`, `(b)`, `(c)`.
-   - `m1/04_performance.md` — **Mục 4.1:** Đối chiếu dòng CPU Xeon thực tế từ lệnh `!lscpu` trên phiên Colab cuối cùng.
-   - `m1/04_performance.md` — **Mục 4.2:** Chốt nhận xét tổng thời gian chạy đầu–cuối, tổng thời gian khám phá và thời gian trung bình xử lý mỗi bài báo.
-   - `m1/04_performance.md` — **Mục 4.3:** Chốt nhận xét RAM đỉnh/trung bình (`MiB`) và dung lượng đĩa tối đa/cuối cùng (`GiB`).
+2. **Đồng bộ con số trong văn bản nhận xét từ mốc 15.000 ID sang 25.000 ID & gỡ hộp thông báo tạm thời:**
+   - `m1/01_overview.md` — **Mục 1.2:** Cập nhật cột trạng thái bảng 5 dải sang hoàn tất 100% và gỡ hộp `admonition` thông báo tạm thời 15.000 ID.
+   - `m1/03_data_statistics.md` — Gỡ hộp thông báo đầu chương và cập nhật con số trong câu nhận xét tại **Mục 3.1, 3.2, 3.3, 3.4** theo bảng mới.
+   - `m1/04_performance.md` — Gỡ hộp thông báo đầu chương và cập nhật con số trong câu nhận xét tại **Mục 4.2, 4.3** theo bảng mới.
 
-3. **Kiểm tra đóng băng:**
-   - Chạy `jupyter-book build .` và xác nhận không còn hộp nhắc `⏳` nào trên trang HTML trước khi `git push origin main` để GitHub Actions xuất bản lên GitHub Pages.
+3. **Biên dịch & xuất bản:**
+   - Chạy `jupyter-book build .` để kiểm tra biên dịch sạch 100%, sau đó `git push origin main` để GitHub Actions tự động xuất bản lên GitHub Pages.

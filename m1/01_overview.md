@@ -24,14 +24,19 @@ Theo đúng quy định của Milestone 1, kho ngữ liệu làm việc được
 
 Nhóm được phân công thu thập **25.000 định danh arXiv gốc** chia thành 5 dải liên tục, không chồng lấn (mỗi dải gồm đúng 5.000 ID tính cả hai đầu mút, khai báo trong `src/id_ranges.csv`) thuộc các tháng `2024-06`, `2024-07` và `2024-08`:
 
-| Dải | Tháng nộp (`YYYY-MM`) | Định danh bắt đầu | Định danh kết thúc | Số lượng ID gốc |
-| :---: | :---: | :---: | :---: | :---: |
-| **Dải 1** | `2024-08` | `2408.11045` | `2408.16044` | 5.000 |
-| **Dải 2** | `2024-08` | `2408.06045` | `2408.11044` | 5.000 |
-| **Dải 3** | `2024-08` | `2408.01045` | `2408.06044` | 5.000 |
-| **Dải 4** | `2024-07` | `2407.07839` | `2407.12838` | 5.000 |
-| **Dải 5** | `2024-06` | `2406.07938` | `2406.12937` | 5.000 |
-| **Tổng cộng** | **06–08/2024** | — | — | **25.000** |
+| Dải | Tháng nộp (`YYYY-MM`) | Định danh bắt đầu | Định danh kết thúc | Số lượng ID gốc | Trạng thái trong bản báo cáo hiện tại |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **Dải 1** | `2024-08` | `2408.11045` | `2408.16044` | 5.000 | Đã hoàn tất thu thập & xuất thống kê |
+| **Dải 2** | `2024-08` | `2408.06045` | `2408.11044` | 5.000 | Đã hoàn tất thu thập & xuất thống kê |
+| **Dải 3** | `2024-08` | `2408.01045` | `2408.06044` | 5.000 | Đã hoàn tất thu thập & xuất thống kê |
+| **Dải 4** | `2024-07` | `2407.07839` | `2407.12838` | 5.000 | Đang thu thập — sẽ cập nhật khi đủ 25.000 ID |
+| **Dải 5** | `2024-06` | `2406.07938` | `2406.12937` | 5.000 | Đang thu thập — sẽ cập nhật khi đủ 25.000 ID |
+| **Tổng cộng** | **06–08/2024** | — | — | **25.000** | **Đã lên số liệu 15.000 / 25.000 ID (`60%`)** |
+
+```{admonition} Ghi chú tiến độ bộ số liệu hiện tại (15.000 ID tạm thời — sẽ cập nhật khi đủ 25.000 ID)
+:class: important
+Tại thời điểm kết xuất bản báo cáo này, tiến trình thu thập trên Google Colab CPU đã hoàn tất trọn vẹn **15.000 định danh đầu tiên** thuộc ba dải tháng `2024-08` (`2408.01045` – `2408.16044`, bao gồm **24.734 phiên bản** và **620.210 mục tài liệu tham khảo**). Do tuân thủ nghiêm ngặt khoảng nghỉ lịch sự $\ge 3{,}5\text{ s}$/yêu cầu với máy chủ `export.arxiv.org`, **10.000 định danh còn lại** (Dải 4 và Dải 5) đang tiếp tục được thu thập nối tiếp; **ngay khi tiến trình cán mốc đủ 25.000 ID, nhóm sẽ cập nhật bộ tệp trong `stats/` và đồng bộ toàn bộ bảng biểu, đồ thị cùng nhận xét ở Chương 3 và Chương 4 lên quy mô 25.000 ID hoàn chỉnh**.
+```
 
 Theo chuẩn đánh số 5 chữ số của arXiv áp dụng từ tháng 01/2015, các số thứ tự đầu tháng (như `1045`, `6045`, `7839`, `7938`) được chuẩn hóa đệm đủ chữ số `0` ở đầu thành `2408.01045`, `2408.06045`, `2407.07839`, `2406.07938`. Để đảm bảo tính nhất quán tuyệt đối của cơ sở dữ liệu trạng thái và tránh việc nhiều máy thành viên gửi yêu cầu chồng chéo lên máy chủ `export.arxiv.org`, nhóm gom toàn bộ 25.000 ID vào **một quy trình thu thập thống nhất** trên môi trường chuẩn Google Colab CPU.
 

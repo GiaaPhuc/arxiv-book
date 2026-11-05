@@ -13,6 +13,11 @@ kernelspec:
 
 Toàn bộ bảng tổng hợp và biểu đồ trực quan trong chương này được tính toán và kết xuất tự động ngay trong quá trình biên dịch sách (`jupyter-book build .`) từ bộ tệp thống kê xuất ra bởi `export_data.py` đặt tại thư mục `arxiv-book/stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`).
 
+```{admonition} Phạm vi bộ số liệu hiện tại: 15.000 / 25.000 ID (Sẽ cập nhật khi hoàn tất đủ 25.000 ID)
+:class: note
+Số liệu và biểu đồ trong chương này hiện được tổng hợp trực tiếp từ **bản chụp 15.000 định danh đầu tiên đã thu thập hoàn chỉnh** (`2408.01045` – `2408.16044`, trọn vẹn Dải 1, Dải 2 và Dải 3 thuộc tháng `2024-08`, chiếm **60%** tổng phạm vi được giao). **Ngay khi tiến trình thu thập trên Google Colab CPU hoàn tất 10.000 ID còn lại (Dải 4 và Dải 5) để đạt đủ 25.000 ID, toàn bộ tệp trong `stats/` cùng các con số nhận xét dưới đây sẽ được cập nhật đồng bộ.**
+```
+
 ## 3.1. Bảng Tổng hợp Các Chỉ số Thu thập Cốt lõi
 
 ```{code-cell} ipython3
@@ -112,9 +117,15 @@ if HAS_STATS:
 
     b_paper = summary.get("mean_bytes_per_paper", {})
     b_ver = summary.get("mean_bytes_per_extracted_version", {})
+    req_count = int(summary.get("ids_requested") or 0)
+    req_label = (
+        "Tổng số ID yêu cầu trong 5 dải (ids_requested)"
+        if req_count >= 25000
+        else f"Tổng số ID yêu cầu trong đợt thống kê hiện tại (ids_requested — {req_count:,}/25,000 ID)"
+    )
 
     overview_rows = [
-        ("Tổng số ID yêu cầu trong 5 dải (ids_requested)", fmt_int(summary.get("ids_requested"))),
+        (req_label, fmt_int(summary.get("ids_requested"))),
         ("Số ID không tồn tại trên arXiv (ids_not_found — HTTP 404)", fmt_int(summary.get("ids_not_found"))),
         ("Số bài báo thực tế tồn tại (papers_total)", fmt_int(summary.get("papers_total"))),
         ("Số bài báo thu thập thành công đủ mọi phiên bản (papers_success)", fmt_int(summary.get("papers_success"))),
@@ -149,15 +160,11 @@ else:
     show_pending_box("Bảng tổng hợp 16 chỉ số thu thập cốt lõi tại Mục 3.1", pilot_preview, kv=True)
 ```
 
-**Phân tích kết quả tổng quan:**
+**Phân tích kết quả tổng quan (trên bản chụp 15.000 ID hiện tại — sẽ cập nhật khi đủ 25.000 ID):**
 
 - **Định nghĩa chặt chẽ về bài báo thu thập thành công:** Các định danh không tồn tại trên hệ thống arXiv (`ids_not_found` — HTTP `404` sau bước xác nhận đơn lẻ) được tách riêng khỏi mẫu số `papers_total`. Một bài báo chỉ được tính vào `papers_success` khi **mọi phiên bản từ $v_1$ tới $v_N$** của nó đều hoàn tất xử lý với trạng thái hợp lệ (`ok`, `ok_no_tex` hoặc `no_source`), đảm bảo không có bất kỳ phiên bản nào bị khuyết hoặc lỗi giữa chừng.
-
-```{admonition} ⏳ Chờ cập nhật nhận xét độ bao phủ từ arxiv-book/stats/summary.json
-:class: warning pending-stats
-- **Tệp & trường cần đợi:** `arxiv-book/stats/summary.json` (`ids_requested`, `ids_not_found`, `papers_total`, `papers_success`, `success_rate_papers`, `papers_with_tex`).
-- **Nội dung cần điền khi có tệp:** Bổ sung 2–3 câu nhận xét số bài thu thập thành công, tỷ lệ thành công chung và tỷ lệ bài báo có mã nguồn TeX trên toàn tập 25.000 ID *(đối chiếu tập Pilot 30 ID đầu Dải 1: thu thập thành công `30/30` bài = `100,00%`, trong đó `27/30` bài = `90,00%` có mã nguồn `.tex`/`.bib` và `3` bài nộp thuần PDF)*.
-```
+- **Độ bao phủ định danh và tỷ lệ hoàn tất cao:** Toàn bộ **`15.000 / 15.000` định danh yêu cầu** trong ba dải tháng `2024-08` (`2408.01045` – `2408.16044`) đều tồn tại hợp lệ trên hệ thống arXiv (`ids_not_found = 0`, `papers_total = 15.000`). Bộ thu thập hoàn tất trọn vẹn mọi phiên bản cho **`14.928` bài báo**, đạt **tỷ lệ thành công chung cấp bài báo `99,52%`** (`success_rate_papers`) và **cấp phiên bản `99,68%`** (`24.656 / 24.734` cặp phiên bản hợp lệ). Chỉ có `72` bài báo (`0,48%`) có ít nhất một phiên bản rơi vào ngoại lệ dữ liệu thượng nguồn (phiên bản rút bài trả về HTTP `404` hoặc tên tệp thiết bị dành riêng của Windows trong gói nén).
+- **Tỷ trọng bài báo có mã nguồn LaTeX:** Có **`13.742 / 15.000` bài báo (`91,61%`)** sở hữu ít nhất một phiên bản chứa mã nguồn `.tex`/`.bib` (`papers_with_tex`) phục vụ trực tiếp cho bộ phân tích cấu trúc tài liệu ở Milestone 2; `1.258` bài còn lại (chủ yếu là các công bố chỉ nộp tệp PDF biên dịch sẵn) vẫn được bảo toàn đầy đủ siêu dữ liệu cấp bài báo và danh sách trích dẫn chuẩn hóa. *(Các chỉ số tổng hợp này sẽ được cập nhật lên toàn tập khi hoàn tất đủ 25.000 ID).*
 
 ---
 
@@ -182,14 +189,16 @@ if HAS_STATS:
     ax1.set_title("Phân bố trạng thái xử lý các phiên bản")
     for b, c in zip(bars1, s_counts):
         if c > 0:
+            pct = c / total_p * 100
+            pct_str = "<0.01%" if pct < 0.01 else f"{pct:.2f}%"
             ax1.text(
                 b.get_width() + total_p * 0.015,
                 b.get_y() + b.get_height() / 2,
-                f"{c:,} ({c / total_p * 100:.1f}%)",
+                f"{c:,} ({pct_str})",
                 va="center",
                 fontsize=8.5,
             )
-    ax1.set_xlim(0, max(s_counts) * 1.32 if max(s_counts) else 10)
+    ax1.set_xlim(0, max(s_counts) * 1.44 if max(s_counts) else 10)
 
     ver_dist = {int(k): int(v) for k, v in summary.get("versions_per_paper", {}).items()}
     if max(ver_dist, default=0) > 8:
@@ -224,14 +233,11 @@ else:
     show_pending_box("Cặp biểu đồ phân bố trạng thái gói nguồn và phân phối số phiên bản v1..vN tại Mục 3.2")
 ```
 
-- **Phân bố trạng thái gói nguồn:** Kết quả phân loại phản ánh sát đặc trưng xuất bản thực tế trên arXiv: đại đa số các phiên bản cung cấp đầy đủ gói nguồn LaTeX (`ok`), trong khi một tỷ lệ nhỏ chỉ có tệp PDF biên dịch sẵn (`no_source`) [[4, 5]](#tai-lieu-tham-khao). Nhờ cơ chế kiểm tra mã HTTP trước *magic bytes* và tự động chạy lại các phiên lỗi mạng tạm thời, kho dữ liệu tách bạch minh bạch giữa bản nộp không có mã nguồn và lỗi thu thập.
-- **Phân phối số phiên bản mỗi bài báo:** Chu kỳ hoàn thiện bản thảo khoa học tuân theo phân phối lệch phải điển hình: phần lớn bài báo dừng ở `1` phiên bản (bản nộp đầu) hoặc `2` phiên bản (cập nhật sau phản biện hội nghị/tạp chí), và giảm nhanh từ `v3` trở đi. Hệ số phiên bản trung bình $\bar{V}$ nhân trực tiếp tổng số gói nguồn thực tế cần tải lên gần gấp đôi số định danh gốc được giao.
-
-```{admonition} ⏳ Chờ cập nhật tỷ lệ trạng thái phiên bản từ arxiv-book/stats/summary.json
-:class: warning pending-stats
-- **Tệp & trường cần đợi:** `arxiv-book/stats/summary.json` (`pairs_total`, `pairs_by_status`, `versions_per_paper`, `mean_versions_per_paper`).
-- **Nội dung cần điền khi có tệp:** Ghi tỷ lệ phần trăm chính xác của trạng thái `ok`, `no_source`, `ok_no_tex` (và `corrupt`/`failed` nếu có) cùng $\bar{V}$ trên toàn tập 25.000 ID *(đối chiếu Pilot 30 ID: `51/57` bản `ok` = `89,47%`, `6/57` bản `no_source` = `10,53%`, `0` lỗi; $\bar{V} = 1{,}90$ phiên bản/bài, phân bố `v1: 13`, `v2: 10`, `v3: 5`, `v4: 1`, `v5: 1`)*.
-```
+- **Phân bố trạng thái gói nguồn (`24.734` phiên bản):** Kết quả phân loại trên tập 15.000 ID hiện tại phản ánh sát đặc trưng xuất bản thực tế trên arXiv: **`22.921` phiên bản (`92,67%`)** trích xuất thành công cây mã nguồn `.tex`/`.bib` (`ok`), **`1.734` phiên bản (`7,01%`)** chỉ cung cấp tệp PDF biên dịch sẵn (`no_source`) [[4, 5]](#tai-lieu-tham-khao) và `1` phiên bản (`< 0,01%`) là gói nén hợp lệ không kèm tệp TeX (`ok_no_tex`). Nhóm ngoại lệ chỉ chiếm **`0,32%`** (`78` phiên bản), được bóc tách minh bạch thành ba nguyên nhân:
+  - `63` phiên bản (`0,25%`, tập trung ở các bản sửa đổi `v2: 33`, `v3: 15`, `v4+: 12`, `v1: 3`) trả về HTTP `404` trên `/src/{id}vK` (`not_found`) do tác giả đã rút (*withdrawn*) phiên bản đó trên arXiv nên máy chủ không phát hành gói nguồn;
+  - `14` phiên bản (`0,06%`) bị bộ giải nén an toàn cô lập sang `corrupt` vì gói nguồn chứa tên thiết bị dành riêng của Windows (`aux`, `con.tex`, `AAAI25/LaTeX/con.pdf`, `Sections/con.tex` — `10` bản) hoặc trùng đường dẫn đầu ra khi chuẩn hóa (`fig_texts/fig1.tex`, `Methodology.tex`, `JSSC.bib` — `4` bản);
+  - Duy nhất `1` phiên bản (`< 0,01%`) ngắt luồng truyền tải giữa chừng (`ChunkedEncodingError` — trạng thái `failed`, sẽ tự động tải bù ở đợt cập nhật 25.000 ID).
+- **Phân phối số phiên bản mỗi bài báo ($\bar{V} = 1{,}65$):** Chu kỳ hoàn thiện bản thảo khoa học tuân theo phân phối lệch phải điển hình với trung bình **`1,65` phiên bản/bài** (`24.734` phiên bản trên `15.000` bài): **`8.636` bài (`57,57%`)** dừng ở bản nộp gốc `v1`, **`4.176` bài (`27,84%`)** có `2` phiên bản, **`1.487` bài (`9,91%`)** có `3` phiên bản, **`430` bài (`2,87%`)** có `4` phiên bản, **`172` bài (`1,15%`)** có `5` phiên bản và giảm nhanh ở phần đuôi dài (nhóm `v8+` có `20` bài, cực đại đạt tới **`26` phiên bản**). *(Phân bố toàn cục sẽ được cập nhật khi hoàn tất đủ 25.000 ID).*
 
 ---
 
@@ -335,14 +341,11 @@ else:
     )
 ```
 
-- **Tác động của việc loại bỏ hình ảnh nhị phân:** Bảng số liệu trình bày đồng thời ở cả cấp bài báo (tổng hợp mọi phiên bản $v_1 \dots v_N$) lẫn cấp phiên bản giải nén để đảm bảo tính minh bạch tuyệt đối. Kết quả đo đạc bằng byte khẳng định các tệp hình minh họa độ phân giải cao, biểu đồ vector PDF/EPS và phụ lục nhị phân chiếm tới **96% – 98%** tổng dung lượng giải nén, trong khi toàn bộ mã nguồn văn bản `.tex` và dữ liệu `.bib` chỉ chiếm khoảng **`~2%`** dung lượng gốc.
-- **Lợi ích thiết thực cho toàn chuỗi dự án:** Việc lọc bỏ hình ảnh ngay trong luồng giải nén giúp tiết kiệm hàng trăm GiB không gian lưu trữ cho 25.000 bài báo, giữ trọn vẹn kho ngữ liệu trong giới hạn ổ đĩa cục bộ của instance Google Colab CPU và giảm mạnh chi phí đọc I/O cho bộ phân tích cú pháp ở Milestone 2.
-
-```{admonition} ⏳ Chờ cập nhật số byte trung bình từ arxiv-book/stats/summary.json
-:class: warning pending-stats
-- **Tệp & trường cần đợi:** `arxiv-book/stats/summary.json` (`mean_bytes_per_paper`, `mean_bytes_per_extracted_version`, `kept_over_raw_uncompressed`).
-- **Nội dung cần điền khi có tệp:** Cập nhật câu nhận xét với số byte trung bình chính thức trước và sau khi lọc ảnh của 25.000 bài báo *(đối chiếu Pilot 30 ID: trung bình mỗi bài báo giảm từ `11.916.738 B` xuống `235.800 B`, và mỗi phiên bản giải nén giảm từ `7.009.846 B` xuống `138.706 B` — tiết kiệm `98,02%` dung lượng)*.
-```
+- **Tác động định lượng của việc loại bỏ hình ảnh nhị phân:** Bảng số liệu trình bày đồng thời ở cả cấp bài báo (tổng hợp mọi phiên bản $v_1 \dots v_N$) lẫn cấp phiên bản giải nén (`ok` / `ok_no_tex`) để đảm bảo tính minh bạch tuyệt đối:
+  - **Tính trung bình trên mỗi bài báo (`15.000` bài):** Dung lượng gói nén tải về là **`7.266.080 B` (`6,93 MiB`)**, bung nén toàn phần kèm hình ảnh lên tới **`8.748.555 B` (`8,34 MiB`)**, nhưng sau khi lọc chọn lọc chỉ giữ `.tex` và `.bib` giảm mạnh xuống còn **`680.145 B` (`664,2 KiB`)**.
+  - **Tính trung bình trên mỗi phiên bản giải nén (`22.922` bản):** Kích thước giảm từ **`5.724.994 B` (`5,46 MiB`)** giải nén gốc (gói nén `4.552.952 B` — `4,34 MiB`) xuống chỉ còn **`445.082 B` (`434,7 KiB`)**.
+  - Kết quả thực nghiệm khẳng định các tệp hình minh họa độ phân giải cao, biểu đồ vector PDF/EPS và phụ lục nhị phân chiếm tới **`92,23%`** tổng dung lượng giải nén, trong khi toàn bộ mã nguồn văn bản `.tex` và cơ sở dữ liệu `.bib` chỉ chiếm **`7,77%`** dung lượng gốc (`kept_over_raw_uncompressed`).
+- **Lợi ích thiết thực cho toàn chuỗi dự án:** Ngay trên 15.000 bài báo đầu tiên, phương pháp trích xuất chọn lọc đã loại bỏ hơn **`~112,7 GiB`** dữ liệu hình ảnh không cần thiết (so với `~122,2 GiB` nếu giải nén toàn phần), giữ gọn kho làm việc quanh ngưỡng `~10,1 GiB` (và ước tính tiết kiệm gần `~190 GiB` khi cập nhật đủ **25.000 ID**), vừa nằm gọn trong ổ SSD cục bộ của instance Google Colab CPU vừa giảm mạnh chi phí đọc I/O cho bộ phân tích cú pháp ở Milestone 2.
 
 ---
 
@@ -437,14 +440,8 @@ else:
     )
 ```
 
-- **Phân phối số tham khảo trên mỗi bài báo:** Khoảng cách giữa giá trị trung bình và trung vị phản ánh sự hiện diện của các bài báo tổng quan (*survey/review*) chứa hàng trăm tài liệu trích dẫn — nhóm bài này minh chứng hiệu quả thực tế của cơ chế kiểm tra `referenceCount > len(references)` để tự động gọi phân trang lấy trọn danh sách trên Semantic Scholar. Ngược lại, một số ít bài báo trả về `0` tham khảo do trình phân tích tự động của Semantic Scholar chưa tách được mục tài liệu tham khảo từ bố cục PDF gốc.
-- **Giải nghĩa ba tỷ lệ thành công siêu dữ liệu tham khảo:** Thay vì gộp chung thành một con số dễ gây hiểu nhầm, nhóm bóc tách rành mạch ba chỉ số bổ trợ nhau:
-  - **Tỷ lệ (a) — Độ phủ bài báo (`s2_coverage_papers`):** Tỷ phần bài báo gốc trong kho được Semantic Scholar lập chỉ mục và nhận diện thành công.
-  - **Tỷ lệ (b) — Độ hoàn chỉnh siêu dữ liệu tham khảo (`mean_refs_complete_ratio`):** Trung bình theo từng bài báo (trên tập bài có ít nhất 1 tham khảo) của tỷ lệ các mục tham khảo thu được đầy đủ cả ba trường cốt lõi gồm *tiêu đề, danh sách tác giả và ngày/năm công bố* (khoảng `~20%` còn lại thường là trích dẫn trang web, kho phần mềm, tiêu chuẩn kỹ thuật hoặc mục trích dẫn không chuẩn khiến S2 khuyết năm/tác giả).
-  - **Tỷ lệ (c) — Tỷ trọng tham khảo có arXiv ID (`share_refs_with_arxiv_id`):** Tỷ phần các tài liệu được trích dẫn có bản lưu trên arXiv (phần còn lại là công bố trên tạp chí/hội nghị truyền thống hoặc sách chuyên khảo không đăng tải lên arXiv). Đây chính là tập cặp trích dẫn cấu thành bảng `references` phục vụ đối sánh ở Milestone 3.
-
-```{admonition} ⏳ Chờ cập nhật thống kê tham khảo từ arxiv-book/stats/summary.json & papers_stats.csv
-:class: warning pending-stats
-- **Tệp & trường cần đợi:** `arxiv-book/stats/summary.json` (`refs_total`, `refs_with_arxiv_id`, `mean_refs_per_paper`, `s2_coverage_papers`, `mean_refs_complete_ratio`, `share_refs_with_arxiv_id`) và `arxiv-book/stats/papers_stats.csv` (cột `n_refs`).
-- **Nội dung cần điền khi có tệp:** Chốt nhận xét ngắn gọn với số tham khảo trung bình/trung vị và 3 tỷ lệ `(a)`, `(b)`, `(c)` của toàn tập 25.000 ID *(đối chiếu Pilot 30 ID: tổng `1.009` tham khảo, `508` tham khảo có arXiv ID, trung bình `33,63` tham khảo/bài; `(a) = 100,00%`, `(b) = 78,02%`, `(c) = 50,35%`)*.
-```
+- **Phân phối số tham khảo trên mỗi bài báo (`620.210` mục tham khảo):** Trên tập 15.000 bài báo hiện tại, hệ thống thu thập được trung bình **`41,35` tham khảo/bài** (`41,41` tính riêng trên `14.978` bài được S2 lập chỉ mục), cao hơn giá trị trung vị **`36,0` tham khảo/bài** (`Q25 = 20,0`; `Q75 = 55,0`; `P95 = 96,0`; `P99 = 162,0`). Độ lệch giữa trung bình và trung vị phản ánh nhóm bài tổng quan (*survey/review*) có danh mục trích dẫn rất lớn (cực đại đạt **`770` tham khảo/bài**; có **`647` bài vượt ngưỡng `100` tham khảo** đã kích hoạt thành công cơ chế phân trang dự phòng `referenceCount > len(references)` để không bị cắt bớt dữ liệu). Ở chiều ngược lại, `1.159` bài trả về `0` tham khảo do trình trích xuất PDF tự động của S2 chưa bóc tách được danh mục tham khảo từ bản thảo mới và sẽ được đối chiếu trực tiếp với nguồn `.tex`/`.bib` ở Milestone 2.
+- **Giải nghĩa và đánh giá ba tỷ lệ chất lượng siêu dữ liệu Semantic Scholar:** Thay vì gộp chung thành một con số dễ gây hiểu nhầm, nhóm bóc tách rành mạch ba chỉ số bổ trợ nhau (sẽ được cập nhật tiếp khi hoàn tất đủ 25.000 ID):
+  - **Tỷ lệ (a) — Độ phủ bài báo (`s2_coverage_papers = 99,85%`):** Có **`14.978 / 15.000` bài báo** được Semantic Scholar lập chỉ mục và nhận diện thành công (`found`), chỉ có `22` bài (`0,15%`) chưa được lập chỉ mục (`not_indexed`).
+  - **Tỷ lệ (b) — Độ hoàn chỉnh siêu dữ liệu tham khảo (`mean_refs_complete_ratio = 85,60%`):** Trung bình theo từng bài báo (trên tập bài có ít nhất 1 tham khảo), **`85,60%`** các mục tham khảo thu được đầy đủ cả ba trường cốt lõi gồm *tiêu đề, danh sách tác giả và ngày/năm công bố*; khoảng `14,40%` còn lại chủ yếu là trích dẫn trang web, kho mã nguồn, bộ dữ liệu hoặc tài liệu kỹ thuật không có năm/tác giả chuẩn.
+  - **Tỷ lệ (c) — Tỷ trọng tham khảo có arXiv ID (`share_refs_with_arxiv_id = 46,19%`):** Có **`286.448 / 620.210` mục tham khảo** mang định danh `arXiv ID` hợp lệ (phần còn lại là công bố trên tạp chí/hội nghị truyền thống hoặc sách chuyên khảo không lưu bản thảo trên arXiv). Tập `286.448` liên kết trích dẫn này (sau khi khử trùng lặp khóa kép) chính là nguồn cấu thành bảng `references.parquet` phục vụ bài toán đối sánh tham khảo ở Milestone 3.
