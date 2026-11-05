@@ -4,29 +4,111 @@
 
 Do `export.arxiv.org` và `api.semanticscholar.org` là hai dịch vụ độc lập với cơ chế giới hạn tần suất rất khác nhau, hệ thống `arxiv-pipeline` được thiết kế gồm **hai luồng công việc tách biệt theo máy chủ đích**, giao tiếp qua hàng đợi bộ nhớ (`queue.Queue`) và đồng bộ trạng thái bền vững trên đĩa qua SQLite:
 
-```text
-  [Dải 25.000 ID (src/id_ranges.csv)]
-                 │
-                 ▼
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │ Luồng chính — Máy chủ export.arxiv.org (1 kết nối, nghỉ >= 3,5 giây) │
-  │  1. Khám phá Atom API (/api/query, lô 50 ID) -> tìm đủ v1..vN        │
-  │  2. Truy vấn ngày chỉnh sửa trung gian (idv2..idvN) -> paper.json    │
-  │  3. Tải từng gói /src/{id}vK -> lọc luồng chỉ giữ .tex & .bib        │
-  │  4. Ghi nguyên tử (.vK.part -> vK/) & cập nhật manifest.sqlite       │
-  └───────────────────────────────┬──────────────────────────────────────┘
-                                  │ Đẩy bài báo đã xong nguồn vào hàng đợi
-                                  ▼
-  ┌──────────────────────────────────────────────────────────────────────┐
-  │ Luồng nền — Máy chủ api.semanticscholar.org (nghỉ thích ứng >= 1,1s) │
-  │  5. Gom lô tối đa 100 bài -> POST /graph/v1/paper/batch              │
-  │  6. Nếu danh sách tham khảo bị cắt -> phân trang GET .../references  │
-  │  7. Ghi vK/references.json + đánh dấu s2_references.raw.json.gz      │
-  └───────────────────────────────┬──────────────────────────────────────┘
-                                  │
-                                  ▼
-  [Kiểm chứng toàn vẹn (validate_corpus.py) & Xuất thống kê (export_data.py)]
-```
+<div class="pipeline-flow" role="region" aria-label="Sơ đồ Quy trình Thu thập Đầu–Cuối">
+  <div class="pf-endpoint-node pf-input">
+    <span class="pf-icon">&#128196;</span>
+    <span>Dải 25.000 ID (<code>src/id_ranges.csv</code>)</span>
+  </div>
+  <div class="pf-connector" aria-hidden="true">
+    <svg width="20" height="26" viewBox="0 0 20 26" fill="none">
+      <line x1="10" y1="0" x2="10" y2="19" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M5 16L10 23L15 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="pf-stage-card pf-stage-arxiv">
+    <div class="pf-stage-header">
+      <div class="pf-stage-title">
+        <span class="pf-stage-dot"></span>
+        <span>Luồng chính — Máy chủ <code>export.arxiv.org</code></span>
+      </div>
+      <span class="pf-rate-badge">1 kết nối · nghỉ &ge; 3,5 giây</span>
+    </div>
+    <div class="pf-steps-grid">
+      <div class="pf-step-item">
+        <span class="pf-step-num">1</span>
+        <div class="pf-step-body">
+          <strong>Khám phá Atom API</strong>
+          <span><code>/api/query</code> (lô 50 ID) &rarr; tìm đủ <code>v1..vN</code></span>
+        </div>
+      </div>
+      <div class="pf-step-item">
+        <span class="pf-step-num">2</span>
+        <div class="pf-step-body">
+          <strong>Truy vấn ngày chỉnh sửa trung gian</strong>
+          <span>Gom lô <code>idv2..idvN</code> &rarr; ghi <code>paper.json</code></span>
+        </div>
+      </div>
+      <div class="pf-step-item">
+        <span class="pf-step-num">3</span>
+        <div class="pf-step-body">
+          <strong>Tải từng gói <code>/src/{id}vK</code></strong>
+          <span>Lọc luồng tuần tự chỉ giữ <code>.tex</code> &amp; <code>.bib</code></span>
+        </div>
+      </div>
+      <div class="pf-step-item">
+        <span class="pf-step-num">4</span>
+        <div class="pf-step-body">
+          <strong>Ghi nguyên tử &amp; lưu trạng thái</strong>
+          <span><code>.vK.part</code> &rarr; <code>vK/</code> &amp; cập nhật <code>manifest.sqlite</code></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pf-connector" aria-hidden="true">
+    <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
+      <line x1="10" y1="0" x2="10" y2="16" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 3"/>
+    </svg>
+    <div class="pf-queue-pill">
+      <span>&#8645; Đẩy bài báo đã xong nguồn vào hàng đợi (<code>queue.Queue</code>)</span>
+    </div>
+    <svg width="20" height="22" viewBox="0 0 20 22" fill="none">
+      <line x1="10" y1="0" x2="10" y2="15" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M5 12L10 19L15 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="pf-stage-card pf-stage-s2">
+    <div class="pf-stage-header">
+      <div class="pf-stage-title">
+        <span class="pf-stage-dot"></span>
+        <span>Luồng nền — Máy chủ <code>api.semanticscholar.org</code></span>
+      </div>
+      <span class="pf-rate-badge">nghỉ thích ứng &ge; 1,1 giây</span>
+    </div>
+    <div class="pf-steps-grid pf-steps-3">
+      <div class="pf-step-item">
+        <span class="pf-step-num">5</span>
+        <div class="pf-step-body">
+          <strong>Gom lô tối đa 100 bài</strong>
+          <span><code>POST /graph/v1/paper/batch</code></span>
+        </div>
+      </div>
+      <div class="pf-step-item">
+        <span class="pf-step-num">6</span>
+        <div class="pf-step-body">
+          <strong>Dự phòng khi tham khảo bị cắt</strong>
+          <span>Phân trang <code>GET .../references</code></span>
+        </div>
+      </div>
+      <div class="pf-step-item">
+        <span class="pf-step-num">7</span>
+        <div class="pf-step-body">
+          <strong>Lưu tham khảo &amp; đánh dấu hoàn tất</strong>
+          <span><code>vK/references.json</code> + <code>s2_references.raw.json.gz</code></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pf-connector" aria-hidden="true">
+    <svg width="20" height="26" viewBox="0 0 20 26" fill="none">
+      <line x1="10" y1="0" x2="10" y2="19" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M5 16L10 23L15 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="pf-endpoint-node pf-output">
+    <span class="pf-icon">&#10003;</span>
+    <span>Kiểm chứng toàn vẹn (<code>validate_corpus.py</code>) &amp; Xuất thống kê (<code>export_data.py</code>)</span>
+  </div>
+</div>
 
 ### Bước 1 — Khám phá mục bài báo và lịch sử phiên bản (`discovery.py`)
 

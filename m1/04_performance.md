@@ -40,6 +40,12 @@ from IPython.display import HTML, display
 
 plt.rcParams.update({
     "figure.dpi": 160,
+    "figure.facecolor": "#ffffff",
+    "axes.facecolor": "#fafbfc",
+    "axes.edgecolor": "#cbd5e1",
+    "axes.labelcolor": "#1e293b",
+    "xtick.color": "#334155",
+    "ytick.color": "#334155",
     "font.size": 9.5,
     "axes.titlesize": 11,
     "axes.titleweight": "bold",
@@ -47,7 +53,8 @@ plt.rcParams.update({
     "axes.spines.right": False,
     "axes.axisbelow": True,
     "axes.grid": True,
-    "grid.alpha": 0.25,
+    "grid.color": "#cbd5e1",
+    "grid.alpha": 0.45,
 })
 
 

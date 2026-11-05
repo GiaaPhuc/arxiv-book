@@ -47,22 +47,70 @@ Ba quy ước nghiệp vụ cốt lõi được áp dụng xuyên suốt quá tr
 
 Tuân thủ quy ước tổ chức dữ liệu gợi ý của đề bài và hợp đồng dữ liệu khóa cố định trong `src/crawler/models.py` (`SCHEMA_VERSION = 1`), mỗi công bố được lưu trữ trong một thư mục làm việc riêng biệt đặt tên chuẩn hóa từ định danh gốc (`2408.11046` $\rightarrow$ `2408-11046`; định danh cũ trước năm 2007 như `hep-th/9901001` $\rightarrow$ `hep-th-9901001` nhưng trường `arxiv_id` trong JSON luôn giữ nguyên gốc):
 
-```text
-data/
-├── manifest.sqlite                     # Sổ trạng thái SQLite (chế độ WAL) của mọi cặp (arxiv_id, version)
-├── logs/
-│   ├── crawl.log                       # Nhật ký vận hành chi tiết theo thời gian thực
-│   └── metrics.json                    # Số đo thời gian theo chặng, RAM RSS và dung lượng đĩa tích lũy
-├── stats/                              # Đầu ra từ export_data.py (Parquet cục bộ + CSV/JSON cho báo cáo)
-└── papers/
-    └── <arxiv-id-chuan-hoa>/           # Ví dụ: 2408-11046/
-        ├── paper.json                  # Siêu dữ liệu cấp bài báo (tiêu đề, tác giả, ngày nộp/sửa, venue)
-        ├── s2_references.raw.json.gz   # Phản hồi gốc nén gzip từ S2 (dấu hiệu hoàn tất chặng S2)
-        └── v1..vN/
-            ├── meta.json               # Trạng thái phiên bản, dung lượng gốc/giữ lại & mã băm SHA-256
-            ├── references.json         # Toàn bộ tham khảo đã crawl ở máy cục bộ (kể cả không có arXiv ID)
-            └── tex/                    # Cây thư mục tương đối chỉ chứa các tệp .tex và .bib
-```
+<div class="corpus-tree-card" role="region" aria-label="Cấu trúc thư mục dữ liệu cục bộ">
+  <div class="ct-header">
+    <span>Cấu trúc kho ngữ liệu làm việc cục bộ (<code>data/</code>)</span>
+    <span class="ct-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+  </div>
+  <div class="ct-list">
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-dir">data/</span></div>
+      <div class="ct-desc">Thư mục gốc của kho ngữ liệu làm việc cục bộ</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">├── </span><span class="ct-file">manifest.sqlite</span></div>
+      <div class="ct-desc">Sổ trạng thái SQLite (chế độ WAL) của mọi cặp <code>(arxiv_id, version)</code></div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">├── </span><span class="ct-dir">logs/</span></div>
+      <div class="ct-desc">Nhật ký vận hành và tài nguyên hệ thống</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">│   ├── </span><span class="ct-file">crawl.log</span></div>
+      <div class="ct-desc">Nhật ký vận hành chi tiết theo thời gian thực</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">│   └── </span><span class="ct-file">metrics.json</span></div>
+      <div class="ct-desc">Số đo thời gian theo chặng, RAM RSS và dung lượng đĩa tích lũy</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">├── </span><span class="ct-dir">stats/</span></div>
+      <div class="ct-desc">Đầu ra từ <code>export_data.py</code> (Parquet cục bộ + CSV/JSON cho báo cáo)</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">└── </span><span class="ct-dir">papers/</span></div>
+      <div class="ct-desc">Thư mục lưu trữ toàn bộ công bố đã thu thập</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">    └── </span><span class="ct-dir">&lt;arxiv-id-chuan-hoa&gt;/</span></div>
+      <div class="ct-desc">Ví dụ: <code>2408-11046/</code></div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">        ├── </span><span class="ct-file">paper.json</span></div>
+      <div class="ct-desc">Siêu dữ liệu cấp bài báo (tiêu đề, tác giả, ngày nộp/sửa, venue)</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">        ├── </span><span class="ct-file">s2_references.raw.json.gz</span></div>
+      <div class="ct-desc">Phản hồi gốc nén gzip từ S2 (dấu hiệu hoàn tất chặng S2)</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">        └── </span><span class="ct-dir">v1..vN/</span></div>
+      <div class="ct-desc">Thư mục riêng cho từng phiên bản từ <code>v1</code> tới <code>vN</code></div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">            ├── </span><span class="ct-file">meta.json</span></div>
+      <div class="ct-desc">Trạng thái phiên bản, dung lượng gốc/giữ lại &amp; mã băm SHA-256</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">            ├── </span><span class="ct-file">references.json</span></div>
+      <div class="ct-desc">Toàn bộ tham khảo đã crawl ở máy cục bộ (kể cả không có arXiv ID)</div>
+    </div>
+    <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">            └── </span><span class="ct-dir">tex/</span></div>
+      <div class="ct-desc">Cây thư mục tương đối chỉ chứa các tệp <code>.tex</code> và <code>.bib</code></div>
+    </div>
+  </div>
+</div>
 
 Từ kho dữ liệu làm việc trên, module `export_data.py` (`crawler/export.py`) kết xuất hai bảng dữ liệu chuẩn dạng Apache Parquet theo đúng lược đồ cột và kiểu dữ liệu được quy định cho bộ dữ liệu công bố cuối khóa:
 
