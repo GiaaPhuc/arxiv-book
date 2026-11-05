@@ -1,4 +1,5 @@
 format: jb-book
 root: m1/01_overview
 chapters:
+  - file: m1/02_crawl_process
   - file: m1/03_data_statistics

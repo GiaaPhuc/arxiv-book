@@ -14,7 +14,8 @@ jupyter-book build .
 
 ## Cấu trúc
 
-- `m1/01_overview.md` — mục tiêu, nguồn, quy ước thu thập (số thật: Phase 2).
+- `m1/01_overview.md` — mục tiêu, nguồn, quy ước thu thập.
+- `m1/02_crawl_process.md` — giải thích quy trình crawl, lưu trữ, kiểm tra và các chỉ số bắt buộc.
 - `m1/03_data_statistics.ipynb` — thống kê từ **số mẫu** trong `stats/` (chưa phải crawl).
 - `.github/workflows/deploy-book.yml` — build và deploy Pages khi push `main`.
 
