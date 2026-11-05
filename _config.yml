@@ -1,16 +1,36 @@
-title: "Thu thập arXiv — Milestone 1"
-author: "Nhóm Nhập môn KHDL"
+title: "Kho Ngữ liệu Khoa học arXiv"
+author: "Nhóm Nhập môn Khoa học Dữ liệu"
 copyright: "2026"
-exclude_patterns: [Y-TUONG-NOI-DUNG.md]
+exclude_patterns:
+  - Y-TUONG-NOI-DUNG.md
+  - BOOK-MAU-M1.md
+  - README.md
+  - stats/README.md
+  - .venv*
+  - .pytest_cache
+  - _build
 logo: ""
+
 execute:
-  execute_notebooks: auto
-  timeout: 120
+  execute_notebooks: force
+  timeout: 180
+  allow_errors: false
+
 repository:
   url: https://github.com/GiaaPhuc/arxiv-book
   path_to_book: ""
+  branch: main
+
 html:
   use_issues_button: false
   use_repository_button: true
+  extra_footer: |
+    <div>Báo cáo Dự án Môn Nhập môn Khoa học Dữ liệu · Mã nguồn pipeline: <a href="https://github.com/GiaaPhuc/arxiv-pipeline" target="_blank" rel="noopener">GiaaPhuc/arxiv-pipeline</a></div>
+
 launch_buttons:
   notebook_server: false
+
+sphinx:
+  config:
+    html_static_path: ["_static"]
+    html_title: "Kho Ngữ liệu Khoa học arXiv — Báo cáo Dự án"

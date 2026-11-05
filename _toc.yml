@@ -1,5 +1,8 @@
 format: jb-book
 root: m1/01_overview
-chapters:
-  - file: m1/02_crawl_process
-  - file: m1/03_data_statistics
+parts:
+  - caption: "Milestone 1 — Thu thập Dữ liệu"
+    chapters:
+      - file: m1/02_implementation
+      - file: m1/03_data_statistics
+      - file: m1/04_performance

@@ -1,0 +1,110 @@
+/* Academic styling for arXiv Corpus Project Report (Jupyter Book v1) */
+
+/* Typography & spacing polish */
+.bd-article-container h1 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  border-bottom: 2px solid rgba(25, 113, 194, 0.18);
+  padding-bottom: 0.35rem;
+  margin-bottom: 1.15rem;
+}
+
+.bd-article-container h2 {
+  margin-top: 2rem;
+  font-weight: 650;
+}
+
+/* Clean, consistent styling for both Markdown and dynamic HTML tables */
+.bd-article-container table.table,
+.bd-article-container table.jb-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.1rem 0 1.35rem 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.bd-article-container table.jb-stats-table thead th,
+.bd-article-container table.table thead th {
+  background-color: rgba(25, 113, 194, 0.08);
+  font-weight: 650;
+  border-bottom: 2px solid rgba(25, 113, 194, 0.28);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+
+.bd-article-container table.jb-stats-table tbody td,
+.bd-article-container table.table tbody td {
+  padding: 0.52rem 0.8rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+  vertical-align: top;
+}
+
+.bd-article-container table.jb-stats-table tbody tr:hover,
+.bd-article-container table.table tbody tr:hover {
+  background-color: rgba(25, 113, 194, 0.035);
+}
+
+/* Right-align numeric measurement columns in key-value metric tables */
+.bd-article-container table.jb-kv-table tbody td:last-child,
+.bd-article-container table.jb-kv-table thead th:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Architecture & directory tree blocks */
+.bd-article-container div.highlight pre {
+  font-size: 0.84rem;
+  line-height: 1.45;
+  border-radius: 6px;
+}
+
+/* Distinct highlight for sections awaiting arxiv-book/stats/ files */
+.admonition.pending-stats {
+  border-left: 4px solid #e67700 !important;
+  background-color: rgba(255, 249, 219, 0.55);
+}
+
+html[data-theme="dark"] .admonition.pending-stats {
+  background-color: rgba(230, 119, 0, 0.12);
+}
+
+.admonition.pending-stats > .admonition-title {
+  background-color: rgba(230, 119, 0, 0.14) !important;
+  color: #b45309;
+  font-weight: 650;
+}
+
+html[data-theme="dark"] .admonition.pending-stats > .admonition-title {
+  color: #fbbf24;
+}
+
+/* Dynamic placeholder box rendered by code-cells when stats/*.json are not yet copied */
+.jb-pending-card {
+  border: 1px dashed #e67700;
+  border-left: 4px solid #e67700;
+  border-radius: 6px;
+  padding: 0.9rem 1.1rem;
+  margin: 0.9rem 0 1.2rem 0;
+  background-color: rgba(255, 249, 219, 0.45);
+  font-size: 0.92rem;
+}
+
+html[data-theme="dark"] .jb-pending-card {
+  background-color: rgba(230, 119, 0, 0.1);
+}
+
+.jb-pending-card .jb-pending-title {
+  font-weight: 700;
+  color: #b45309;
+  margin-bottom: 0.35rem;
+}
+
+html[data-theme="dark"] .jb-pending-card .jb-pending-title {
+  color: #fbbf24;
+}
+
+.jb-pending-card code {
+  font-size: 0.86em;
+}

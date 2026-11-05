@@ -1,8 +1,16 @@
 .venv/
 .venv*/
-.venv-check/
 _build/
 _jupyter_cache/
+.pytest_cache/
 .DS_Store
 __pycache__/
-.venv-check/
+
+# Never commit raw corpus tables, SQLite manifests, or compressed archives
+*.parquet
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.tar
+*.tar.gz
+*.tgz
