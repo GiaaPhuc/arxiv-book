@@ -3,6 +3,7 @@
 _build/
 _jupyter_cache/
 .pytest_cache/
+.mplcache/
 .DS_Store
 __pycache__/
 

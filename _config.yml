@@ -5,6 +5,7 @@ exclude_patterns:
   - Y-TUONG-NOI-DUNG.md
   - BOOK-MAU-M1.md
   - README.md
+  - AGENTS.md
   - stats/README.md
   - .venv*
   - .pytest_cache
