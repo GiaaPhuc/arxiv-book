@@ -41,7 +41,7 @@ Kết quả biên dịch nằm tại `_build/html/index.html`.
 
 ## 3. Trạng thái Dữ liệu Hiện tại (Snapshot 5.000 ID Dải 1) & Quy trình Cập nhật 25.000 ID
 
-Hệ thống pipeline thu thập trong `arxiv-pipeline` (phiên bản **v3.8**: kiến trúc đa luồng Producer–Consumer, đệm RAM Zero-Copy 96 MiB, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, phục hồi nhanh 429 và cơ chế Fast-Defer + Cooldown leo thang) đã hoàn tất thu thập trọn vẹn **5.000 ID thuộc Dải 1 (`2408.11045` – `2408.16044`)**, bao gồm 8.200 phiên bản và 206.813 mục tài liệu tham khảo.
+Hệ thống pipeline thu thập trong `arxiv-pipeline` (phiên bản **v3.10 Clean Lean Turbo / v3.11**: kiến trúc 5 nhóm luồng Producer–Consumer, đệm RAM Zero-Copy 96 MiB, Paced Streaming 4,5 MiB/s, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, sàn nghỉ socket 3,05 s, Range Resume tại chỗ cho file lớn, nạp hồi băng thông 50 MiB, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`) đã hoàn tất thu thập trọn vẹn **5.000 ID thuộc Dải 1 (`2408.11045` – `2408.16044`)**, bao gồm 8.200 phiên bản và 206.813 mục tài liệu tham khảo với tốc độ ~6,4 – 7,4 giờ / 5.000 ID và 0% lỗi 429.
 
 Toàn bộ 4 tệp thống kê tại `arxiv-book/stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) hiện đã được cập nhật từ snapshot 5.000 ID này và tự động đồng bộ vào toàn bộ bảng biểu, biểu đồ tại Chương 3 và Chương 4 của sách.
 

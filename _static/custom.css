@@ -519,17 +519,87 @@ html[data-theme="dark"] .bd-article-container :not(pre) > code {
   border-right: 1px solid var(--jb-border);
 }
 
+/* Sidebar Nav Captions (Milestones) - Prominent, Bold & Collapsible */
 .bd-sidebar-primary .bd-links p.caption {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--jb-text-muted);
-  margin-top: 1.35rem;
-  margin-bottom: 0.5rem;
-  padding-left: 0.65rem;
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--jb-heading);
+  margin-top: 1.25rem;
+  margin-bottom: 0.45rem;
+  padding: 0.48rem 0.65rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border-left: 3px solid var(--jb-accent);
+  background-color: var(--jb-surface-subtle);
 }
 
+.bd-sidebar-primary .bd-links p.caption:hover {
+  background-color: var(--jb-accent-soft);
+  color: var(--jb-accent);
+}
+
+.bd-sidebar-primary .bd-links p.caption .caption-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--jb-text-muted);
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), color 0.15s ease;
+  margin-left: 0.5rem;
+}
+
+.bd-sidebar-primary .bd-links p.caption:hover .caption-toggle-icon {
+  color: var(--jb-accent);
+}
+
+.bd-sidebar-primary .bd-links p.caption.is-collapsed .caption-toggle-icon svg {
+  transform: rotate(-90deg);
+}
+
+/* Sidenav under Captions: Indented hierarchy for Chapters (nested inside Milestone) */
+.bd-sidebar-primary .bd-links p.caption + ul.bd-sidenav {
+  margin-left: 0.55rem;
+  padding-left: 0.65rem;
+  border-left: 1.5px solid var(--jb-border);
+  margin-bottom: 0.75rem;
+}
+
+.bd-sidebar-primary .bd-links p.caption.is-collapsed + ul.bd-sidenav,
+.bd-sidebar-primary .bd-links ul.bd-sidenav.is-collapsed {
+  display: none !important;
+}
+
+/* Chapter Links inside Milestones - Subordinate, refined font size */
+.bd-sidebar-primary .bd-links p.caption + ul.bd-sidenav li > a {
+  border-radius: 5px;
+  padding: 0.32rem 0.55rem;
+  font-size: 0.825rem;
+  line-height: 1.38;
+  color: var(--jb-text);
+  font-weight: 500;
+  transition: background-color 0.12s ease, color 0.12s ease, padding-left 0.12s ease;
+}
+
+.bd-sidebar-primary .bd-links p.caption + ul.bd-sidenav li > a:hover {
+  background-color: var(--jb-surface-subtle);
+  color: var(--jb-heading);
+  padding-left: 0.70rem;
+}
+
+.bd-sidebar-primary .bd-links p.caption + ul.bd-sidenav li.active > a,
+.bd-sidebar-primary .bd-links p.caption + ul.bd-sidenav a.active {
+  background-color: var(--jb-accent-soft);
+  color: var(--jb-accent) !important;
+  font-weight: 600;
+}
+
+/* General Link fallback */
 .bd-sidebar-primary .bd-links li > a {
   border-radius: 6px;
   padding: 0.40rem 0.65rem;

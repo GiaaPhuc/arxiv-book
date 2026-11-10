@@ -6,3 +6,6 @@ parts:
       - file: m1/02_implementation
       - file: m1/03_data_statistics
       - file: m1/04_performance
+  - caption: "Milestone 2 — Phân tích Cú pháp (Đang thực hiện)"
+    chapters:
+      - file: m2/01_overview

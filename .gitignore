@@ -4,6 +4,10 @@ _build/
 _jupyter_cache/
 .pytest_cache/
 .mplcache/
+.ipython/
+.jupyter/
+.jupyter_data/
+.jupyter_runtime/
 .DS_Store
 __pycache__/
 

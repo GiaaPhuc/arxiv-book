@@ -15,7 +15,7 @@ Toàn bộ bảng tổng hợp và biểu đồ trực quan trong chương này 
 
 ```{admonition} Phạm vi bộ số liệu: Báo cáo thực nghiệm trên 5.000 ID (Dải 1) — sẽ cập nhật khi đủ 25.000 ID
 :class: important
-Hệ thống pipeline thu thập đã hoàn tất xử lý trọn vẹn **Dải 1 (5.000 ID: `2408.11045` – `2408.16044`)** với phiên bản pipeline **v3.8** (kiến trúc đa luồng Producer–Consumer, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, cơ chế Fast-Defer Queue và Cooldown leo thang).
+Hệ thống pipeline thu thập đã hoàn tất xử lý trọn vẹn **Dải 1 (5.000 ID: `2408.11045` – `2408.16044`)** với phiên bản pipeline **v3.10 Clean Lean Turbo / v3.11** (kiến trúc đa luồng Producer–Consumer, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, sàn nghỉ socket 3,05 s, Paced Streaming 4,5 MiB/s, Range Resume tại chỗ cho file lớn, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`).
 
 Toàn bộ các bảng tổng hợp và biểu đồ phân tích trong chương này được kết xuất động trực tiếp từ bộ tệp thống kê 5.000 ID này (`summary.json`, `papers_stats.csv`, `versions_stats.csv`). Tiến trình crawl đang tiếp tục chạy nối tiếp 20.000 ID còn lại (Dải 2–5); bản báo cáo sẽ được cập nhật đồng bộ lên quy mô 25.000 ID ngay sau khi hoàn tất.
 ```

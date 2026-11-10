@@ -134,7 +134,7 @@ if HAS_PERF:
         ("Tổng thời gian giải nén & lọc .tex/.bib + băm SHA-256 (extract)", fmt_duration(st.get("extract", 0.0))),
         ("Thời gian hoạt động luồng nền Semantic Scholar (s2 — chạy song song)", fmt_duration(st.get("s2", 0.0))),
         ("Thời gian chờ backoff HTTP 429 trên luồng S2 (retry_wait_seconds)", fmt_duration(s2_info.get("retry_wait_seconds", 0.0))),
-        ("Số lô truy vấn S2 Batch đã thực hiện (tối đa 100 bài/lô)", f"{int(s2_info.get('batches', 0)):,} lô"),
+        ("Số lô truy vấn S2 Batch đã thực hiện", f"{int(s2_info.get('batches', 0)):,} lô"),
         ("Thời gian TB xử lý mỗi bài báo được yêu cầu (wall / ids_requested)", f"{wall_end_to_end_s / n_req:.2f} giây / ID"),
         ("Thời gian TB xử lý một bài báo tồn tại (wall / papers_total)", f"{wall_end_to_end_s / n_pap:.2f} giây / bài"),
         ("Thời gian TB xử lý một phiên bản bài báo (wall / pairs_total)", f"{wall_end_to_end_s / n_pair:.2f} giây / phiên bản"),
@@ -190,7 +190,7 @@ else:
 **Phân tích hiệu năng thời gian:**
 
 - **Đối chiếu cận dưới lý thuyết điều nhịp (*Rate-limit bound*) với kiến trúc Start-to-Start:**
-  Theo chính sách lịch sự của arXiv, giữa hai request liên tiếp tới `export.arxiv.org` phải cách nhau tối thiểu $\Delta t \ge 3{,}0\text{ s}$ trên 1 kết nối duy nhất. Trong kiến trúc **Producer–Consumer Start-to-Start** với nhịp cơ sở $3{,}15\text{ s} + \text{jitter}$ và Discovery lô 250 ID (O2 + T3):
+  Theo chính sách lịch sự của arXiv, giữa hai request liên tiếp tới `export.arxiv.org` phải cách nhau tối thiểu $\Delta t \ge 3{,}0\text{ s}$ trên 1 kết nối duy nhất. Trong kiến trúc **Producer–Consumer Start-to-Start** với nhịp cơ sở $3{,}15\text{ s} + \text{jitter}$ và khám phá siêu dữ liệu theo lô 250 ID kết hợp tận dụng thẻ `<updated>`:
   
   $$
   N_{\text{arxiv}} = N_{\text{discovery\_batches}} + N_{\text{confirm\_subbatches}} + N_{\text{revised\_batches}} + R
@@ -204,7 +204,7 @@ else:
 
   (Khi mở rộng lên toàn bộ **25.000 ID** với $R \approx 41.000$ phiên bản, sàn lý thuyết thời gian sẽ là $T_{\text{floor, 25k}} \approx 41.150 \times 3{,}0\text{ s} \approx 123.450\text{ s} \approx 34{,}3\text{ giờ}$).
   Nhờ nhịp **Start-to-Start** và việc tách giải nén sang pool `extract-worker` 2 luồng, thời gian tải của mọi gói nguồn $\le 2{,}50\text{ s}$ (~96% số bài) đều đạt chu kỳ đúng $3{,}15\text{ s/phiên bản}$ (`+0,00 s` overhead).
-- **Hiệu quả thực thi song song của Semantic Scholar:** Luồng nền Semantic Scholar gom lô 100 bài (`POST /graph/v1/paper/batch`), thực hiện qua 707 lượt truy vấn lô (kèm xử lý phân đoạn nhỏ khi gặp 429). Thời gian tính toán luồng thuần túy chỉ mất $3.171{,}86\text{ s}$ (~52,86 phút), và tổng thời gian kèm chờ backoff là $26.136{,}86\text{ s}$ (~7,26 giờ). Nhờ vận hành hoàn toàn song song không khóa tiến trình chính, toàn bộ thời gian của Semantic Scholar nằm gọn bên dưới đường găng arXiv ($29.019{,}85\text{ s}$ ~ 8,06 giờ), không làm phát sinh thêm bất kỳ giây chờ nào cho tổng thời gian thực thi đầu–cuối của toàn hệ thống.
+- **Hiệu quả thực thi song song của Semantic Scholar:** Luồng nền Semantic Scholar gom lô (`POST /graph/v1/paper/batch`, thực hiện qua 707 lượt truy vấn lô; trong thiết kế pipeline chuẩn hóa mới nhất, kích thước lô mặc định được tối ưu thành 25 bài kết hợp cơ chế chia đôi lô Bisection khi gặp 413/5xx). Thời gian tính toán luồng thuần túy chỉ mất $3.171{,}86\text{ s}$ (~52,86 phút), và tổng thời gian kèm chờ backoff là $26.136{,}86\text{ s}$ (~7,26 giờ). Nhờ vận hành hoàn toàn song song không khóa tiến trình chính, toàn bộ thời gian của Semantic Scholar nằm gọn bên dưới đường găng arXiv ($29.019{,}85\text{ s}$ ~ 8,06 giờ), không làm phát sinh thêm bất kỳ giây chờ nào cho tổng thời gian thực thi đầu–cuối của toàn hệ thống.
 - **Đánh giá tổng thời gian chạy thực tế trên 5.000 ID:**
   - Tổng thời gian End-to-End Wall Time ghi nhận đạt **29.019,85 s (~8,06 giờ)**, bám rất sát cận dưới lý thuyết của bộ điều nhịp (độ dôi ra chủ yếu do tải các gói TeX dung lượng lớn và thời gian hồi phục thích ứng 40 lần HTTP 429 từ máy chủ arXiv).
   - Tốc độ xử lý trung bình đạt **5,80 giây / bài báo** (29.019,85 s / 5.000 ID) và **3,54 giây / phiên bản** (29.019,85 s / 8.200 phiên bản).
