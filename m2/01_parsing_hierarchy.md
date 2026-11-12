@@ -96,7 +96,7 @@ Khác với các ngôn ngữ đánh dấu có ngữ pháp phi ngữ cảnh (CFG)
         <span class="pf-step-num">5a</span>
         <div class="pf-step-body">
           <strong>Bộ phân tích <code>.bib</code> cân bằng ngoặc</strong>
-          <span>Giải <code>@string</code>, kế thừa <code>crossref</code>, bảo toàn URL mã hóa <code>%</code></span>
+          <span>Giải <code>@string</code>, nối chuỗi <code>#</code>, bảo toàn URL mã hóa <code>%</code></span>
         </div>
       </div>
       <div class="pf-step-item">
@@ -141,7 +141,7 @@ Khác với các ngôn ngữ đánh dấu có ngữ pháp phi ngữ cảnh (CFG)
         <span class="pf-step-num">7</span>
         <div class="pf-step-body">
           <strong>Xả Sharded Parquet &amp; Thống kê</strong>
-          <span>Ghi <code>elements</code>, <code>hierarchy</code>, <code>bibtex</code> nén ZSTD + kiểu <code>dictionary</code></span>
+          <span>Ghi <code>elements</code>, <code>hierarchy</code>, <code>bibtex</code> kiểu <code>dictionary</code></span>
         </div>
       </div>
     </div>

@@ -226,7 +226,7 @@ if HAS_M2_PERF:
         ("Mức tiêu thụ RAM trung bình toàn phiên (ram_mean_bytes — lấy mẫu 1s/lần)", f"{ram_mean_b:,.0f} B ({ram_mean_b / 1024**2:.2f} MiB)"),
         ("Tổng số mẫu đo RAM định kỳ đã thu thập (ram_samples)", f"{ram_samples:,} mẫu"),
         ("Dung lượng kho nguồn .tex/.bib đầu vào từ Milestone 1 (input_corpus_bytes)", fmt_storage(in_bytes)),
-        ("Dung lượng 3 bảng Sharded Parquet đầu ra — nén ZSTD (output_parsed_bytes)", fmt_storage(out_bytes)),
+        ("Dung lượng 3 bảng Sharded Parquet đầu ra (output_parsed_bytes)", fmt_storage(out_bytes)),
         ("Tỷ lệ dung lượng Parquet đầu ra so với kho nguồn đầu vào", f"{out_bytes / max(in_bytes, 1.0) * 100:.2f}%"),
     ]
     show_table(pd.DataFrame(mem_rows, columns=["Chỉ số bộ nhớ RAM & lưu trữ đĩa (Mục 8.3)", "Giá trị đo đạc"]), kv=True)
@@ -242,7 +242,7 @@ else:
             ("Đỉnh bộ nhớ vật lý toàn hệ thống (ram_peak_bytes)", "[Mẫu cấu trúc] ~388.00 MiB (< 3.1% trần 12.7 GiB Colab RAM)"),
             ("Mức tiêu thụ RAM trung bình (ram_mean_bytes)", "[Mẫu cấu trúc] ~265.00 MiB (giữ phẳng nhờ flush mỗi 500 bài)"),
             ("Dung lượng kho nguồn đầu vào (input_corpus_bytes)", "[Nền M1 15k ID] ~10.062 GiB (hoặc ~16.8 GiB ở 25k ID)"),
-            ("Dung lượng 3 bảng Sharded Parquet đầu ra (output_parsed_bytes)", "[Mẫu cấu trúc] ~1.420 GiB (ZSTD + dictionary encoding)"),
+            ("Dung lượng 3 bảng Sharded Parquet đầu ra (output_parsed_bytes)", "[Mẫu cấu trúc] ~1.420 GiB (dictionary encoding)"),
         ],
         columns=["Chỉ số bộ nhớ & lưu trữ cần báo cáo (Mục 8.3)", "Trạng thái / Cấu hình mục tiêu"],
     )
@@ -300,7 +300,7 @@ plt.close(fig)
 
 1. **Xả phân mảnh định kỳ theo lô 500 bài (`Streaming Sharded Parquet`):** Nếu tích lũy toàn bộ `~6–10 triệu` dòng `elements` và `hierarchy` của 25.000 bài báo dưới dạng đối tượng Python trong bộ nhớ trước khi ghi đĩa, tiến trình sẽ tiêu tốn nhiều GiB RAM và dễ chạm ngưỡng OOM của máy ảo Colab. Cơ chế `flush()` mỗi `500` bài kết hợp `chunksize = 1` trên `ProcessPoolExecutor` và thu gom rác chủ động (`gc.collect()`) giữ cho đường biên RAM hoàn toàn phẳng theo thời gian ($\mathcal{O}(\text{batch\_size})$ thay vì $\mathcal{O}(N_{\text{papers}})$).
 2. **Mã hóa từ điển (`Dictionary Encoding`) cho các cột phân loại lặp lại:** Hai cột `elements.kind` (8 nhãn lặp lại hàng triệu lần) và `bibtex.entrytype` được lưu bằng kiểu `pa.dictionary(pa.int8(), pa.string())`, thay thế hàng triệu chuỗi ký tự lặp bằng chỉ số nguyên 1 byte ngay ở tầng cột nhị phân.
-3. **Cộng hưởng giữa khử trùng lặp xuyên phiên bản và nén cột `ZSTD`:** Việc chỉ lưu một bản sao duy nhất cho mỗi phần tử nội dung không đổi qua $v_1 \dots v_N$ kết hợp thuật toán nén từ điển trượt `ZSTD` của Apache Parquet giúp toàn bộ 3 bảng đầu ra nhỏ gọn hơn nhiều lần so với cây thư mục `.tex`/`.bib` đầu vào, đồng thời cho phép trình kiểm định `validate_m2.py` và các mô hình ở Milestone 3 đọc chiếu từng cột (*column projection*) với tốc độ rất cao.
+3. **Cộng hưởng giữa khử trùng lặp xuyên phiên bản và nén cột Parquet:** Việc chỉ lưu một bản sao duy nhất cho mỗi phần tử nội dung không đổi qua $v_1 \dots v_N$ kết hợp thuật toán nén từ điển trượt `ZSTD` của Apache Parquet giúp toàn bộ 3 bảng đầu ra nhỏ gọn hơn nhiều lần so với cây thư mục `.tex`/`.bib` đầu vào, đồng thời cho phép trình kiểm định `validate_m2.py` và các mô hình ở Milestone 3 đọc chiếu từng cột (*column projection*) với tốc độ rất cao.
 
 ---
 
