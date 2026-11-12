@@ -44,23 +44,25 @@ Kết quả biên dịch nằm tại `_build/html/index.html`.
 
 ---
 
-## 3. Trạng thái Dữ liệu Hiện tại (`15.000 / 25.000 ID`) & Quy trình Cập nhật Khi Đủ `25.000 ID`
+## 3. Trạng thái Dữ liệu Hiện tại (Snapshot 5.000 ID Dải 1) & Quy trình Cập nhật 25.000 ID
 
-Hiện tại thư mục `arxiv-book/stats/` đã tích hợp đầy đủ 4 tệp thống kê thực nghiệm (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) từ **đợt thu thập hoàn chỉnh 15.000 ID đầu tiên** (`2408.01045` – `2408.16044`, trọn vẹn Dải 1, Dải 2 và Dải 3 thuộc tháng `2024-08`, đạt `60%` tổng quy mô). Toàn bộ bảng biểu, đồ thị và nhận xét tại Chương 1, Chương 3 và Chương 4 đã được biên dịch hoàn chỉnh với dữ liệu thật 100% và ghi chú minh bạch lộ trình cập nhật.
+Hệ thống pipeline thu thập trong `arxiv-pipeline` (phiên bản **v3.10 Clean Lean Turbo / v3.11**: kiến trúc 5 nhóm luồng Producer–Consumer, đệm RAM Zero-Copy 96 MiB, Paced Streaming 4,5 MiB/s, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, sàn nghỉ socket 3,05 s, Range Resume tại chỗ cho file lớn, nạp hồi băng thông 50 MiB, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`) đã hoàn tất thu thập trọn vẹn **5.000 ID thuộc Dải 1 (`2408.11045` – `2408.16044`)**, bao gồm 8.200 phiên bản và 206.813 mục tài liệu tham khảo với tốc độ ~6,4 – 7,4 giờ / 5.000 ID và 0% lỗi 429.
 
-Ngay khi tiến trình trên Google Colab CPU hoàn tất 10.000 ID còn lại (Dải 4 và Dải 5) để cán mốc **đủ 25.000 ID**, thực hiện 3 bước cập nhật cuối cùng sau:
+Toàn bộ 4 tệp thống kê tại `arxiv-book/stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) hiện đã được cập nhật từ snapshot 5.000 ID này và tự động đồng bộ vào toàn bộ bảng biểu, biểu đồ tại Chương 3 và Chương 4 của sách.
 
-1. **Ghi đè 4 tệp thống kê mới vào `arxiv-book/stats/`:**
+Tiến trình crawl đang tiếp tục chạy nối tiếp 20.000 ID còn lại (Dải 2–5). Ngay khi tiến trình crawl hoàn tất toàn bộ 25.000 ID, thực hiện 3 bước cập nhật:
+
+1. **Chép 4 tệp thống kê mới vào `arxiv-book/stats/`:**
    - `summary.json`
    - `papers_stats.csv`
    - `versions_stats.csv`
    - `performance.json`
-   $\rightarrow$ **Toàn bộ 6 khối bảng tổng hợp và biểu đồ tại Chương 3 & Chương 4 sẽ tự động sinh lại số liệu và đồ thị của 25.000 ID** mà không cần sửa bất kỳ dòng code Python nào.
+   $\rightarrow$ **Toàn bộ 6 khối bảng tổng hợp và biểu đồ tại Chương 3 & Chương 4 sẽ tự động sinh số liệu và đồ thị của 25.000 ID** khi biên dịch.
 
-2. **Đồng bộ con số trong văn bản nhận xét từ mốc 15.000 ID sang 25.000 ID & gỡ hộp thông báo tạm thời:**
-   - `m1/01_overview.md` — **Mục 1.2:** Cập nhật cột trạng thái bảng 5 dải sang hoàn tất 100% và gỡ hộp `admonition` thông báo tạm thời 15.000 ID.
-   - `m1/03_data_statistics.md` — Gỡ hộp thông báo đầu chương và cập nhật con số trong câu nhận xét tại **Mục 3.1, 3.2, 3.3, 3.4** theo bảng mới.
-   - `m1/04_performance.md` — Gỡ hộp thông báo đầu chương và cập nhật con số trong câu nhận xét tại **Mục 4.2, 4.3** theo bảng mới.
+2. **Cập nhật nhận xét văn bản:**
+   - `m1/01_overview.md` — **Mục 1.2:** Chuyển trạng thái cả 5 dải sang hoàn tất 100% và cập nhật hộp thông báo tiến độ.
+   - `m1/03_data_statistics.md` — Cập nhật con số trong câu nhận xét tại **Mục 3.1, 3.2, 3.3, 3.4** theo bảng mới.
+   - `m1/04_performance.md` — Cập nhật con số trong câu nhận xét tại **Mục 4.2, 4.3** theo số đo thực tế.
 
 3. **Biên dịch & xuất bản:**
-   - Chạy `jupyter-book build .` để kiểm tra biên dịch sạch 100%, sau đó `git push origin main` để GitHub Actions tự động xuất bản lên GitHub Pages.
+   - Chạy `jupyter-book build .` để kiểm tra biên dịch sạch 100%, sau đó đẩy lên GitHub Pages.

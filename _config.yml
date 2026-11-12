@@ -5,7 +5,9 @@ exclude_patterns:
   - Y-TUONG-NOI-DUNG.md
   - BOOK-MAU-M1.md
   - README.md
+  - AGENTS.md
   - stats/README.md
+  - build_book.py
   - .venv*
   - .pytest_cache
   - _build
@@ -33,4 +35,6 @@ launch_buttons:
 sphinx:
   config:
     html_static_path: ["_static"]
+    html_js_files:
+      - custom.js
     html_title: "Kho Ngữ liệu Khoa học arXiv — Báo cáo Dự án"
