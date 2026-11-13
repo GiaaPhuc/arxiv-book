@@ -7,21 +7,26 @@ Báo cáo trực tuyến chính thức bằng tiếng Việt của dự án môn
 
 ---
 
-## 1. Cấu trúc Cuốn sách (Milestone 1)
+## 1. Cấu trúc Cuốn sách (Milestone 1 & Milestone 2)
 
 ```text
 arxiv-book/
-├── _config.yml                 # Cấu hình Jupyter Book v1, thực thi notebook tự động & CSS
-├── _toc.yml                    # Mục lục phân theo Part (sẵn sàng mở rộng sang Milestone 2 & 3)
-├── _static/custom.css          # Định dạng bảng biểu học thuật & nhãn chờ dữ liệu
-├── requirements.txt            # Môi trường biên dịch sách (Python 3.11)
-├── stats/                      # Nơi đặt 4 tệp thống kê xuất từ export_data.py
-│   └── README.md               # Quy định 4 tệp cần chép vào stats/
-└── m1/
-    ├── 01_overview.md          # Chương 1: Tổng quan, phạm vi 25.000 ID & lược đồ 2 bảng
-    ├── 02_implementation.md    # Chương 2: Pipeline đầu–cuối, công cụ & cơ chế chịu lỗi Colab
-    ├── 03_data_statistics.md   # Chương 3: Thống kê & phân tích dữ liệu (MyST Notebook, ẩn code)
-    └── 04_performance.md       # Chương 4: Đánh giá hiệu năng Runtime, RAM & Đĩa (MyST Notebook, ẩn code)
+├── _config.yml                      # Cấu hình Jupyter Book v1, thực thi notebook tự động & CSS
+├── _toc.yml                         # Mục lục phân theo Part (Milestone 1 & Milestone 2)
+├── _static/custom.css               # Định dạng bảng biểu học thuật, sơ đồ luồng & thẻ DAG
+├── requirements.txt                 # Môi trường biên dịch sách (Python 3.11)
+├── stats/                           # Nơi đặt tệp thống kê JSON/CSV của M1 & M2
+│   └── README.md                    # Quy định bộ tệp thống kê M1 & M2 trong stats/
+├── m1/                              # Phần 1 — Milestone 1: Thu thập Dữ liệu (giữ nguyên)
+│   ├── 01_overview.md               # Chương 1: Tổng quan, phạm vi 25.000 ID & lược đồ 2 bảng M1
+│   ├── 02_implementation.md         # Chương 2: Pipeline thu thập, công cụ & chịu lỗi Colab
+│   ├── 03_data_statistics.md        # Chương 3: Thống kê & phân tích dữ liệu thu thập (MyST Notebook)
+│   └── 04_performance.md            # Chương 4: Hiệu năng bộ thu thập Runtime, RAM & Đĩa (MyST Notebook)
+└── m2/                              # Phần 2 — Milestone 2: Phân tích Cú pháp & Chuẩn hóa
+    ├── 01_parsing_hierarchy.md      # Chương 5: Lược đồ 3 bảng M2, thu thập đa tệp & cây phân cấp thích ứng
+    ├── 02_standardization_dedup.md  # Chương 6: Chuẩn hóa nội dung/toán, BibTeX & khử trùng lặp 2 tầng
+    ├── 03_parsing_statistics.md     # Chương 7: Thống kê phân tích cú pháp & hiệu quả khử trùng lặp (MyST Notebook)
+    └── 04_parser_performance.md     # Chương 8: Đánh giá hiệu năng bộ phân tích cú pháp trên Colab CPU (MyST Notebook)
 ```
 
 ---

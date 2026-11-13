@@ -6,6 +6,9 @@ parts:
       - file: m1/02_implementation
       - file: m1/03_data_statistics
       - file: m1/04_performance
-  - caption: "Milestone 2 — Phân tích Cú pháp (Đang thực hiện)"
+  - caption: "Milestone 2 — Phân tích Cú pháp & Chuẩn hóa"
     chapters:
-      - file: m2/01_overview
+      - file: m2/01_parsing_hierarchy
+      - file: m2/02_standardization_dedup
+      - file: m2/03_parsing_statistics
+      - file: m2/04_parser_performance
