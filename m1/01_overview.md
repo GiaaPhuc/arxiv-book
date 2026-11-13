@@ -26,25 +26,25 @@ Nhóm được phân công thu thập **25.000 định danh arXiv gốc** chia t
 
 | Dải | Tháng nộp (`YYYY-MM`) | Định danh bắt đầu | Định danh kết thúc | Số lượng ID gốc | Trạng thái trong bản báo cáo hiện tại |
 | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Dải 1** | `2024-08` | `2408.11045` | `2408.16044` | 5.000 | Đã hoàn tất thu thập & xuất thống kê (Snapshot hiện tại) |
-| **Dải 2** | `2024-08` | `2408.06045` | `2408.11044` | 5.000 | Đang tiếp tục thu thập nối tiếp (sẽ cập nhật khi đủ 25.000 ID) |
-| **Dải 3** | `2024-08` | `2408.01045` | `2408.06044` | 5.000 | Đang tiếp tục thu thập nối tiếp (sẽ cập nhật khi đủ 25.000 ID) |
-| **Dải 4** | `2024-07` | `2407.07839` | `2407.12838` | 5.000 | Đang tiếp tục thu thập nối tiếp (sẽ cập nhật khi đủ 25.000 ID) |
-| **Dải 5** | `2024-06` | `2406.07938` | `2406.12937` | 5.000 | Đang tiếp tục thu thập nối tiếp (sẽ cập nhật khi đủ 25.000 ID) |
-| **Tổng cộng** | **06–08/2024** | — | — | **25.000** | **Đã cập nhật số liệu 5.000 / 25.000 ID (20% — Dải 1); 20.000 ID còn lại đang chạy nối tiếp** |
+| **Dải 1** | `2024-08` | `2408.11045` | `2408.16044` | 5.000 | Đã hoàn tất thu thập & xuất thống kê (100%) |
+| **Dải 2** | `2024-08` | `2408.06045` | `2408.11044` | 5.000 | Đã hoàn tất thu thập & xuất thống kê (100%) |
+| **Dải 3** | `2024-08` | `2408.01045` | `2408.06044` | 5.000 | Đã hoàn tất thu thập & xuất thống kê (100%) |
+| **Dải 4** | `2024-07` | `2407.07839` | `2407.12838` | 5.000 | Đã hoàn tất thu thập & xuất thống kê (100%) |
+| **Dải 5** | `2024-06` | `2406.07938` | `2406.12937` | 5.000 | Đã hoàn tất thu thập & xuất thống kê (100%) |
+| **Tổng cộng** | **06–08/2024** | — | — | **25.000** | **Đã hoàn tất toàn bộ 25.000 / 25.000 ID (100% — toàn bộ 5 dải)** |
 
-```{admonition} Ghi chú tiến độ thu thập dữ liệu (Snapshot 5.000 ID Dải 1 — sẽ cập nhật đầy đủ khi hoàn tất 25.000 ID)
+```{admonition} Tổng kết Thu thập Toàn bộ 25.000 Định danh (Milestone 1 Hoàn tất 100%)
 :class: important
-Sau các đợt nghiên cứu và tối ưu hóa chuyên sâu (kiến trúc đa luồng **Producer–Consumer**, đệm RAM Zero-Copy $96\text{ MiB}$, giải nén luồng tốc độ cao `_FastGzipStream` $512\text{ KiB}$ giữ trọn `.tex`/`.bib`/`.bbl`, điều nhịp **Start-to-Start $3{,}15\text{ s} + \text{jitter}$**, sàn nghỉ socket $\ge 3{,}05\text{ s}$, **Paced Streaming $4{,}5\text{ MiB/s}$**, thử lại Range tại chỗ cho file lớn $\ge 1\text{ MiB}$ với đệm sạc $12\text{–}14\text{ s}$, nạp hồi băng thông trượt $50\text{ MiB}$, **hàng đợi hoãn bài thông minh** và **Cooldown leo thang có khóa trần $240\text{ s}$**), tiến trình thu thập của nhóm trên Google Colab CPU đã hoàn tất trọn vẹn **5.000 định danh đầu tiên (Dải 1: `2408.11045` – `2408.16044`)**, bao gồm **8.200 phiên bản** ($v_1 \dots v_N$) và **206.813 mục tài liệu tham khảo**. Toàn bộ số liệu thống kê ở Chương 3 và số đo hiệu năng ở Chương 4 trong bản báo cáo này được đồng bộ trực tiếp từ đợt chạy 5.000 ID này.
+Tiến trình thu thập của nhóm trên nền kiến trúc **`arxiv-pipeline` v3.14** (Quy trình 2 giai đoạn tách rời `--skip-s2` / `--s2-only`, khám phá siêu dữ liệu ngoại tuyến qua Kaggle snapshot `--snapshot` trong $<60\text{s}$, kiến trúc đa luồng **Producer–Consumer**, đệm RAM Zero-Copy $96\text{ MiB}$, giải nén luồng `_FastGzipStream` $512\text{ KiB}$ giữ trọn `.tex`/`.bib`/`.bbl`, điều nhịp **Start-to-Start $3{,}15\text{ s} + \text{jitter}$**, sàn nghỉ socket $\ge 3{,}05\text{ s}$, **Wire-Speed Streaming** qua `--max-stream-mbps`, **Xử lý Dứt điểm Tại chỗ** (*In-Place Resolution*) kết hợp **Proportional Bandwidth Breather**, thử lại Range tại chỗ `HTTP 206`, nạp hồi băng thông trượt $50\text{ MiB}$ và **Cooldown leo thang có khóa trần $240\text{ s}$**) đã **hoàn tất thu thập trọn vẹn toàn bộ 25.000 định danh arXiv được giao trên cả 5 dải (`2406.07938` – `2408.16044`)**.
 
-Do tuân thủ nghiêm ngặt chính sách lịch sự của arXiv ($\ge 3{,}0\text{ s}$/yêu cầu), tiến trình thu thập đang tiếp tục chạy nối tiếp cho 4 dải còn lại (**20.000 ID**). Ngay khi cán mốc đủ 25.000 ID, nhóm sẽ cập nhật lại bộ tệp trong `stats/` và nâng cấp toàn bộ các bảng biểu, đồ thị và bài phân tích lên quy mô toàn cục 25.000 ID hoàn chỉnh.
+Bộ dữ liệu hoàn chỉnh gồm **41.629 phiên bản** ($v_1 \dots v_{30}$), đạt **24.878 / 25.000 bài báo thành công toàn phần (`99,51%`)**, **3.480.899 mục tài liệu tham khảo** (trong đó **547.991** mục mang `arXiv ID` hợp lệ cho Milestone 3), và toàn bộ kho ngữ liệu được đóng gói gọn trong **23,69 GiB** đĩa. Toàn bộ bảng biểu thống kê ở Chương 3 và số đo hiệu năng ở Chương 4 được kết xuất trực tiếp từ bộ dữ liệu 25.000 ID này.
 ```
 
 Theo chuẩn đánh số 5 chữ số của arXiv áp dụng từ tháng 01/2015, các số thứ tự đầu tháng (như `1045`, `6045`, `7839`, `7938`) được chuẩn hóa đệm đủ chữ số `0` ở đầu thành `2408.01045`, `2408.06045`, `2407.07839`, `2406.07938`. Để đảm bảo tính nhất quán tuyệt đối của cơ sở dữ liệu trạng thái và tránh việc nhiều máy thành viên gửi yêu cầu chồng chéo lên máy chủ `export.arxiv.org`, nhóm gom toàn bộ 25.000 ID vào **một quy trình thu thập thống nhất** trên một máy chủ duy nhất (có khóa tiến trình cục bộ `_acquire_workspace_lock` tránh chạy trùng lặp).
 
 Ba quy ước nghiệp vụ cốt lõi được áp dụng xuyên suốt quá trình thu thập:
 
-- **Thu thập đầy đủ mọi phiên bản ($v_1 \dots v_N$):** Với mỗi bài báo tồn tại, bộ thu thập xác định hậu tố phiên bản mới nhất `vN` qua Atom API và truy xuất riêng lẻ từng bản nộp từ `v1` (bản gốc) đến `vN` qua endpoint `/src/{id}vK` có hậu tố phiên bản.
+- **Thu thập đầy đủ mọi phiên bản ($v_1 \dots v_N$):** Với mỗi bài báo tồn tại, bộ thu thập xác định phiên bản và siêu dữ liệu (ưu tiên luồng chính sử dụng cờ `--snapshot` đọc ngoại tuyến từ Kaggle trong < 60s, hoặc luồng dự phòng trực tuyến qua Atom API / OAI-PMH) và truy xuất riêng lẻ từng bản nộp từ `v1` (bản gốc) đến `vN` qua endpoint `/src/{id}vK` có hậu tố phiên bản.
 - **Loại bỏ hình ảnh bằng trích xuất chọn lọc, chỉ giữ lại `.tex`, `.bib` và `.bbl`:** Từ mỗi gói nguồn tải về, hệ thống **chỉ trích xuất các tệp `.tex`, `.bib` và `.bbl`** (giữ nguyên cấu trúc thư mục con tương đối để bảo toàn các liên kết `\input` và `\include`). Tệp `.bbl` (kết quả biên dịch danh mục tài liệu tham khảo) được bổ sung giữ lại nhằm hỗ trợ trực tiếp việc đối soát và trích xuất trích dẫn ở Milestone 2. Các tệp hình ảnh nhị phân (`.png`, `.jpg`, `.pdf`, `.eps`...) và tệp tạm khác (`.aux`, `.log`, `.out`, `.sty`, `.cls`...) không bao giờ được ghi vào kho ngữ liệu, nhưng mọi câu lệnh LaTeX định nghĩa hình ảnh bên trong tệp `.tex` (như môi trường `figure`, lệnh `\includegraphics`) đều được bảo toàn nguyên vẹn 100% cho bộ phân tích cấu trúc tài liệu ở Milestone 2.
 - **Ngắt sớm 512 bytes cho phiên bản không có mã nguồn TeX (`no_source`):** Đối với các bài nộp chỉ cung cấp PDF biên dịch sẵn hoặc kho zip nhị phân (chẳng hạn ngay đầu Dải 3 là `2408.01045v1` — gói `804.208 B` mang chữ ký `%PDF`), hệ thống phát hiện magic bytes ngay ở 512 bytes đầu tiên và ngắt luồng tải sớm để tiết kiệm băng thông mạng, không loại bỏ công bố mà tạo bản ghi trạng thái `no_source` (`kept_bytes = 0`), giữ nguyên siêu dữ liệu bài báo (`paper.json`, `meta.json`) và toàn bộ danh sách tham khảo từ Semantic Scholar.
 
@@ -85,12 +85,16 @@ Tuân thủ quy ước tổ chức dữ liệu gợi ý của đề bài và h�
       <div class="ct-desc">Nhật ký chẩn đoán ngoại lệ (HTTP 429/403/5xx, đứt stream, gói &ge; 50 MiB)</div>
     </div>
     <div class="ct-row">
-      <div class="ct-path"><span class="ct-branch">│   └── </span><span class="ct-file">rate_state.json</span></div>
+      <div class="ct-path"><span class="ct-branch">│   ├── </span><span class="ct-file">rate_state.json</span></div>
       <div class="ct-desc">Lưu mốc thời gian cooldown liên tiến trình (chống vi phạm khi khởi động lại)</div>
     </div>
     <div class="ct-row">
+      <div class="ct-path"><span class="ct-branch">│   └── </span><span class="ct-file">version_partition.json</span></div>
+      <div class="ct-desc">Thống kê phân loại bài <code>v1</code> duy nhất (56,62%) vs đa phiên bản (43,38%) từ <code>--snapshot</code></div>
+    </div>
+    <div class="ct-row">
       <div class="ct-path"><span class="ct-branch">├── </span><span class="ct-dir">stats/</span></div>
-      <div class="ct-desc">Đầu ra từ <code>export_data.py</code> (Parquet cục bộ + CSV/JSON cho báo cáo)</div>
+      <div class="ct-desc">Đầu ra từ <code>export_data.py</code> &amp; <code>audit_corpus.py</code> (Parquet cục bộ, <code>audit_report.json</code> &amp; CSV/JSON cho báo cáo)</div>
     </div>
     <div class="ct-row">
       <div class="ct-path"><span class="ct-branch">└── </span><span class="ct-dir">papers/</span></div>

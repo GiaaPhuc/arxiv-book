@@ -11,18 +11,16 @@ kernelspec:
 
 # Chương 4. Đánh giá Hiệu năng Bộ Thu thập
 
-```{admonition} Phạm vi số đo hiệu năng: Báo cáo thực nghiệm trên 5.000 ID (Dải 1) — sẽ cập nhật khi đủ 25.000 ID
-:class: important
-Toàn bộ số đo hiệu năng thời gian thực thi (Runtime), bộ nhớ RAM RSS và dung lượng đĩa dưới đây được đo đạc tự động bằng luồng `ResourceSampler` và `time.perf_counter()` trên máy chuẩn **Google Colab CPU (2 vCPU, Python 3.13.18)** trong quá trình thu thập trọn vẹn **5.000 ID thuộc Dải 1** (với 18 phiên chạy và 12 session logs hợp nhất).
-
-Khi quá trình crawl nối tiếp cán mốc đủ 25.000 ID, các số đo hiệu năng toàn cục sẽ được cập nhật tiếp.
+```{admonition} Phạm vi số đo hiệu năng: Toàn bộ 25.000 Định danh (38 Lượt chạy tích lũy)
+:class: note
+Toàn bộ số đo hiệu năng thời gian thực thi (Runtime), bộ nhớ RAM RSS và dung lượng đĩa dưới đây được đo đạc tự động bằng luồng `ResourceSampler` và `time.perf_counter()` trên **toàn bộ 25.000 ID (5 dải dữ liệu)** với **38 phiên chạy tích lũy** hợp nhất từ **32 session logs** (từ lượt chạy 7 đến lượt chạy 38, chủ yếu trên **Google Colab CPU 2 vCPU, Python 3.13.18** ở các lượt 13–33 và hoàn thiện cuối trên **Google Colab 12 CPU, Python 3.13.16** ở các lượt 34–38).
 ```
 
 ## 4.1. Môi trường Kiểm thử & Phương pháp Đo lường Kiểm chứng
 
-Theo đúng quy chuẩn đánh giá hiệu năng của đề bài, toàn bộ quá trình thu thập chính thức được vận hành và đo đạc trên một máy chuẩn chạy ở chế độ chỉ CPU (Standard CPU-only Runtime, tương thích môi trường Google Colab CPU 2 vCPU, 12,7 GiB RAM):
+Theo đúng quy chuẩn đánh giá hiệu năng của đề bài, phần lớn quá trình thu thập được vận hành và đo đạc trên máy chuẩn chạy ở chế độ chỉ CPU (Standard CPU-only Runtime, tương thích môi trường Google Colab CPU 2 vCPU, 12,7 GiB RAM):
 
-- **Cấu hình hệ thống chuẩn:** Hệ điều hành Linux x86_64 / Windows, vi xử lý ảo hóa Intel Xeon CPU, bộ nhớ RAM khả dụng $\ge 12\text{ GiB}$, ổ đĩa SSD cục bộ, môi trường Python `3.11`.
+- **Cấu hình hệ thống chuẩn:** Hệ điều hành Linux x86_64 / Windows, vi xử lý ảo hóa Intel Xeon CPU, bộ nhớ RAM khả dụng $\ge 12\text{ GiB}$, ổ đĩa SSD cục bộ, môi trường Python `3.11+` (đo đạc chính thức trên Colab với Python `3.13`).
 - **Phương pháp đo lường kiểm chứng chuyên sâu (`metrics.py` $\rightarrow$ `stats/performance.json`):**
   1. *Thời gian thực thi (Wall-clock Runtime):* Được đo bằng đồng hồ đơn điệu độ phân giải cao `time.perf_counter()` bao quanh các chặng (`discovery`, `download`, `extract`, `s2`) và ghi nhận độc lập theo từng phiên chạy (`sessions`). Bộ tổng hợp đa phiên `summarize_sessions()` tự động loại bỏ khoảng thời gian chết giữa các phiên (`idle_gap_seconds`), bóc tách minh bạch **thời gian xử lý thực (`active_wall_seconds`)** và **thời gian chờ phạt / cooldown (`cooldown_retry_seconds`)**. Tổng thời gian thực đầu–cuối của toàn hệ thống được xác định bởi đường găng $\max(T_{\text{arXiv}}, T_{\text{S2}})$.
   2. *Bộ nhớ RAM & Lưu trữ đĩa $O(1)$:* Luồng daemon nền `ResourceSampler` sử dụng thư viện `psutil` lấy mẫu định kỳ mỗi **5 giây** tổng bộ nhớ vật lý thường trú (`RSS`) của tiến trình chính cùng toàn bộ tiến trình con, cho phép truy xuất cực trị $O(1)$ mà không tốn chi phí quét cây tiến trình trên luồng chính. Dung lượng thư mục làm việc được quét định kỳ mỗi **300 giây** và ngay thời điểm kết thúc bằng `os.scandir()` để xác định dung lượng đĩa tối đa (`disk_peak_bytes`) và đầu ra cuối cùng (`disk_final_bytes`).
@@ -129,7 +127,7 @@ if HAS_PERF:
 
     runtime_rows = [
         ("Tổng thời gian thực đầu–cuối hệ thống (End-to-End Wall Time)", fmt_duration(wall_end_to_end_s)),
-        ("Tổng thời gian cho việc khám phá bài báo (discovery — Atom API)", fmt_duration(st.get("discovery", 0.0))),
+        ("Tổng thời gian cho việc khám phá bài báo (discovery — Snapshot / Atom API)", fmt_duration(st.get("discovery", 0.0))),
         ("Tổng thời gian tải gói nguồn + chờ nhịp lịch sự arXiv (download)", fmt_duration(st.get("download", 0.0))),
         ("Tổng thời gian giải nén & lọc .tex/.bib + băm SHA-256 (extract)", fmt_duration(st.get("extract", 0.0))),
         ("Thời gian hoạt động luồng nền Semantic Scholar (s2 — chạy song song)", fmt_duration(st.get("s2", 0.0))),
@@ -176,7 +174,7 @@ else:
     runtime_preview = pd.DataFrame(
         [
             ("Tổng thời gian thực đầu–cuối hệ thống (End-to-End Wall Time)", "⏳ Chờ stats/performance.json (Cận dưới lý thuyết ~47.1 giờ ở nhịp 3.5s)"),
-            ("Tổng thời gian khám phá bài báo (discovery — lô 50 ID)", "⏳ Chờ stats/performance.json"),
+            ("Tổng thời gian khám phá bài báo (discovery — Snapshot / Atom API)", "⏳ Chờ stats/performance.json"),
             ("Tổng thời gian tải nguồn + chờ nhịp lịch sự arXiv (download)", "⏳ Chờ stats/performance.json"),
             ("Tổng thời gian giải nén & lọc .tex/.bib + SHA-256 (extract)", "⏳ Chờ stats/performance.json"),
             ("Thời gian hoạt động luồng nền Semantic Scholar (s2)", "⏳ Chờ stats/performance.json"),
@@ -190,25 +188,18 @@ else:
 **Phân tích hiệu năng thời gian:**
 
 - **Đối chiếu cận dưới lý thuyết điều nhịp (*Rate-limit bound*) với kiến trúc Start-to-Start:**
-  Theo chính sách lịch sự của arXiv, giữa hai request liên tiếp tới `export.arxiv.org` phải cách nhau tối thiểu $\Delta t \ge 3{,}0\text{ s}$ trên 1 kết nối duy nhất. Trong kiến trúc **Producer–Consumer Start-to-Start** với nhịp cơ sở $3{,}15\text{ s} + \text{jitter}$ và khám phá siêu dữ liệu theo lô 250 ID kết hợp tận dụng thẻ `<updated>`:
-  
-  $$
-  N_{\text{arxiv}} = N_{\text{discovery\_batches}} + N_{\text{confirm\_subbatches}} + N_{\text{revised\_batches}} + R
-  $$
-
-  Với **5.000 ID** của Dải 1 ($R = 8.200$ phiên bản ở hệ số $\bar{V} = 1{,}64$), tổng số request tới máy chủ arXiv $N_{\text{arxiv}} \approx 20 + 8.200 \approx 8.220$ request, xác định sàn lý thuyết thời gian của bộ điều nhịp:
+  Theo chính sách lịch sự của arXiv, giữa hai request liên tiếp tới `export.arxiv.org` phải cách nhau tối thiểu $\Delta t \ge 3{,}00\text{ s}$ trên 1 kết nối duy nhất. Trong kiến trúc **Producer–Consumer Start-to-Start** với nhịp cơ sở $3{,}15\text{ s} + \text{jitter}$, trên toàn bộ **25.000 ID** với tổng cộng **$R = 41.629$ phiên bản** (hệ số $\bar{V} = 1{,}67$), cận dưới lý thuyết chỉ riêng cho công đoạn tải gói nguồn arXiv là:
 
   $$
-  T_{\text{floor, 5k}} \approx 8.220 \times 3{,}15\text{ s} \approx 25.893\text{ s} \approx 7{,}19\text{ giờ}
+  T_{\text{floor, min}} \approx 41.629 \times 3{,}00\text{ s} \approx 124.887\text{ s} \approx 34{,}69\text{ giờ} \quad (\text{hoặc } \approx 131.131\text{ s} \approx 36{,}43\text{ giờ ở nhịp } 3{,}15\text{ s})
   $$
 
-  (Khi mở rộng lên toàn bộ **25.000 ID** với $R \approx 41.000$ phiên bản, sàn lý thuyết thời gian sẽ là $T_{\text{floor, 25k}} \approx 41.150 \times 3{,}0\text{ s} \approx 123.450\text{ s} \approx 34{,}3\text{ giờ}$).
-  Nhờ nhịp **Start-to-Start** và việc tách giải nén sang pool `extract-worker` 2 luồng, thời gian tải của mọi gói nguồn $\le 2{,}50\text{ s}$ (~96% số bài) đều đạt chu kỳ đúng $3{,}15\text{ s/phiên bản}$ (`+0,00 s` overhead).
-- **Hiệu quả thực thi song song của Semantic Scholar:** Luồng nền Semantic Scholar gom lô (`POST /graph/v1/paper/batch`, thực hiện qua 707 lượt truy vấn lô; trong thiết kế pipeline chuẩn hóa mới nhất, kích thước lô mặc định được tối ưu thành 25 bài kết hợp cơ chế chia đôi lô Bisection khi gặp 413/5xx). Thời gian tính toán luồng thuần túy chỉ mất $3.171{,}86\text{ s}$ (~52,86 phút), và tổng thời gian kèm chờ backoff là $26.136{,}86\text{ s}$ (~7,26 giờ). Nhờ vận hành hoàn toàn song song không khóa tiến trình chính, toàn bộ thời gian của Semantic Scholar nằm gọn bên dưới đường găng arXiv ($29.019{,}85\text{ s}$ ~ 8,06 giờ), không làm phát sinh thêm bất kỳ giây chờ nào cho tổng thời gian thực thi đầu–cuối của toàn hệ thống.
-- **Đánh giá tổng thời gian chạy thực tế trên 5.000 ID:**
-  - Tổng thời gian End-to-End Wall Time ghi nhận đạt **29.019,85 s (~8,06 giờ)**, bám rất sát cận dưới lý thuyết của bộ điều nhịp (độ dôi ra chủ yếu do tải các gói TeX dung lượng lớn và thời gian hồi phục thích ứng 40 lần HTTP 429 từ máy chủ arXiv).
-  - Tốc độ xử lý trung bình đạt **5,80 giây / bài báo** (29.019,85 s / 5.000 ID) và **3,54 giây / phiên bản** (29.019,85 s / 8.200 phiên bản).
-  - Quá trình thu thập đã vượt qua 18 phiên chạy gián đoạn (`runs = 18`) một cách liền mạch, minh chứng tính kiên cường và khả năng phục hồi nguyên vẹn (resumability) của pipeline qua SQLite WAL manifest.
+  Nhờ nhịp **Start-to-Start** và việc tách giải nén sang pool `extract-worker` (`2.393,82 s` giải nén cho toàn tập), thao tác giải nén diễn ra song song trong cửa sổ điều nhịp mà không chặn vòng lặp tải chính; đồng thời giai đoạn khám phá siêu dữ liệu (`discovery`) chỉ tiêu tốn **$598{,}48\text{ s}$ (~9,97 phút)**.
+- **Hiệu quả thực thi song song & tách pha của Semantic Scholar:** Khối làm giàu trích dẫn Semantic Scholar thực hiện tổng cộng **2.077 lượt truy vấn lô** (`POST /graph/v1/paper/batch`, sử dụng kích thước lô 25 bài kết hợp cơ chế chia đôi lô Bisection khi gặp 413/5xx ở kiến trúc chuẩn hóa mới nhất). Thời gian hoạt động thuần túy của khối S2 là **$8.842{,}14\text{ s}$ (~2,46 giờ)** và tổng thời gian chờ backoff/retry qua **2.592 lượt HTTP 429** là **$83.745{,}00\text{ s}$ (~23,26 giờ)**, tạo thành tổng thời gian khối S2 **$92.587{,}14\text{ s}$ (~25,72 giờ)**. Mức thời gian này vẫn thấp hơn nhiều so với đường găng arXiv (**67,30 giờ**), xác nhận luồng S2 không làm tăng tổng thời gian đầu–cuối khi vận hành song song hoặc tách pha `--s2-only`.
+- **Đánh giá tổng thời gian chạy thực tế trên toàn bộ 25.000 ID:**
+  - Tổng thời gian đường găng đầu–cuối (**End-to-End Wall Time** theo khối arXiv `discovery + download + extract`) đạt **242.271,31 s (~67,30 giờ)**, trong đó `download` chiếm **239.279,01 s (~66,47 giờ)**. Độ dôi ra so với sàn điều nhịp $36{,}43\text{ giờ}$ chủ yếu đến từ lưu lượng tải các gói nguồn nén kích thước lớn (trung bình 7,10 MiB/bài), **311 lần HTTP 429** với **36.690,0 s (~10,19 giờ)** cooldown hồi phục, **96 lượt tản nhiệt định kỳ** ở các phiên chạy trước v3.10+, **344 lượt nối tải Range Resume** và cơ chế điều tiết **Proportional Bandwidth Breather**.
+  - Tốc độ xử lý trung bình toàn cục đạt **9,69 giây / ID** (hay **9,69 giây / bài báo**) và **5,82 giây / phiên bản** trên tổng số **41.629 phiên bản**.
+  - Quá trình thu thập đã vượt qua **38 phiên chạy tích lũy** (`runs = 38`) với **371 lần tự động khôi phục (`auto_resumes = 371`)** và **344 lần Range Resume tại chỗ (`range_resumes = 344`)** một cách liền mạch qua SQLite WAL manifest.
 
 ---
 
@@ -307,9 +298,9 @@ else:
 
 - **Độ phức tạp không gian bộ nhớ $\mathcal{O}(1)$ được kiểm soát chặt chẽ:** Nhờ kỹ thuật đệm RAM Zero-Copy $\le 96\text{ MiB}$ (chỉ tràn sang đĩa tạm nếu gói khổng lồ $> 96\text{ MiB}$), kết hợp van điều tiết hàng đợi `extract_max_queue_bytes = 192 MiB`, tiến trình không bao giờ bị phình to RAM khi gặp chuỗi gói nặng liên tiếp. Bộ nhớ thường trú RSS được luồng daemon `ResourceSampler` theo dõi định kỳ mỗi 5 giây, bảo đảm an toàn tuyệt đối cho môi trường máy ảo.
 - **Tối ưu hóa dung lượng đĩa và bảo vệ dữ liệu:** Bộ giải nén 1-pass `_FastGzipStream` 512 KiB loại bỏ toàn bộ hình ảnh nhị phân ngay trên luồng, chỉ ghi các tệp `.tex`, `.bib` và `.bbl`. Cùng với cơ chế sao lưu nền `arxiv-data.tar.gz` có kiểm tra chống tụt lùi dữ liệu (`shrink guard`) và bỏ qua nén khi dữ liệu không đổi (`skip_if_unchanged=True`), hệ thống bảo đảm an toàn dữ liệu 100% trong suốt quá trình vận hành liên tục.
-- **Đánh giá số đo thực nghiệm trên 5.000 ID:**
-  - **Bộ nhớ RAM thường trú (RSS):** Mức tiêu thụ RAM trung bình thực tế chỉ là **111,10 MiB** và đỉnh RAM tối đa đạt **217,23 MiB** trên tổng số 6.381 mẫu lấy định kỳ. Con số này chiếm chưa tới **1,8%** dung lượng RAM khả dụng (12,7 GiB) của Google Colab, hoàn toàn loại bỏ nguy cơ bị máy ảo buộc dừng do lỗi tràn bộ nhớ (Out-Of-Memory).
-  - **Dung lượng lưu trữ đĩa:** Dung lượng đĩa tối đa trong quá trình chạy đạt **2,983 GiB (3.054,90 MiB)** và dung lượng đầu ra cuối cùng sau khi hoàn tất đạt **2,928 GiB (2.998,11 MiB)**. Mức chênh lệch giữa dung lượng đỉnh và dung lượng cuối cùng chỉ vỏn vẹn **~56,8 MiB**, chứng minh các tệp đệm và bộ nhớ tạm được thu hồi tức thì sau mỗi gói giải nén. Toàn bộ kho ngữ liệu 5.000 bài báo đa phiên bản được gói gọn an toàn dưới 3 GiB đĩa.
+- **Đánh giá số đo thực nghiệm trên toàn bộ 25.000 ID:**
+  - **Bộ nhớ RAM thường trú (RSS):** Mức tiêu thụ RAM trung bình thực tế chỉ là **195,18 MiB** và đỉnh RAM tối đa đạt **362,88 MiB** trên tổng số **60.774 mẫu** lấy định kỳ. Con số này chiếm chưa tới **3%** dung lượng RAM khả dụng (`12,7 GiB`) của Google Colab CPU chuẩn, hoàn toàn loại bỏ nguy cơ bị máy ảo buộc dừng do lỗi tràn bộ nhớ (*Out-Of-Memory*).
+  - **Dung lượng lưu trữ đĩa:** Cả đỉnh lưu trữ trong quá trình chạy lẫn dung lượng đầu ra cuối cùng sau khi hoàn tất đều đạt **23,686 GiB** (**24.254,81 MiB** / **25.433.014.346 B**), không phát sinh dư thừa tệp tạm trên đĩa. Toàn bộ kho ngữ liệu **25.000 bài báo đa phiên bản** (**41.629 phiên bản**) được gói gọn an toàn ở mức ~23,7 GiB đĩa.
 
 ---
 

@@ -44,25 +44,13 @@ Kết quả biên dịch nằm tại `_build/html/index.html`.
 
 ---
 
-## 3. Trạng thái Dữ liệu Hiện tại (Snapshot 5.000 ID Dải 1) & Quy trình Cập nhật 25.000 ID
+## 3. Trạng thái Dữ liệu Hiện tại (Hoàn tất 25.000 / 25.000 ID — 5 Dải)
 
-Hệ thống pipeline thu thập trong `arxiv-pipeline` (phiên bản **v3.10 Clean Lean Turbo / v3.11**: kiến trúc 5 nhóm luồng Producer–Consumer, đệm RAM Zero-Copy 96 MiB, Paced Streaming 4,5 MiB/s, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, sàn nghỉ socket 3,05 s, Range Resume tại chỗ cho file lớn, nạp hồi băng thông 50 MiB, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`) đã hoàn tất thu thập trọn vẹn **5.000 ID thuộc Dải 1 (`2408.11045` – `2408.16044`)**, bao gồm 8.200 phiên bản và 206.813 mục tài liệu tham khảo với tốc độ ~6,4 – 7,4 giờ / 5.000 ID và 0% lỗi 429.
+Hệ thống pipeline thu thập trong `arxiv-pipeline` (phiên bản **v3.14**: Quy trình 2 giai đoạn tách rời Two-Stage Decoupled Protocol `--skip-s2` / `--s2-only`, khám phá siêu dữ liệu ngoại tuyến qua Kaggle snapshot `--snapshot` trong < 60s, kiến trúc 5 nhóm luồng Producer–Consumer, đệm RAM Zero-Copy 96 MiB, **Wire-Speed Streaming** `--max-stream-mbps` 4,5 MiB/s nội địa / 12,0–18,0 MiB/s Cloud, **In-Place Resolution & Proportional Bandwidth Breather** $S / 4{,}0\text{ MiB/s}$ cho gói $\ge 2\text{ MiB}$ với trần 12,0 s và xoay session khi $\ge 30\text{ MiB}$, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, sàn nghỉ socket 3,05 s, Range Resume tại chỗ cho file lớn, nạp hồi băng thông 50 MiB, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`) đã **hoàn tất thu thập trọn vẹn toàn bộ 25.000 / 25.000 ID thuộc cả 5 dải (`2406.07938` – `2408.16044`)**, bao gồm **41.629 phiên bản** (`99,51%` thành công cấp bài báo, `99,67%` cấp phiên bản) và **3.480.899 mục tài liệu tham khảo** (trong đó 547.991 mục mang `arXiv ID`).
 
-Toàn bộ 4 tệp thống kê tại `arxiv-book/stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) hiện đã được cập nhật từ snapshot 5.000 ID này và tự động đồng bộ vào toàn bộ bảng biểu, biểu đồ tại Chương 3 và Chương 4 của sách.
+Toàn bộ 4 tệp thống kê tại `arxiv-book/stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) và văn bản phân tích trong Chương 1, Chương 3 và Chương 4 đã được đồng bộ đầy đủ với bộ dữ liệu **25.000 ID hoàn chỉnh**. Quy trình tái cập nhật khi có dữ liệu mới:
 
-Tiến trình crawl đang tiếp tục chạy nối tiếp 20.000 ID còn lại (Dải 2–5). Ngay khi tiến trình crawl hoàn tất toàn bộ 25.000 ID, thực hiện 3 bước cập nhật:
-
-1. **Chép 4 tệp thống kê mới vào `arxiv-book/stats/`:**
-   - `summary.json`
-   - `papers_stats.csv`
-   - `versions_stats.csv`
-   - `performance.json`
-   $\rightarrow$ **Toàn bộ 6 khối bảng tổng hợp và biểu đồ tại Chương 3 & Chương 4 sẽ tự động sinh số liệu và đồ thị của 25.000 ID** khi biên dịch.
-
-2. **Cập nhật nhận xét văn bản:**
-   - `m1/01_overview.md` — **Mục 1.2:** Chuyển trạng thái cả 5 dải sang hoàn tất 100% và cập nhật hộp thông báo tiến độ.
-   - `m1/03_data_statistics.md` — Cập nhật con số trong câu nhận xét tại **Mục 3.1, 3.2, 3.3, 3.4** theo bảng mới.
-   - `m1/04_performance.md` — Cập nhật con số trong câu nhận xét tại **Mục 4.2, 4.3** theo số đo thực tế.
-
-3. **Biên dịch & xuất bản:**
+1. **Chép 4 tệp thống kê M1 (hoặc bộ tệp M2) vào `arxiv-book/stats/`** (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) — tuyệt đối không commit các tệp `.parquet`.
+2. **Kiểm tra & đồng bộ câu nhận xét tại Chương 1, Chương 3 và Chương 4** nếu số liệu thay đổi.
+3. **Biên dịch & kiểm tra cục bộ:**
    - Chạy `jupyter-book build .` để kiểm tra biên dịch sạch 100%, sau đó đẩy lên GitHub Pages.

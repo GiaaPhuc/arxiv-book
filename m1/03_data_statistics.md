@@ -13,11 +13,11 @@ kernelspec:
 
 Toàn bộ bảng tổng hợp và biểu đồ trực quan trong chương này được tính toán và kết xuất tự động ngay trong quá trình biên dịch sách (`jupyter-book build .`) từ bộ tệp thống kê xuất ra bởi `export_data.py` đặt tại thư mục `arxiv-book/stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`).
 
-```{admonition} Phạm vi bộ số liệu: Báo cáo thực nghiệm trên 5.000 ID (Dải 1) — sẽ cập nhật khi đủ 25.000 ID
-:class: important
-Hệ thống pipeline thu thập đã hoàn tất xử lý trọn vẹn **Dải 1 (5.000 ID: `2408.11045` – `2408.16044`)** với phiên bản pipeline **v3.10 Clean Lean Turbo / v3.11** (kiến trúc đa luồng Producer–Consumer, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, sàn nghỉ socket 3,05 s, Paced Streaming 4,5 MiB/s, Range Resume tại chỗ cho file lớn, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`).
+```{admonition} Phạm vi bộ số liệu: Toàn bộ 25.000 Định danh (Hoàn tất 5 Dải)
+:class: note
+Hệ thống pipeline thu thập đã hoàn tất xử lý trọn vẹn **25.000 định danh** trên **5 dải dữ liệu (`06/2024 – 08/2024`: `2406.07938` – `2408.16044`)**, đi qua quá trình nâng cấp kiến trúc liên tục lên **v3.14** (khám phá ngoại tuyến Kaggle Snapshot `--snapshot`, quy trình 2 giai đoạn tách rời `--skip-s2` / `--s2-only`, **In-Place Resolution**, **Proportional Bandwidth Breather**, **Wire-Speed Streaming** `--max-stream-mbps`, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, Range Resume tại chỗ, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`).
 
-Toàn bộ các bảng tổng hợp và biểu đồ phân tích trong chương này được kết xuất động trực tiếp từ bộ tệp thống kê 5.000 ID này (`summary.json`, `papers_stats.csv`, `versions_stats.csv`). Tiến trình crawl đang tiếp tục chạy nối tiếp 20.000 ID còn lại (Dải 2–5); bản báo cáo sẽ được cập nhật đồng bộ lên quy mô 25.000 ID ngay sau khi hoàn tất.
+Toàn bộ các bảng tổng hợp và biểu đồ phân tích trong chương này được kết xuất động trực tiếp từ bộ tệp thống kê quy mô **25.000 ID** trong thư mục `stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`).
 ```
 
 ## 3.1. Bảng Tổng hợp Các Chỉ số Thu thập Cốt lõi
@@ -165,7 +165,7 @@ else:
 **Phân tích kết quả tổng quan:**
 
 - **Định nghĩa chặt chẽ về bài báo thu thập thành công:** Các định danh không tồn tại trên hệ thống arXiv (`ids_not_found` — HTTP `404` sau bước xác nhận sub-batch 50 ID) được tách riêng khỏi mẫu số `papers_total`. Một bài báo chỉ được tính vào `papers_success` khi **mọi phiên bản từ $v_1$ tới $v_N$** của nó đều hoàn tất xử lý với trạng thái hợp lệ (`ok`, `ok_no_tex` hoặc `no_source`), bảo đảm không có bất kỳ phiên bản nào bị khuyết hoặc lỗi giữa chừng.
-- **Đánh giá độ bao phủ thực tế trên 5.000 ID (Dải 1):** Trong đợt thu thập 5.000 định danh đầu tiên (`2408.11045` – `2408.16044`), toàn bộ 5.000 ID đều tồn tại thực tế trên arXiv (`ids_not_found = 0`). Hệ thống đã thu thập thành công trọn vẹn **4.976 / 5.000 bài báo** với đầy đủ mọi phiên bản hiện có, đạt tỷ lệ thành công cấp bài báo ấn tượng **99,52%**. Trong đó, có **4.580 bài báo (91,60%)** sở hữu ít nhất một phiên bản cung cấp mã nguồn TeX (`.tex`, `.bib`, `.bbl`), còn lại 420 bài báo nộp thuần định dạng PDF (`no_source`) ở mọi phiên bản. Chỉ có 24 bài báo (0,48%) chưa đạt `papers_success` do xuất hiện phiên bản bị lỗi mạng tạm thời hoặc xung đột tên tệp hệ thống, hoàn toàn nằm trong dung sai kiểm soát lỗi của hệ thống.
+- **Đánh giá độ bao phủ thực tế trên toàn bộ 25.000 ID (5 Dải):** Trong suốt 5 dải thu thập (`06/2024 – 08/2024`: `2406.07938` – `2408.16044`), toàn bộ 25.000 ID đều tồn tại thực tế trên arXiv (`ids_not_found = 0`). Hệ thống đã thu thập thành công trọn vẹn **24.878 / 25.000 bài báo** với đầy đủ mọi phiên bản hiện có, đạt tỷ lệ thành công cấp bài báo **99,51%**. Trong đó, có **23.029 bài báo (92,12%)** sở hữu ít nhất một phiên bản cung cấp mã nguồn TeX (`.tex`, `.bib`, `.bbl`), còn lại **1.971 bài báo (7,88%)** không có mã nguồn TeX (gồm 1.950 bài nộp thuần PDF hợp lệ `no_source` ở mọi phiên bản và 21 bài gặp lỗi trên mọi phiên bản). Chỉ có **122 bài báo (0,49%)** chưa đạt `papers_success` do chứa phiên bản không tìm thấy gói nguồn (`not_found`) hoặc xung đột tên tệp dành riêng của Windows (`corrupt`), hoàn toàn nằm trong dung sai kiểm soát lỗi của hệ thống.
 
 ---
 
@@ -234,12 +234,12 @@ else:
     show_pending_box("Cặp biểu đồ phân bố trạng thái gói nguồn và phân phối số phiên bản v1..vN tại Mục 3.2")
 ```
 
-- **Phân bố trạng thái gói nguồn:** Kết quả phân loại trên tổng số 8.200 phiên bản phản ánh sát đặc trưng xuất bản thực tế trên arXiv [[4, 5]](#tai-lieu-tham-khao):
-  - Có **7.558 phiên bản (92,17%)** ở trạng thái `ok` (cung cấp đầy đủ mã nguồn `.tex`, `.bib` và `.bbl`).
-  - Có **613 phiên bản (7,48%)** ở trạng thái `no_source` (bài báo nộp trực tiếp tệp PDF biên dịch sẵn, được bộ thu thập nhận diện sớm qua 512 bytes magic bytes `%PDF` và ngắt luồng tải sớm giúp tiết kiệm băng thông).
-  - Có **20 phiên bản (0,24%)** `not_found`, **6 phiên bản (0,07%)** `failed` (do ngắt kết nối giữa chừng `ChunkedEncodingError`/`IncompleteRead`), và chỉ **3 phiên bản (0,04%)** `corrupt` (do tệp chứa tên thành phần dành riêng của Windows như `aux`).
-  - Tỷ lệ thành công cấp phiên bản hợp lệ (`ok` + `no_source`) đạt mức rất cao: **99,65%** (8.171 / 8.200 phiên bản).
-- **Phân phối số phiên bản mỗi bài báo ($\bar{V}$):** Biểu đồ bên phải thể hiện quy luật lệch phải điển hình của chu kỳ hoàn thiện bản thảo khoa học: phần lớn bài báo dừng ở bản nộp gốc $v_1$ (2.875 bài, chiếm 57,50%) hoặc dừng ở bản cập nhật $v_2$ (1.438 bài, chiếm 28,76%). Tỷ lệ này giảm nhanh từ $v_3$ (464 bài, chiếm 9,28%) trở đi. Số phiên bản trung bình thực tế đạt **$\bar{V} = 1{,}64$ phiên bản/bài**, với phiên bản cao nhất ghi nhận được trong dải là **$N = 17$** (`v17`, 1 bài báo).
+- **Phân bố trạng thái gói nguồn:** Kết quả phân loại trên tổng số **41.629 phiên bản** phản ánh sát đặc trưng xuất bản thực tế trên arXiv [[4, 5]](#tai-lieu-tham-khao):
+  - Có **38.737 phiên bản (93,05%)** ở trạng thái `ok` (cung cấp đầy đủ mã nguồn `.tex`, `.bib` và `.bbl`), cùng **5 phiên bản (0,01%)** ở trạng thái `ok_no_tex` (giải nén thành công nhưng gói nguồn không chứa tệp `.tex` hợp lệ).
+  - Có **2.751 phiên bản (6,61%)** ở trạng thái `no_source` (bài báo nộp trực tiếp tệp PDF biên dịch sẵn, được bộ thu thập nhận diện sớm qua 512 bytes magic bytes `%PDF` và ngắt luồng tải sớm giúp tiết kiệm băng thông).
+  - Có **121 phiên bản (0,29%)** `not_found`, **15 phiên bản (0,04%)** `corrupt` (do gói chứa thành phần tên tệp dành riêng của Windows như `aux`, `con`), và **0 phiên bản (0,00%)** `failed` do ngắt kết nối chưa phục hồi.
+  - Tỷ lệ thành công cấp phiên bản hợp lệ (`ok` + `ok_no_tex` + `no_source`) đạt mức rất cao: **99,67%** (**41.493 / 41.629** phiên bản).
+- **Phân phối số phiên bản mỗi bài báo ($\bar{V}$):** Biểu đồ bên phải thể hiện quy luật lệch phải điển hình của chu kỳ hoàn thiện bản thảo khoa học: hơn một nửa số bài báo dừng ở bản nộp gốc $v_1$ (**14.156 bài**, chiếm **56,62%**), tiếp theo là $v_2$ (**7.072 bài**, **28,29%**) và $v_3$ (**2.584 bài**, **10,34%**); nhóm từ $v_4$ đến $v_{30}$ chỉ chiếm **1.188 bài (4,75%)**. Số phiên bản trung bình thực tế đạt **$\bar{V} = 1{,}67$ phiên bản/bài**, với phiên bản cao nhất ghi nhận được trong toàn tập là **$N = 30$** (`v30`, mã bài `2406.10476`).
 
 ---
 
@@ -344,11 +344,11 @@ else:
 ```
 
 - **Tác động định lượng của việc loại bỏ hình ảnh nhị phân:** Bảng số liệu trình bày đồng thời ở cả cấp bài báo lẫn cấp phiên bản giải nén để bảo đảm tính minh bạch tuyệt đối:
-  - Ở cấp bài báo (tổng hợp mọi phiên bản), kích thước giải nén gốc trung bình là **8.779.203 B (~8,37 MiB/bài)**. Sau khi trích xuất chọn lọc loại bỏ toàn bộ ảnh nhị phân, dung lượng lưu trữ chỉ còn **586.063 B (~572,3 KiB/bài)**, đạt mức giảm dung lượng thực tế **-93,32%** (chỉ giữ lại 6,68% dung lượng ban đầu).
-  - Ở cấp phiên bản, dung lượng giải nén trung bình giảm mạnh từ **5.807.888 B (~5,54 MiB/phiên bản)** xuống còn **387.710 B (~378,6 KiB/phiên bản)**, cũng ghi nhận mức giảm **-93,32%**.
-  - Kết quả này chứng minh hình ảnh nhị phân (ảnh biểu đồ `.pdf`, vector `.eps`, bitmap `.png`/`.jpg`) chiếm tới hơn 93% tổng trọng lượng các gói nguồn trên arXiv.
-- **Khử trùng lặp liên phiên bản (`cross_version_dedup`):** Phân tích hàm băm SHA-256 trên tập 1.998 bài báo đa phiên bản có mã nguồn cho thấy có tới **5.266 tệp** hoàn toàn trùng khớp nội dung giữa các phiên bản (chiếm **709.328.068 B (~676,47 MiB)**, tương đương tỷ lệ trùng lặp **37,41%** dung lượng mã nguồn). Ngoài ra, có **124 cặp phiên bản** hoàn toàn không thay đổi bất kỳ tệp mã nguồn nào (chỉ cập nhật metadata hoặc lời nhận xét trên arXiv). Đây là phát hiện thực nghiệm quý giá làm đầu vào cho mô-đun Deduplication ở Milestone 2.
-- **Lợi ích thiết thực cho toàn chuỗi dự án:** Việc lọc bỏ hình ảnh ngay trong luồng giải nén `_FastGzipStream` giúp tiết kiệm hàng chục GiB lưu trữ đĩa ngay trên 5.000 bài báo (và ước tính tiết kiệm hàng trăm GiB trên quy mô 25.000 bài), bảo toàn hoàn toàn dung lượng khả dụng của máy ảo và tối ưu hóa vượt bậc tốc độ I/O cho bộ phân tích cú pháp LaTeX ở Milestone 2.
+  - Ở cấp bài báo (tổng hợp mọi phiên bản), kích thước giải nén gốc trung bình là **9.106.173 B (~8,68 MiB/bài)**. Sau khi trích xuất chọn lọc loại bỏ toàn bộ ảnh nhị phân, dung lượng lưu trữ chỉ còn **922.392 B (~900,8 KiB/bài)**, đạt mức giảm dung lượng thực tế **-89,87%** (chỉ giữ lại **10,13%** dung lượng ban đầu).
+  - Ở cấp phiên bản, dung lượng giải nén trung bình giảm mạnh từ **5.876.164 B (~5,60 MiB/phiên bản)** xuống còn **595.215 B (~581,3 KiB/phiên bản)**, cũng ghi nhận mức giảm **-89,87%**.
+  - Kết quả này chứng minh hình ảnh nhị phân (ảnh biểu đồ `.pdf`, vector `.eps`, bitmap `.png`/`.jpg`) chiếm tới gần **90%** (**89,87%**) tổng trọng lượng giải nén của các gói nguồn trên arXiv.
+- **Khử trùng lặp liên phiên bản (`cross_version_dedup`):** Phân tích hàm băm SHA-256 trên tập **10.279 bài báo đa phiên bản có mã nguồn** cho thấy có tới **35.175 tệp** hoàn toàn trùng khớp nội dung giữa các phiên bản (chiếm **6.438.032.446 B (~6,00 GiB)**, tương đương tỷ lệ trùng lặp **38,92%** dung lượng mã nguồn). Ngoài ra, có **699 cặp phiên bản** hoàn toàn không thay đổi bất kỳ tệp mã nguồn nào (chỉ cập nhật metadata hoặc lời nhận xét trên arXiv). Đây là phát hiện thực nghiệm quý giá làm đầu vào trực tiếp cho mô-đun Deduplication ở Milestone 2.
+- **Lợi ích thiết thực cho toàn chuỗi dự án:** Việc lọc bỏ hình ảnh ngay trong luồng giải nén `_FastGzipStream` giúp gói gọn toàn bộ kho ngữ liệu **25.000 bài báo** (**41.629 phiên bản**) chỉ còn **23,69 GiB** trên đĩa thay vì hàng trăm GiB, bảo toàn hoàn toàn dung lượng khả dụng của máy ảo và tối ưu hóa vượt bậc tốc độ I/O cho bộ phân tích cú pháp LaTeX ở Milestone 2.
 
 ---
 
@@ -444,10 +444,10 @@ else:
 ```
 
 - **Phân phối số tham khảo trên mỗi bài báo:**
-  - Tổng số tài liệu tham khảo thu được qua Semantic Scholar Batch API là **206.813 mục**.
-  - Số tham khảo trung bình mỗi bài báo đạt **41,36 mục/bài**, với giá trị trung vị ($Q_{50}$) là **36,0 mục/bài**.
-  - Phân vị $Q_{25} = 20{,}0$, $Q_{75} = 55{,}0$, và phân vị $P_{95} = 96{,}0$ phản ánh rằng đại đa số các công bố khoa học có từ 20 đến 55 trích dẫn. Giá trị cực đại ghi nhận được là **770 mục tham khảo** (thuộc một bài báo tổng quan quy mô lớn). Biểu đồ phân phối có dạng lệch phải rõ rệt và tiệm cận phân phối log-normal chuẩn trong trích dẫn khoa học.
+  - Tổng số tài liệu tham khảo thu được qua Semantic Scholar Batch API là **3.480.899 mục**.
+  - Giá trị trung vị ($Q_{50}$) đạt **40,0 mục/bài**, với các phân vị $Q_{25} = 24{,}0$, $Q_{75} = 61{,}0$ và $P_{95} = 119{,}0$, phản ánh rằng đại đa số công bố khoa học có từ 24 đến 61 trích dẫn (có 634 bài ghi nhận 0 tham khảo, gồm 623 bài được S2 lập chỉ mục và 11 bài `not_indexed`).
+  - Giá trị trung bình toàn cục tăng lên **139,24 mục/bài** (`139,30` trong nhóm được S2 lập chỉ mục), bỏ xa trung vị do hiện tượng đuôi cực nặng: toàn tập tồn tại **79 bài báo ngoại lai** (`n_refs > 1.000`, chỉ chiếm **0,32%** số bài, cực đại lên tới **96.376 mục** ở bài `2407.09252`) nhưng đóng góp tới **2.239.779 mục tham khảo (64,34% tổng số tham khảo)**. Nếu tách riêng nhóm 79 bài ngoại lai này, **24.921 bài báo phổ thông còn lại** đạt trung bình **49,80 mục/bài**, tiệm cận quy luật phân phối log-normal chuẩn trong trích dẫn khoa học.
 - **Giải nghĩa và đánh giá ba tỷ lệ chất lượng siêu dữ liệu Semantic Scholar:** Nhóm bóc tách rành mạch ba chỉ số bổ trợ nhau:
-  - **Tỷ lệ (a) — Độ phủ bài báo (`s2_coverage_papers`):** Đạt **99,82%** (4.991 / 5.000 bài báo). Điều này chứng minh kho dữ liệu đồ thị học thuật Semantic Scholar có độ phủ gần như tuyệt đối đối với các bài báo arXiv tháng 08/2024 (chỉ có 9 bài mới nộp chưa kịp lập chỉ mục).
-  - **Tỷ lệ (b) — Độ hoàn chỉnh siêu dữ liệu tham khảo (`mean_refs_complete_ratio`):** Đạt **85,41%**. Trung bình mỗi bài báo có tới 85,41% số trích dẫn thu thập được đầy đủ cả ba trường thông tin nòng cốt: *tiêu đề, danh sách tác giả và năm công bố*.
-  - **Tỷ lệ (c) — Tỷ trọng tham khảo có arXiv ID (`share_refs_with_arxiv_id`):** Đạt **46,62%** (tổng cộng 96.423 trích dẫn mang định danh arXiv hợp lệ). Đây là tỷ lệ rất cao đối với ngành khoa học máy tính và vật lý, tạo tiền đề lý tưởng cho việc xây dựng đồ thị liên kết trích dẫn nội bộ (Internal Citation Graph) ở Milestone 3.
+  - **Tỷ lệ (a) — Độ phủ bài báo (`s2_coverage_papers`):** Đạt **99,96%** (**24.989 / 25.000 bài báo**, chỉ còn **11 bài** `not_indexed`). Điều này chứng minh kho dữ liệu đồ thị học thuật Semantic Scholar có độ phủ gần như tuyệt đối đối với các bài báo arXiv giai đoạn 06/2024 – 08/2024.
+  - **Tỷ lệ (b) — Độ hoàn chỉnh siêu dữ liệu tham khảo (`mean_refs_complete_ratio`):** Đạt **85,46%**. Trung bình mỗi bài báo có tới 85,46% số trích dẫn thu thập được đầy đủ cả ba trường thông tin nòng cốt: *tiêu đề, danh sách tác giả và năm công bố*.
+  - **Tỷ lệ (c) — Tỷ trọng tham khảo có arXiv ID (`share_refs_with_arxiv_id`):** Toàn tập ghi nhận **547.991** trích dẫn mang định danh arXiv hợp lệ, tương ứng tỷ trọng toàn cục **15,74%** (sụt giảm mạnh so với tỷ lệ nội bộ thông thường do 79 bài ngoại lai `> 1.000` trích dẫn chỉ có **1,16%** — 26.030 mục — mang arXiv ID; trên **24.921 bài báo phổ thông còn lại**, tỷ trọng tham khảo có arXiv ID đạt mức rất cao là **42,06%** — `521.961 / 1.241.120`, bảo đảm nguồn liên kết dồi dào cho đồ thị trích dẫn ở Milestone 3).
