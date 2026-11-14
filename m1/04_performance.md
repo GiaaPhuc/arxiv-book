@@ -59,14 +59,15 @@ plt.rcParams.update({
 
 
 def _find_stats_dir() -> Path:
-    for candidate in (
+    for base in (
         Path("../stats"),
         Path("stats"),
         *[parent / "stats" for parent in Path.cwd().parents],
     ):
-        if candidate.is_dir():
-            return candidate
-    return Path("../stats")
+        for candidate in (base / "m1", base):
+            if candidate.is_dir() and (candidate / "performance.json").is_file():
+                return candidate
+    return Path("../stats/m1")
 
 
 STATS_DIR = _find_stats_dir()

@@ -1,0 +1,29 @@
+{
+  "runs": 1,
+  "last_run_at": "2026-11-14T12:04:47+00:00",
+  "workers": 12,
+  "batch_size": 500,
+  "papers_total": 25000,
+  "papers_parsed": 25000,
+  "papers_failed": 0,
+  "wall_seconds": 1688.11,
+  "seconds_per_paper": 0.0675,
+  "ms_per_paper": 67.52,
+  "stage_seconds": {
+    "gather": 6268.287,
+    "hierarchy": 9653.94,
+    "bib": 1936.5135,
+    "dedup": 1720.3777
+  },
+  "ram_peak_mb": 4223.9,
+  "ram_mean_mb": 2493.2,
+  "input_corpus_bytes": 25286215425,
+  "output_parsed_bytes": 942124732,
+  "resources": {
+    "ram_peak_bytes": 4223873024.0,
+    "ram_mean_bytes": 2493178012.5825243,
+    "ram_samples": 1648.0,
+    "disk_peak_bytes": 942124732.0,
+    "disk_final_bytes": 942124732.0
+  }
+}

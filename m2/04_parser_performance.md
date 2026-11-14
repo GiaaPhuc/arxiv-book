@@ -11,20 +11,26 @@ kernelspec:
 
 # Chương 8. Đánh giá Hiệu năng Bộ Phân tích Cú pháp
 
+```{admonition} Trạng thái số liệu Chương 8: Đã hoàn tất đo đạc thực nghiệm trên 25.000 bài báo (12 worker)
+:class: note
+Toàn bộ chỉ số thời gian thực thi đầu–cuối, phân rã CPU theo 4 chặng, phân phối độ trễ cấp bài báo, mức tiêu thụ bộ nhớ RSS và dung lượng 3 bảng Sharded Parquet trong chương này được nạp tự động từ `stats/m2/m2_performance.json` và `stats/m2/m2_papers_stats.csv` (phiên chạy đầy đủ `25.000` bài báo / `41.629` phiên bản hoàn tất lúc `2026-11-14T12:04:47+00:00`, `wall_seconds = 1.688,11 s ≈ 28,14 phút`, `papers_failed = 0`).
+```
+
 ## 8.1. Môi trường Kiểm thử & Phương pháp Đo lường Kiểm chứng
 
-Tuân thủ tiêu chí đánh giá hiệu năng của đề bài, toàn bộ quá trình phân tích cú pháp, chuẩn hóa và khử trùng lặp của Milestone 2 được thiết kế và đo đạc trên **Google Colab chế độ chỉ CPU (Standard CPU-only Runtime, không sử dụng GPU/TPU)**:
+Tuân thủ tiêu chí đánh giá hiệu năng của đề bài, toàn bộ quá trình phân tích cú pháp, chuẩn hóa và khử trùng lặp của Milestone 2 chạy hoàn toàn trên **CPU thuần túy (CPU-only, không sử dụng GPU/TPU)** và **không phát sinh I/O mạng**: toàn bộ cây thư mục `.tex`/`.bib` sau khi giải nén cục bộ (`25.286.215.425 B ≈ 23,550 GiB`) được đọc trực tiếp từ đĩa cục bộ và ghi ra 3 bảng Sharded Parquet theo lô song song.
 
-- **Cấu hình phần cứng & lưu trữ thực thi:** Máy ảo Linux Ubuntu 22.04 LTS (`x86_64`), vi xử lý Intel(R) Xeon(R) CPU @ 2.20 GHz (`2 vCPU`), bộ nhớ vật lý `12,7 GiB` RAM, Python `3.11`. Rút kinh nghiệm trực tiếp từ bài học nghẽn siêu dữ liệu Google Drive FUSE ở Milestone 1, toàn bộ kho ngữ liệu đầu vào được giải nén một lần từ tệp `arxiv-data.tar.gz` ra **ổ đĩa SSD cục bộ `/content/data`** trước khi khởi chạy `run_parse.py`, đảm bảo thông lượng đọc/ghi tệp `.tex`/`.bib` và ghi phân mảnh Parquet đạt tốc độ I/O nội bộ tối đa.
-- **Phương pháp đo đạc tự động trong `src/parsing/pipeline.py` (`stats/m2_performance.json`):**
+- **Cấu hình thực thi song song ghi nhận trong nhật ký (`stats/m2/m2_performance.json`):** Hệ thống điều phối `ProcessPoolExecutor` với **`workers = 12` tiến trình xử lý song song**, kích thước lô xả phân mảnh **`batch_size = 500` bài báo / shard** (tổng cộng `50` shard cho mỗi bảng trên toàn tập `25.000` bài báo), và tách hoàn toàn khỏi Google Drive FUSE ở khâu đọc/ghi trung gian.
+- **Phương pháp đo đạc tự động trong `src/parsing/pipeline.py` (`stats/m2/m2_performance.json` & `stats/m2/m2_papers_stats.csv`):**
   1. *Thời gian chạy đầu–cuối và phân rã 4 chặng:* Đồng hồ đơn điệu `time.perf_counter()` đo thời gian thực tổng thể (`wall_seconds`) của toàn bộ tiến trình điều phối kèm thời gian xử lý tích lũy trên từng bài báo qua 4 chặng cốt lõi: `gather` (khử comment, bầu chọn gốc, nối phẳng đa tệp), `hierarchy` (mở rộng macro, chuẩn hóa toán, dựng cây ngăn xếp đơn điệu và tách câu ngữ cảnh), `bib` (phân tích `.bib`/`.bbl` và cascade 4 mẫu `\bibitem`), và `dedup` (gom cụm Union-Find, viết lại `\cite{}` và băm toàn văn xuyên phiên bản).
-  2. *Bộ nhớ RAM toàn hệ thống (kể cả worker con) & Lưu trữ đĩa:* Luồng nền `ResourceSampler` lấy mẫu mỗi **1,0 giây** tổng bộ nhớ vật lý thường trú (`RSS`) của tiến trình điều phối cộng toàn bộ tiến trình con trong `ProcessPoolExecutor` (`total_rss_bytes()` qua `psutil`), đồng thời đo đối chứng kích thước kho nguồn đầu vào (`input_corpus_bytes`) với tổng dung lượng các phân mảnh Parquet đầu ra (`output_parsed_bytes`).
+  2. *Bộ nhớ RAM toàn hệ thống (kể cả worker con) & Lưu trữ đĩa:* Luồng nền `ResourceSampler` lấy mẫu định kỳ (`1.648` mẫu trong `1.688,11 s`, trung bình ~`1,0 s`/mẫu) tổng bộ nhớ vật lý thường trú (`RSS`) của tiến trình điều phối cộng toàn bộ tiến trình con trong `ProcessPoolExecutor` (`total_rss_bytes()` qua `psutil`), đồng thời đo đối chứng kích thước kho nguồn đầu vào (`input_corpus_bytes`) với tổng dung lượng các phân mảnh Parquet đầu ra (`output_parsed_bytes`).
 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
 from pathlib import Path
 import json
+import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -51,14 +57,23 @@ plt.rcParams.update({
 
 
 def _find_stats_dir() -> Path:
-    for candidate in (
-        Path("../stats"),
-        Path("stats"),
-        *[parent / "stats" for parent in Path.cwd().parents],
-    ):
-        if candidate.is_dir():
-            return candidate
-    return Path("../stats")
+    for rel in ("stats/m2", "stats"):
+        for candidate in (
+            Path("..") / rel,
+            Path(rel),
+            *[parent / rel for parent in Path.cwd().parents],
+        ):
+            if (candidate / "m2_performance.json").is_file() or (candidate / "m2_papers_stats.csv").is_file():
+                return candidate
+    for rel in ("stats/m2", "stats"):
+        for candidate in (
+            Path("..") / rel,
+            Path(rel),
+            *[parent / rel for parent in Path.cwd().parents],
+        ):
+            if candidate.is_dir():
+                return candidate
+    return Path("../stats/m2")
 
 
 STATS_DIR = _find_stats_dir()
@@ -73,6 +88,13 @@ def fmt_duration(sec: float) -> str:
     if sec >= 60:
         return f"{sec:,.1f} s ({sec / 60:.2f} phút)"
     return f"{sec:,.2f} s"
+
+
+def fmt_ms_or_s(ms: float) -> str:
+    ms = float(ms or 0.0)
+    if ms >= 1000.0:
+        return f"{ms / 1000.0:,.2f} s"
+    return f"{ms:,.1f} ms"
 
 
 def fmt_storage(b: float) -> str:
@@ -90,10 +112,8 @@ def show_table(df: pd.DataFrame, *, kv: bool = False) -> None:
 def show_pending_perf_m2_banner(section_desc: str) -> None:
     html = (
         '<div class="jb-pending-card">'
-        '<div class="jb-pending-title">⏳ Đang chờ tệp đo hiệu năng <code>stats/m2_performance.json</code> — Đang hiển thị khung minh họa cấu trúc</div>'
-        f"<div>{section_desc} hiện sử dụng <strong>cấu hình benchmark mục tiêu trên Colab 2 vCPU (chưa phải số đo phiên chạy full 25.000 ID)</strong>. "
-        "Ngay khi chạy hoàn tất <code>colab_parse.ipynb</code> / <code>run_parse.py</code> trên Google Colab CPU và chép "
-        "<code>m2_performance.json</code> vào <code>arxiv-book/stats/</code>, toàn bộ số đo và biểu đồ dưới đây sẽ tự động cập nhật.</div>"
+        '<div class="jb-pending-title">⚠️ Không tìm thấy <code>stats/m2/m2_performance.json</code> — Chưa thể nạp số đo thực nghiệm</div>'
+        f"<div>{section_desc} cần tệp <code>m2_performance.json</code> trong thư mục <code>stats/m2/</code> để hiển thị bảng và biểu đồ thực tế.</div>"
         "</div>"
     )
     display(HTML(html))
@@ -102,9 +122,8 @@ def show_pending_perf_m2_banner(section_desc: str) -> None:
 if not HAS_M2_PERF:
     display(HTML(
         '<div class="admonition pending-stats">'
-        '<p class="admonition-title">Trạng thái số liệu Chương 8: Khung minh họa cấu trúc (Chờ tệp m2_performance.json từ Colab CPU)</p>'
-        '<p>Lược đồ đọc dữ liệu dưới đây khớp chính xác 100% với hàm <code>_save_performance()</code> trong <code>src/parsing/pipeline.py</code>. '
-        'Các biểu đồ hiện gắn nhãn <strong>[Minh họa cấu trúc]</strong> và sẽ tự động chuyển sang số đo thực nghiệm khi tệp <code>stats/m2_performance.json</code> có mặt.</p>'
+        '<p class="admonition-title">Thiếu tệp stats/m2/m2_performance.json</p>'
+        '<p>Vui lòng kiểm tra lại vị trí tệp <code>m2_performance.json</code> và <code>m2_papers_stats.csv</code> trong <code>stats/m2/</code> trước khi biên dịch sách.</p>'
         '</div>'
     ))
 ```
@@ -136,44 +155,41 @@ if HAS_M2_PERF:
     sec_per_paper = float(perf.get("seconds_per_paper") or (wall_s / n_proc))
     workers = int(perf.get("workers") or 1)
     batch_sz = int(perf.get("batch_size") or 500)
+    n_shards = math.ceil(n_total / max(batch_sz, 1)) if n_total > 0 else 0
     runs = int(perf.get("runs") or 1)
+    last_run_at = str(perf.get("last_run_at") or "")
     stage_secs = [float(st.get(k, 0.0)) for k in STAGE_KEYS]
+    total_cpu_s = sum(stage_secs)
+    throughput = n_parsed / max(wall_s, 1e-6)
+    speedup = total_cpu_s / max(wall_s, 1e-6)
+    parallel_eff = speedup / max(workers, 1) * 100.0
 
     runtime_rows = [
-        ("Tổng thời gian thực đầu–cuối (wall_seconds — Colab CPU)", fmt_duration(wall_s)),
-        ("Tổng số bài báo xử lý thành công / thất bại", f"{n_parsed:,} thành công / {n_failed:,} lỗi (trên {n_total:,} bài)"),
-        ("Cấu hình thực thi song song & kích thước lô xả Parquet", f"{workers} worker · {batch_sz:,} bài / shard"),
-        ("Thời gian thực trung bình mỗi bài báo (ms_per_paper)", f"{ms_per_paper:,.2f} ms / bài ({sec_per_paper:.4f} s / bài)"),
-        ("Tổng thời gian CPU chặng 1 — Thu thập đa tệp (gather)", fmt_duration(stage_secs[0])),
-        ("Tổng thời gian CPU chặng 2 — Chuẩn hóa, dựng cây & tách câu (hierarchy)", fmt_duration(stage_secs[1])),
-        ("Tổng thời gian CPU chặng 3 — Trích xuất BibTeX & \\bibitem (bib)", fmt_duration(stage_secs[2])),
-        ("Tổng thời gian CPU chặng 4 — Khử trùng lặp 2 tầng (dedup)", fmt_duration(stage_secs[3])),
-        ("Tổng số phiên chạy cộng dồn (runs)", f"{runs} phiên"),
+        ("Dấu thời gian hoàn tất phiên chạy (last_run_at / runs)", f"{last_run_at} ({runs} phiên)"),
+        ("Tổng thời gian thực đầu–cuối (wall_seconds)", fmt_duration(wall_s)),
+        ("Số bài báo xử lý thành công / thất bại", f"{n_parsed:,} thành công / {n_failed:,} lỗi (tỷ lệ thành công {n_parsed / max(n_total, 1) * 100:.2f}%)"),
+        ("Cấu hình song song & phân mảnh Parquet", f"{workers} worker · {batch_sz:,} bài / shard ({n_shards:,} shard / bảng)"),
+        ("Độ trễ tường trung bình & thông lượng toàn cục", f"{ms_per_paper:,.2f} ms / bài ({sec_per_paper:.4f} s / bài · {throughput:.2f} bài/s)"),
+        ("Tổng thời gian CPU tích lũy cả 4 chặng (4 stages)", fmt_duration(total_cpu_s)),
+        ("Hệ số tăng tốc song song (Tổng CPU / Wall-time)", f"{speedup:.2f}× trên {workers} worker (hiệu suất {parallel_eff:.1f}%)"),
+        ("CPU chặng 1 — Thu thập & nối phẳng đa tệp (gather)", f"{fmt_duration(stage_secs[0])} ({stage_secs[0] / max(total_cpu_s, 1e-6) * 100:.1f}%)"),
+        ("CPU chặng 2 — Chuẩn hóa, dựng cây & tách câu (hierarchy)", f"{fmt_duration(stage_secs[1])} ({stage_secs[1] / max(total_cpu_s, 1e-6) * 100:.1f}%)"),
+        ("CPU chặng 3 — Trích xuất BibTeX & \\bibitem (bib)", f"{fmt_duration(stage_secs[2])} ({stage_secs[2] / max(total_cpu_s, 1e-6) * 100:.1f}%)"),
+        ("CPU chặng 4 — Khử trùng lặp 2 tầng (dedup)", f"{fmt_duration(stage_secs[3])} ({stage_secs[3] / max(total_cpu_s, 1e-6) * 100:.1f}%)"),
     ]
     show_table(pd.DataFrame(runtime_rows, columns=["Chỉ số hiệu năng thời gian (Mục 8.2)", "Giá trị đo đạc"]), kv=True)
     title_suffix = ""
 else:
-    show_pending_perf_m2_banner("Bảng 9 chỉ số Runtime và biểu đồ phân rã thời gian 4 chặng tại Mục 8.2")
-    wall_s = 1140.0
-    n_parsed = 25000
-    workers = 2
+    show_pending_perf_m2_banner("Bảng chỉ số Runtime và biểu đồ phân rã thời gian 4 chặng tại Mục 8.2")
+    wall_s = 0.0
+    n_parsed = 0
+    workers = 1
     batch_sz = 500
-    ms_per_paper = wall_s * 1000.0 / n_parsed
-    stage_secs = [245.0, 1180.0, 390.0, 315.0]
+    ms_per_paper = 0.0
+    stage_secs = [0.0, 0.0, 0.0, 0.0]
+    title_suffix = " [THIẾU DỮ LIỆU]"
 
-    preview_rt = pd.DataFrame(
-        [
-            ("Tổng thời gian thực đầu–cuối (wall_seconds)", f"[Mẫu cấu trúc] {fmt_duration(wall_s)} (2 vCPU Colab · SSD /content/data)"),
-            ("Cấu hình song song & kích thước lô xả shard", f"[Mặc định] {workers} worker · {batch_sz} bài / shard Parquet"),
-            ("Thời gian thực trung bình mỗi bài báo (ms_per_paper)", f"[Mẫu cấu trúc] {ms_per_paper:.2f} ms / bài"),
-            ("Phân rã CPU 4 chặng (gather / hierarchy / bib / dedup)", "[Mẫu cấu trúc] 245s / 1,180s / 390s / 315s (chờ m2_performance.json)"),
-        ],
-        columns=["Chỉ số thời gian chạy cần báo cáo (Mục 8.2)", "Trạng thái / Cấu hình mục tiêu"],
-    )
-    show_table(preview_rt, kv=True)
-    title_suffix = " [MINH HỌA CẤU TRÚC]"
-
-fig, ax = plt.subplots(figsize=(9.0, 3.35))
+fig, ax = plt.subplots(figsize=(9.2, 3.45))
 use_min = max(stage_secs + [0.0]) >= 120.0
 scale = 60.0 if use_min else 1.0
 unit_lbl = "Thời gian CPU tích lũy qua các worker (phút)" if use_min else "Thời gian CPU tích lũy (giây)"
@@ -182,7 +198,7 @@ vals = [s / scale for s in stage_secs]
 bars = ax.barh(STAGE_LABELS, vals, color=["#4dabf7", "#1971c2", "#0b7285", "#2b8a3e"], height=0.56)
 ax.invert_yaxis()
 ax.set_xlabel(unit_lbl)
-ax.set_title(f"Phân rã thời gian xử lý CPU theo 4 chặng của bộ phân tích cú pháp{title_suffix}")
+ax.set_title(f"Phân rã thời gian CPU tích lũy theo 4 chặng của bộ phân tích cú pháp{title_suffix}")
 max_v = max(vals + [0.1])
 tot_cpu = max(sum(stage_secs), 1e-6)
 for b, sec in zip(bars, stage_secs):
@@ -190,20 +206,141 @@ for b, sec in zip(bars, stage_secs):
     ax.text(
         b.get_width() + max_v * 0.018,
         b.get_y() + b.get_height() / 2,
-        f"{fmt_duration(sec)} ({share:.1f}%)",
+        f"{fmt_duration(sec)} · {share:.1f}%",
         va="center",
         fontsize=8.4,
     )
-ax.set_xlim(0, max_v * 1.46)
+ax.set_xlim(0, max_v * 1.48)
 plt.tight_layout()
 plt.show()
 plt.close(fig)
 ```
 
+```{code-cell} ipython3
+:tags: [remove-input]
+
+if HAS_M2_PAPERS_CSV:
+    p_df = pd.read_csv(STATS_DIR / "m2_papers_stats.csv", dtype={"arxivid": str})
+    for col in ("t_gather", "t_hierarchy", "t_bib", "t_dedup"):
+        p_df[f"{col}_ms"] = pd.to_numeric(p_df[col], errors="coerce").fillna(0.0) * 1000.0
+    p_df["t_total_ms"] = (
+        p_df["t_gather_ms"] + p_df["t_hierarchy_ms"] + p_df["t_bib_ms"] + p_df["t_dedup_ms"]
+    )
+
+    stage_defs = [
+        ("t_gather_ms", "Chặng 1: Thu thập & nối phẳng (gather)"),
+        ("t_hierarchy_ms", "Chặng 2: Chuẩn hóa, cây & tách câu (hierarchy)"),
+        ("t_bib_ms", "Chặng 3: Trích xuất .bib / \\bibitem (bib)"),
+        ("t_dedup_ms", "Chặng 4: Khử trùng lặp 2 tầng (dedup)"),
+        ("t_total_ms", "Tổng CPU cả 4 chặng trên mỗi bài báo"),
+    ]
+    q_rows = []
+    for col, label in stage_defs:
+        s = p_df[col]
+        q_rows.append({
+            "Chặng xử lý (từng bài báo)": label,
+            "Trung bình": fmt_ms_or_s(s.mean()),
+            "Trung vị (P50)": fmt_ms_or_s(s.median()),
+            "P75": fmt_ms_or_s(s.quantile(0.75)),
+            "P95": fmt_ms_or_s(s.quantile(0.95)),
+            "P99": fmt_ms_or_s(s.quantile(0.99)),
+            "Cực đại (Max)": fmt_ms_or_s(s.max()),
+        })
+    show_table(pd.DataFrame(q_rows))
+
+    # Distribution plots: P99 clipped histogram + latency bucket breakdown
+    fig, (ax_hist, ax_bkt) = plt.subplots(1, 2, figsize=(10.2, 3.7))
+    t_ms = p_df["t_total_ms"]
+    p99_ms = float(t_ms.quantile(0.99))
+    med_ms = float(t_ms.median())
+    mean_ms = float(t_ms.mean())
+    clipped = t_ms[t_ms <= p99_ms]
+
+    ax_hist.hist(clipped, bins=42, color="#1971c2", edgecolor="white", linewidth=0.45, alpha=0.90)
+    ax_hist.axvline(med_ms, color="#2b8a3e", linestyle="--", linewidth=1.6)
+    ax_hist.axvline(mean_ms, color="#d97706", linestyle=":", linewidth=1.7)
+    _, y_top = ax_hist.get_ylim()
+    ax_hist.text(
+        med_ms + p99_ms * 0.02,
+        y_top * 0.88,
+        f"Trung vị: {med_ms:.1f} ms",
+        color="#1e6b2d",
+        fontsize=8.2,
+        fontweight="bold",
+        bbox=dict(boxstyle="round,pad=0.22", facecolor="#f0fdf4", edgecolor="#86efac", alpha=0.95),
+    )
+    ax_hist.text(
+        mean_ms + p99_ms * 0.02,
+        y_top * 0.72,
+        f"Trung bình: {mean_ms:.1f} ms",
+        color="#b45309",
+        fontsize=8.2,
+        fontweight="bold",
+        bbox=dict(boxstyle="round,pad=0.22", facecolor="#fffbeb", edgecolor="#fcd34d", alpha=0.95),
+    )
+    ax_hist.set_xlabel("Thời gian CPU tích lũy mỗi bài báo (ms)")
+    ax_hist.set_ylabel("Số bài báo")
+    ax_hist.set_title(f"Phân phối độ trễ (cắt tại P99 = {p99_ms:,.0f} ms)", fontsize=10.3)
+
+    buckets = [
+        ("< 250 ms", (t_ms < 250.0).sum()),
+        ("250–500 ms", ((t_ms >= 250.0) & (t_ms < 500.0)).sum()),
+        ("0,5–1 s", ((t_ms >= 500.0) & (t_ms < 1000.0)).sum()),
+        ("1–5 s", ((t_ms >= 1000.0) & (t_ms <= 5000.0)).sum()),
+        ("> 5 s", (t_ms > 5000.0).sum()),
+    ]
+    b_labels = [b[0] for b in buckets]
+    b_counts = [int(b[1]) for b in buckets]
+    b_colors = ["#2b8a3e", "#37b24d", "#1971c2", "#f59f00", "#e03131"]
+    bars_b = ax_bkt.bar(b_labels, b_counts, color=b_colors, width=0.56)
+    max_bc = max(b_counts + [1])
+    for bar, cnt in zip(bars_b, b_counts):
+        pct = cnt / max(len(t_ms), 1) * 100.0
+        ax_bkt.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + max_bc * 0.022,
+            f"{cnt:,}\n({pct:.1f}%)",
+            ha="center",
+            va="bottom",
+            fontsize=8.1,
+            fontweight="bold",
+        )
+    ax_bkt.set_ylim(0, max_bc * 1.24)
+    ax_bkt.set_ylabel("Số bài báo")
+    ax_bkt.set_xlabel("Nhóm thời gian CPU tích lũy mỗi bài")
+    ax_bkt.set_title("Phân tầng tốc độ xử lý (25.000 bài báo)", fontsize=10.3)
+    plt.tight_layout(w_pad=2.2)
+    plt.show()
+    plt.close(fig)
+
+    # Top-5 slowest papers highlighting empirical heavy tail
+    top5 = p_df.sort_values("t_total_ms", ascending=False).head(5)
+    top_rows = []
+    bib_raw_col = next((c for c in ("n_bib_raw", "n_bibs_raw", "bib_raw") if c in p_df.columns), None)
+    ver_col = next((c for c in ("n_versions", "versions") if c in p_df.columns), None)
+    elem_col = next((c for c in ("n_elements", "elements") if c in p_df.columns), None)
+    for _, r in top5.iterrows():
+        row_d = {"arXiv ID": str(r["arxivid"])}
+        if ver_col:
+            row_d["Phiên bản"] = f"{int(r[ver_col]):,}"
+        if elem_col:
+            row_d["Elements"] = f"{int(r[elem_col]):,}"
+        if bib_raw_col:
+            row_d["BibTeX thô"] = f"{int(r[bib_raw_col]):,}"
+        row_d["gather"] = fmt_ms_or_s(r["t_gather_ms"])
+        row_d["hierarchy"] = fmt_ms_or_s(r["t_hierarchy_ms"])
+        row_d["bib"] = fmt_ms_or_s(r["t_bib_ms"])
+        row_d["dedup"] = fmt_ms_or_s(r["t_dedup_ms"])
+        row_d["Tổng CPU"] = fmt_ms_or_s(r["t_total_ms"])
+        top_rows.append(row_d)
+    show_table(pd.DataFrame(top_rows))
+```
+
 **Phân tích đặc tính thời gian chạy của bộ phân tích cú pháp:**
 
-- **Khác biệt bản chất giữa Milestone 1 (I/O-bound) và Milestone 2 (CPU-bound thuần nội bộ):** Trong khi Milestone 1 bị chặn cứng bởi khoảng nghỉ lịch sự $\ge 3{,}5\text{ s}$/gói nguồn trên mạng (`~46 giờ` cho 15.000 ID), toàn bộ Milestone 2 đọc trực tiếp từ ổ SSD cục bộ `/content/data` mà không phát sinh bất kỳ truy vấn mạng nào. Nhờ biên dịch trước toàn bộ biểu thức chính quy ở mức module (`re.compile`), quét trạng thái một lượt tuyến tính $\mathcal{O}(N)$ thay cho regex đệ quy quay lui (*backtracking*), và tận dụng `ProcessPoolExecutor` trên `2 vCPU`, thông lượng xử lý đạt hàng chục bài báo mỗi giây.
-- **Đường găng CPU tập trung ở chặng `hierarchy` (`cleaner` + `math_normalizer` + `sentence_splitter`):** Đây là chặng duy nhất thực hiện biến đổi chuỗi trên toàn bộ độ dài văn bản đã nối phẳng của mọi phiên bản $v_1 \dots v_N$, trong khi chặng `dedup` hoạt động trên các cấu trúc băm (`dict` và `Union-Find`) có độ phức tạp gần tuyến tính theo số nút, chiếm tỷ trọng thời gian rất gọn nhẹ.
+- **Khác biệt bản chất giữa Milestone 1 (I/O-bound mạng) và Milestone 2 (CPU-bound thuần nội bộ):** Trong khi Milestone 1 mất **`242.271,31 s` (`67,30 giờ`)** do bị chặn bởi độ trễ tải mạng và khoảng nghỉ lịch sự giữa các truy vấn, toàn bộ Milestone 2 đọc trực tiếp cây tệp giải nén từ đĩa cục bộ mà không phát sinh kết nối mạng. Nhờ biên dịch trước biểu thức chính quy ở mức module (`re.compile`), quét trạng thái tuyến tính và song song hóa **`12` worker** qua `ProcessPoolExecutor`, thời gian thực đầu–cuối chỉ còn **`1.688,11 s` (`28,14 phút`)** — nhanh gấp **`~143,5×`** về wall-clock so với giai đoạn thu thập M1 (`67,52 ms/bài`, thông lượng **`14,81 bài/s`** hay ~`24,66 phiên bản/s`). Tổng thời gian CPU cộng dồn của 4 chặng đạt **`19.579,12 s` (`5,44 giờ CPU`)**, tương ứng hệ số tăng tốc song song **`11,60×`** trên `12` worker (**hiệu suất song song `96,7%`**).
+- **Đường găng CPU tập trung ở `hierarchy` (`49,3%`) và `gather` (`32,0%`):** Chặng `hierarchy` (`9.653,9 s` CPU — làm sạch chuỗi, chuẩn hóa công thức toán, dựng cây ngăn xếp và tách câu ngữ cảnh) cùng `gather` (`6.268,3 s` CPU — duyệt tệp, khử chú thích và nối phẳng `\input`/`\include`) chiếm **`81,3%`** tổng thời gian CPU vì phải quét toàn bộ độ dài mã nguồn `.tex` của cả `38.735` phiên bản có TeX. Ngược lại, `bib` (`1.936,5 s`, `9,9%`) và `dedup` (`1.720,4 s`, `8,8%`) chỉ chiếm dưới một phần năm tổng chi phí CPU.
+- **Phân phối độ trễ lệch phải mạnh ở cấp bài báo:** Trên `25.000` bài, trung vị thời gian CPU mỗi bài chỉ là **`461,4 ms`** (Q25 = `248,0 ms`, Q75 = `898,6 ms`), và **`99,0%` bài báo hoàn tất CPU trong `≤ 4,95 s`** (P95 = `2,34 s`; chỉ `244` bài `> 5 s` và `58` bài `> 10 s`). Nhóm đuôi nặng cực đoan trong bảng Top-5 minh chứng trực tiếp hai cơ chế gây tải mà Chương 6 đã cảnh báo: cặp ngoại lệ `2408.01285` (`189,96 s`, trong đó `dedup = 163,68 s`) và `2408.09430` (`140,47 s`, trong đó `dedup = 120,34 s`) phát sinh chi phí gom cụm bậc hai $\mathcal{O}(R^2)$ trên hơn `90.000` mục `.bib` thô mỗi bài, còn `2406.11779` (`93,65 s`, với `gather = 51,40 s` và `hierarchy = 38,53 s`) chịu chi phí I/O/cú pháp của `14` phiên bản và `2.245` tệp `.tex`.
 
 ---
 
@@ -220,59 +357,52 @@ if HAS_M2_PERF:
     in_bytes = float(perf.get("input_corpus_bytes") or 0.0)
     out_bytes = float(perf.get("output_parsed_bytes") or res.get("disk_final_bytes") or 0.0)
     disk_peak_b = float(res.get("disk_peak_bytes") or out_bytes)
+    ram_per_worker_mib = (ram_peak_b / 1024**2) / max(workers, 1)
+    out_pct = out_bytes / max(in_bytes, 1.0) * 100.0
+    comp_ratio = in_bytes / max(out_bytes, 1.0)
 
     mem_rows = [
-        ("Đỉnh bộ nhớ vật lý toàn hệ thống kể cả worker con (ram_peak_bytes)", f"{ram_peak_b:,.0f} B ({ram_peak_b / 1024**2:.2f} MiB)"),
-        ("Mức tiêu thụ RAM trung bình toàn phiên (ram_mean_bytes — lấy mẫu 1s/lần)", f"{ram_mean_b:,.0f} B ({ram_mean_b / 1024**2:.2f} MiB)"),
+        ("Đỉnh bộ nhớ vật lý toàn hệ thống kể cả worker con (ram_peak_bytes)", fmt_storage(ram_peak_b).replace("GiB)", f"GiB · {ram_peak_b / 1024**2:,.2f} MiB)")),
+        ("Mức tiêu thụ RAM trung bình toàn phiên (ram_mean_bytes)", fmt_storage(ram_mean_b).replace("GiB)", f"GiB · {ram_mean_b / 1024**2:,.2f} MiB)")),
+        (f"Peak RSS bình quân quy về mỗi worker ({workers} worker)", f"~{ram_per_worker_mib:,.1f} MiB / worker"),
         ("Tổng số mẫu đo RAM định kỳ đã thu thập (ram_samples)", f"{ram_samples:,} mẫu"),
         ("Dung lượng kho nguồn .tex/.bib đầu vào từ Milestone 1 (input_corpus_bytes)", fmt_storage(in_bytes)),
         ("Dung lượng 3 bảng Sharded Parquet đầu ra (output_parsed_bytes)", fmt_storage(out_bytes)),
-        ("Tỷ lệ dung lượng Parquet đầu ra so với kho nguồn đầu vào", f"{out_bytes / max(in_bytes, 1.0) * 100:.2f}%"),
+        ("Đỉnh dung lượng đĩa đầu ra ghi nhận trong phiên (disk_peak_bytes)", fmt_storage(disk_peak_b)),
+        ("Tỷ lệ dung lượng Parquet đầu ra so với kho nguồn & hệ số thu gọn", f"{out_pct:.2f}% (thu gọn {comp_ratio:.2f}×)"),
     ]
     show_table(pd.DataFrame(mem_rows, columns=["Chỉ số bộ nhớ RAM & lưu trữ đĩa (Mục 8.3)", "Giá trị đo đạc"]), kv=True)
 else:
-    show_pending_perf_m2_banner("Bảng 6 chỉ số RAM/Đĩa và cặp biểu đồ đối chiếu tại Mục 8.3")
-    ram_mean_b = 265.0 * 1024**2
-    ram_peak_b = 388.0 * 1024**2
-    in_bytes = 10.06 * 1024**3
-    out_bytes = 1.42 * 1024**3
+    show_pending_perf_m2_banner("Bảng chỉ số RAM/Đĩa và cặp biểu đồ đối chiếu tại Mục 8.3")
+    ram_mean_b = 0.0
+    ram_peak_b = 0.0
+    in_bytes = 0.0
+    out_bytes = 0.0
 
-    preview_mem = pd.DataFrame(
-        [
-            ("Đỉnh bộ nhớ vật lý toàn hệ thống (ram_peak_bytes)", "[Mẫu cấu trúc] ~388.00 MiB (< 3.1% trần 12.7 GiB Colab RAM)"),
-            ("Mức tiêu thụ RAM trung bình (ram_mean_bytes)", "[Mẫu cấu trúc] ~265.00 MiB (giữ phẳng nhờ flush mỗi 500 bài)"),
-            ("Dung lượng kho nguồn đầu vào (input_corpus_bytes)", "[Nền M1 15k ID] ~10.062 GiB (hoặc ~16.8 GiB ở 25k ID)"),
-            ("Dung lượng 3 bảng Sharded Parquet đầu ra (output_parsed_bytes)", "[Mẫu cấu trúc] ~1.420 GiB (dictionary encoding)"),
-        ],
-        columns=["Chỉ số bộ nhớ & lưu trữ cần báo cáo (Mục 8.3)", "Trạng thái / Cấu hình mục tiêu"],
-    )
-    show_table(preview_mem, kv=True)
-
-fig, (ax_ram, ax_disk) = plt.subplots(1, 2, figsize=(9.8, 3.45))
+fig, (ax_ram, ax_disk) = plt.subplots(1, 2, figsize=(9.8, 3.55))
 
 ram_mib = [ram_mean_b / 1024**2, ram_peak_b / 1024**2]
 b_r = ax_ram.bar(["RAM Trung bình\n(Mean RSS)", "RAM Tối đa\n(Peak RSS)"], ram_mib, color=["#339af0", "#1864ab"], width=0.45)
 ax_ram.set_ylabel("Bộ nhớ vật lý RSS (MiB)")
-ax_ram.set_title(f"Tiêu thụ RAM (chính + worker){title_suffix}")
+ax_ram.set_title(f"Tiêu thụ RAM (tiến trình chính + {workers} worker){title_suffix}")
 top_r = max(ram_mib + [50.0])
 for bar, v in zip(b_r, ram_mib):
-    pct_colab = v / (12.7 * 1024) * 100.0
     ax_ram.text(
         bar.get_x() + bar.get_width() / 2,
         bar.get_height() + top_r * 0.025,
-        f"{v:.1f} MiB\n({pct_colab:.1f}% Colab)",
+        f"{v:,.1f} MiB\n({v / 1024:.2f} GiB)",
         ha="center",
         fontsize=8.4,
         fontweight="bold",
     )
-ax_ram.set_ylim(0, top_r * 1.28)
+ax_ram.set_ylim(0, top_r * 1.26)
 
 use_gib = max(in_bytes, out_bytes) >= 1024**3
 d_scale = 1024**3 if use_gib else 1024**2
 d_unit = "GiB" if use_gib else "MiB"
 d_vals = [in_bytes / d_scale, out_bytes / d_scale]
 b_d = ax_disk.bar(
-    ["Kho nguồn đầu vào\n(data/papers)", "3 bảng Parquet đầu ra\n(data/parsed)"],
+    ["Kho nguồn đầu vào\n(.tex / .bib giải nén)", "3 bảng Sharded Parquet\n(đầu ra M2)"],
     d_vals,
     color=["#94a3b8", "#2b8a3e"],
     width=0.45,
@@ -280,27 +410,30 @@ b_d = ax_disk.bar(
 ax_disk.set_ylabel(f"Dung lượng lưu trữ ({d_unit})")
 ax_disk.set_title(f"Đối chiếu lưu trữ Đầu vào vs. Parquet{title_suffix}")
 top_d = max(d_vals + [0.1])
-for bar, v in zip(b_d, d_vals):
+for idx, (bar, v) in enumerate(zip(b_d, d_vals)):
+    lbl = f"{v:.2f} {d_unit}"
+    if idx == 1 and in_bytes > 0:
+        lbl = f"{out_bytes / 1024**2:.1f} MiB\n({out_bytes / in_bytes * 100:.2f}% đầu vào)"
     ax_disk.text(
         bar.get_x() + bar.get_width() / 2,
         bar.get_height() + top_d * 0.025,
-        f"{v:.2f} {d_unit}",
+        lbl,
         ha="center",
-        fontsize=8.6,
+        fontsize=8.4,
         fontweight="bold",
     )
-ax_disk.set_ylim(0, top_d * 1.26)
+ax_disk.set_ylim(0, top_d * 1.24)
 
 plt.tight_layout()
 plt.show()
 plt.close(fig)
 ```
 
-**Ba kỹ thuật giữ phẳng bộ nhớ và tối ưu hóa dung lượng đầu ra trên Colab CPU:**
+**Ba kỹ thuật kiểm soát bộ nhớ và tối ưu hóa dung lượng đầu ra Parquet:**
 
-1. **Xả phân mảnh định kỳ theo lô 500 bài (`Streaming Sharded Parquet`):** Nếu tích lũy toàn bộ `~6–10 triệu` dòng `elements` và `hierarchy` của 25.000 bài báo dưới dạng đối tượng Python trong bộ nhớ trước khi ghi đĩa, tiến trình sẽ tiêu tốn nhiều GiB RAM và dễ chạm ngưỡng OOM của máy ảo Colab. Cơ chế `flush()` mỗi `500` bài kết hợp `chunksize = 1` trên `ProcessPoolExecutor` và thu gom rác chủ động (`gc.collect()`) giữ cho đường biên RAM hoàn toàn phẳng theo thời gian ($\mathcal{O}(\text{batch\_size})$ thay vì $\mathcal{O}(N_{\text{papers}})$).
+1. **Xả phân mảnh định kỳ theo lô `500` bài (`Streaming Sharded Parquet`):** Tổng lượng dữ liệu đầu ra trên `25.000` bài báo lên tới **`38.787.282` dòng** (`14.880.359` nút `elements`, `22.516.391` cạnh `hierarchy` và `1.390.532` bản ghi `bibtex`). Cơ chế `flush()` sau mỗi `500` bài báo (`50` shard/bảng) kết hợp `chunksize = 1` trên `ProcessPoolExecutor` và thu gom rác chủ động (`gc.collect()`) giữ biên bộ nhớ ổn định ở quy mô lô thay vì tích lũy toàn tập: tổng RSS trên cả tiến trình điều phối lẫn **`12` worker** đạt trung bình **`2.377,68 MiB` (`2,322 GiB`)** và đỉnh **`4.028,20 MiB` (`3,934 GiB`, bình quân ~`335,7 MiB/worker`)** xuyên suốt `1.648` mẫu đo.
 2. **Mã hóa từ điển (`Dictionary Encoding`) cho các cột phân loại lặp lại:** Hai cột `elements.kind` (8 nhãn lặp lại hàng triệu lần) và `bibtex.entrytype` được lưu bằng kiểu `pa.dictionary(pa.int8(), pa.string())`, thay thế hàng triệu chuỗi ký tự lặp bằng chỉ số nguyên 1 byte ngay ở tầng cột nhị phân.
-3. **Cộng hưởng giữa khử trùng lặp xuyên phiên bản và nén cột Parquet:** Việc chỉ lưu một bản sao duy nhất cho mỗi phần tử nội dung không đổi qua $v_1 \dots v_N$ kết hợp thuật toán nén từ điển trượt `ZSTD` của Apache Parquet giúp toàn bộ 3 bảng đầu ra nhỏ gọn hơn nhiều lần so với cây thư mục `.tex`/`.bib` đầu vào, đồng thời cho phép trình kiểm định `validate_m2.py` và các mô hình ở Milestone 3 đọc chiếu từng cột (*column projection*) với tốc độ rất cao.
+3. **Cộng hưởng giữa khử trùng lặp xuyên phiên bản và lưu trữ cột Apache Parquet:** Việc chỉ lưu một bản sao duy nhất cho mỗi phần tử nội dung không đổi qua $v_1 \dots v_N$ (`-34,90%` phần tử văn bản và `-57,76%` bản ghi BibTeX) kết hợp định dạng cột nhị phân của Apache Parquet (PyArrow) giúp nén **`23,550 GiB`** mã nguồn `.tex`/`.bib` đầu vào xuống còn **`898,48 MiB` (`0,877 GiB`, chỉ `3,73%` dung lượng gốc — hệ số thu gọn `26,84×`)**, sẵn sàng cho việc đọc chiếu cột (*column projection*) với thông lượng cao ở Milestone 3.
 
 ---
 

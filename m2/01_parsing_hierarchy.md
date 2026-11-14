@@ -5,7 +5,7 @@
 - **Giai đoạn:** Milestone 2 — Phân tích Cú pháp Phân cấp, Chuẩn hóa và Khử trùng lặp Mã nguồn LaTeX (*Hierarchical Parsing, Standardization & Cross-Version Deduplication*).
 - **Repository mã nguồn pipeline:** [`GiaaPhuc/arxiv-pipeline`](https://github.com/GiaaPhuc/arxiv-pipeline) · **Module trọng tâm:** `src/parsing/*`, `src/run_parse.py`, `src/validate_m2.py`.
 - **Repository báo cáo trực tuyến (Jupyter Book):** [`GiaaPhuc/arxiv-book`](https://github.com/GiaaPhuc/arxiv-book) · **GitHub Pages:** <https://giaaphuc.github.io/arxiv-book/>
-- **Nguyên tắc liêm chính dữ liệu:** Toàn bộ bảng tổng hợp và biểu đồ trực quan ở Chương 7 và Chương 8 được tính toán và kết xuất tự động bằng Python ngay trong lúc biên dịch sách (`jupyter-book build .`) từ thư mục `stats/`, không sử dụng ảnh chụp màn hình tĩnh và không nhúng mã nguồn cài đặt của pipeline vào báo cáo.
+- **Nguyên tắc liêm chính dữ liệu:** Toàn bộ bảng tổng hợp và biểu đồ trực quan ở Chương 7 và Chương 8 được tính toán và kết xuất tự động bằng Python ngay trong lúc biên dịch sách (`jupyter-book build .`) từ thư mục `stats/m2/`, không sử dụng ảnh chụp màn hình tĩnh và không nhúng mã nguồn cài đặt của pipeline vào báo cáo.
 ```
 
 ## 5.1. Bài toán Phân tích LaTeX Thực tế & Kiến trúc Luồng Đầu–Cuối
@@ -19,7 +19,7 @@ Khác với các ngôn ngữ đánh dấu có ngữ pháp phi ngữ cảnh (CFG)
 3. **Đa dạng ký hiệu toán học, macro tự định nghĩa và bẫy tách câu khoa học:** Tác giả tự định nghĩa macro ở phần mở đầu (`\newcommand`, `\def`), viết phương trình bằng gần mười kiểu môi trường khác nhau, và sử dụng dày đặc dấu chấm trong số thập phân (`3.14`), tên viết tắt (`A. Einstein`), thuật ngữ học thuật (`et al.`, `i.e.`, `Fig. 1`) lẫn biểu thức toán học nội dòng.
 4. **Trùng lặp lớn nhưng không đồng nhất khóa giữa các phiên bản $v_1 \dots v_N$:** Giữa hai phiên bản liên tiếp của cùng một bài báo, phần lớn câu văn, công thức và tài liệu tham khảo giữ nguyên nội dung nhưng có thể thay đổi khóa trích dẫn (`\cite{vaswani2017}` ở $v_1$ đổi thành `\cite{vit_transformer}` ở $v_2$) hoặc bổ sung/đánh rơi trường siêu dữ liệu BibTeX (`doi`, `year`).
 
-Để giải quyết triệt để cả bốn thách thức trên trong giới hạn bộ nhớ của **Google Colab CPU (`2 vCPU`, `12,7 GiB` RAM)**, hệ thống phân tích cú pháp trong `src/parsing/` được thiết kế theo kiến trúc luồng **7 bước khép kín cấp bài báo**, xử lý song song đa tiến trình và xả trực tiếp ra các phân mảnh Parquet:
+Để giải quyết triệt để cả bốn thách thức trên trong giới hạn tài nguyên của **môi trường xử lý CPU đám mây** (vận hành thực nghiệm trên cấu hình **12 worker song song** với lô xả 500 bài/shard), hệ thống phân tích cú pháp trong `src/parsing/` được thiết kế theo kiến trúc luồng **7 bước khép kín cấp bài báo**, xử lý song song đa tiến trình và xả trực tiếp ra các phân mảnh Parquet:
 
 <div class="pipeline-flow" role="region" aria-label="Sơ đồ Quy trình Phân tích Cú pháp và Khử trùng lặp Milestone 2">
   <div class="pf-endpoint-node pf-input">
@@ -162,7 +162,7 @@ Khác với các ngôn ngữ đánh dấu có ngữ pháp phi ngữ cảnh (CFG)
 
 ## 5.2. Hợp đồng Dữ liệu & Lược đồ Ba Bảng Đầu ra (`elements`, `hierarchy`, `bibtex`)
 
-Toàn bộ kết quả phân tích cú pháp được lưu trữ tại thư mục `data/parsed/` dưới dạng các **phân mảnh Apache Parquet** (`part-00000.parquet`, `part-00001.parquet`..., mỗi phân mảnh chứa tối đa `500` bài báo), tương thích trực tiếp với định dạng công bố dữ liệu phân mảnh trên Hugging Face ở Milestone 3:
+Toàn bộ kết quả phân tích cú pháp được lưu trữ tại thư mục `data/parsed/` dưới dạng các **phân mảnh Apache Parquet** (`part-00000.parquet` – `part-00049.parquet`, tổng cộng **50 phân mảnh mỗi bảng**, mỗi phân mảnh chứa tối đa `500` bài báo cho toàn tập `25.000` bài), tương thích trực tiếp với định dạng công bố dữ liệu phân mảnh trên Hugging Face ở Milestone 3:
 
 <div class="corpus-tree-card" role="region" aria-label="Cấu trúc thư mục đầu ra Milestone 2">
   <div class="ct-header">
@@ -336,5 +336,5 @@ Bên dưới mỗi đề mục (`heading`), dòng văn bản được phân rã 
 Trước khi chạy trên toàn bộ kho ngữ liệu 25.000 bài báo, hai module `gathering.py` và `hierarchy.py` được kiểm chứng trực tiếp trên mẫu thực tế gồm **10 bài báo đa dạng (26 phiên bản)** trích từ phân vùng dữ liệu đã thu thập (`2408.11045`–`2408.11054`), bao gồm cả bài đơn tệp, bài đa tệp phân tầng và bài có nhiều tệp `.tex` ứng viên gốc:
 
 - **Độ phủ phiên bản & Bầu chọn tệp gốc:** Cả `26/26` phiên bản có mã nguồn TeX đều xác định chính xác tệp gốc xuất bản (`root_relpath != None`), ghi nhận tổng cộng `67` tệp `.tex` (`34` tệp tham gia cây biên dịch `used_tex_files`, `33` tệp nháp/hình rời `unused_tex_files` được tách biệt hoàn toàn). Đặc biệt, ở `2408.11049` ($v_4, v_5$), quy tắc chỉ cộng $+25$ điểm cho các lệnh `\input` phân giải được sang tệp thật đã loại bỏ chính xác bản thảo phụ để chọn đúng `2407.01856v1.tex`.
-- **Kiểm chứng bất biến cấu trúc trên cây sinh ra:** Trên toàn bộ `26/26` cây phiên bản thực tế (`5.070` nút `RawNode`), kết quả kiểm tra tự động xác nhận **0 lỗi ngoại lệ**, **100% cây có duy nhất một nút gốc `document`** (`node_id = 0`), **100% nút con liên thông về gốc không chu trình**, và **0% rò rỉ tiêu đề `References`/`Bibliography` hay lệnh `\bibitem` vào cây nội dung** (trong khi vẫn thu hồi đầy đủ các tệp `.bib` và các khối `thebibliography` sang nhánh trích xuất tài liệu tham khảo).
+- **Kiểm chứng bất biến cấu trúc trên cây sinh ra:** Trên toàn bộ `26/26` cây phiên bản thực tế (`5.070` nút `RawNode`), kết quả kiểm tra tự động xác nhận **0 lỗi ngoại lệ**, **100% cây có duy nhất một nút gốc `document`** (`node_id = 0`), **100% nút con liên thông về gốc không chu trình**, và **0% rò rỉ tiêu đề `References`/`Bibliography` hay lệnh `\bibitem` vào cây nội dung** (trong khi vẫn thu hồi đầy đủ các tệp `.bib` và các khối `thebibliography` sang nhánh trích xuất tài liệu tham khảo). Kết quả thực nghiệm mở rộng trên toàn bộ **25.000 bài báo (`41.629` phiên bản)** được trình bày chi tiết tại Chương 7 và Chương 8.
 

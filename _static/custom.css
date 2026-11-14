@@ -980,24 +980,26 @@ footer.bd-footer {
   color: var(--jb-text-muted);
 }
 
-/* ===================================================================   Milestone 2 Stage Variant & Cross-Version DAG / Dedup Diagram Cards
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   Milestone 2 Stage Variant & Cross-Version DAG / Dedup Diagram Cards
+   -------------------------------------------------------------------------- */
 
 .pf-stage-ok {
-  border-top: 4px solid var(--jb-ok);
+  border-top: 3px solid var(--jb-green);
 }
 
 .pf-stage-ok .pf-stage-header {
-  background-color: var(--jb-ok-soft);
+  background-color: var(--jb-green-soft);
 }
 
 .pf-stage-ok .pf-stage-dot,
 .pf-stage-ok .pf-step-num {
-  background-color: var(--jb-ok);
+  background-color: var(--jb-green);
+  color: var(--jb-surface);
 }
 
 .pf-stage-ok code {
-  color: var(--jb-ok) !important;
+  color: var(--jb-green) !important;
 }
 
 .jb-dag-grid {
@@ -1041,9 +1043,9 @@ footer.bd-footer {
   font-weight: 600;
   padding: 0.14rem 0.52rem;
   border-radius: 999px;
-  background-color: var(--jb-ok-soft);
-  border: 1px solid var(--jb-ok-border);
-  color: var(--jb-ok);
+  background-color: var(--jb-green-soft);
+  border: 1px solid var(--jb-green-border);
+  color: var(--jb-green);
 }
 
 .jb-badge-version {
@@ -1057,6 +1059,3 @@ footer.bd-footer {
   border: 1px solid var(--jb-accent-border);
   color: var(--jb-accent);
 }
-
-
-=======

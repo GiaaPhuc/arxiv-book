@@ -16,7 +16,9 @@ arxiv-book/
 ├── _static/custom.css               # Định dạng bảng biểu học thuật, sơ đồ luồng & thẻ DAG
 ├── requirements.txt                 # Môi trường biên dịch sách (Python 3.11)
 ├── stats/                           # Nơi đặt tệp thống kê JSON/CSV của M1 & M2
-│   └── README.md                    # Quy định bộ tệp thống kê M1 & M2 trong stats/
+│   ├── README.md                    # Quy định bộ tệp thống kê M1 & M2
+│   ├── m1/                          # Bộ 4 tệp thống kê Milestone 1 (JSON/CSV)
+│   └── m2/                          # Bộ 4 tệp thống kê Milestone 2 (JSON/CSV)
 ├── m1/                              # Phần 1 — Milestone 1: Thu thập Dữ liệu (giữ nguyên)
 │   ├── 01_overview.md               # Chương 1: Tổng quan, phạm vi 25.000 ID & lược đồ 2 bảng M1
 │   ├── 02_implementation.md         # Chương 2: Pipeline thu thập, công cụ & chịu lỗi Colab
@@ -26,7 +28,7 @@ arxiv-book/
     ├── 01_parsing_hierarchy.md      # Chương 5: Lược đồ 3 bảng M2, thu thập đa tệp & cây phân cấp thích ứng
     ├── 02_standardization_dedup.md  # Chương 6: Chuẩn hóa nội dung/toán, BibTeX & khử trùng lặp 2 tầng
     ├── 03_parsing_statistics.md     # Chương 7: Thống kê phân tích cú pháp & hiệu quả khử trùng lặp (MyST Notebook)
-    └── 04_parser_performance.md     # Chương 8: Đánh giá hiệu năng bộ phân tích cú pháp trên Colab CPU (MyST Notebook)
+    └── 04_parser_performance.md     # Chương 8: Đánh giá hiệu năng bộ phân tích cú pháp (MyST Notebook)
 ```
 
 ---
@@ -44,13 +46,14 @@ Kết quả biên dịch nằm tại `_build/html/index.html`.
 
 ---
 
-## 3. Trạng thái Dữ liệu Hiện tại (Hoàn tất 25.000 / 25.000 ID — 5 Dải)
+## 3. Trạng thái Dữ liệu Hiện tại (Hoàn tất Milestone 1 & Milestone 2 — 25.000 / 25.000 ID)
 
-Hệ thống pipeline thu thập trong `arxiv-pipeline` (phiên bản **v3.14**: Quy trình 2 giai đoạn tách rời Two-Stage Decoupled Protocol `--skip-s2` / `--s2-only`, khám phá siêu dữ liệu ngoại tuyến qua Kaggle snapshot `--snapshot` trong < 60s, kiến trúc 5 nhóm luồng Producer–Consumer, đệm RAM Zero-Copy 96 MiB, **Wire-Speed Streaming** `--max-stream-mbps` 4,5 MiB/s nội địa / 12,0–18,0 MiB/s Cloud, **In-Place Resolution & Proportional Bandwidth Breather** $S / 4{,}0\text{ MiB/s}$ cho gói $\ge 2\text{ MiB}$ với trần 12,0 s và xoay session khi $\ge 30\text{ MiB}$, giải nén `_FastGzipStream` 512 KiB giữ `.tex`/`.bib`/`.bbl`, điều nhịp Start-to-Start 3,15 s + jitter, sàn nghỉ socket 3,05 s, Range Resume tại chỗ cho file lớn, nạp hồi băng thông 50 MiB, Bisection chia đôi lô S2 và Dual-Engine Reference Fallback từ `.bib/.bbl`) đã **hoàn tất thu thập trọn vẹn toàn bộ 25.000 / 25.000 ID thuộc cả 5 dải (`2406.07938` – `2408.16044`)**, bao gồm **41.629 phiên bản** (`99,51%` thành công cấp bài báo, `99,67%` cấp phiên bản) và **3.480.899 mục tài liệu tham khảo** (trong đó 547.991 mục mang `arXiv ID`).
+- **Milestone 1 (`stats/m1/`):** Hoàn tất thu thập toàn bộ **25.000 / 25.000 ID** thuộc 5 dải (`2406.07938` – `2408.16044`) với **41.629 phiên bản** (`99,51%` thành công cấp bài báo, `99,67%` cấp phiên bản) và **3.480.899 mục tài liệu tham khảo** (trong đó `547.991` mục mang `arXiv ID`). Đã đồng bộ trong Chương 1, Chương 3 và Chương 4.
+- **Milestone 2 (`stats/m2/`):** Hoàn tất phân tích cú pháp, chuẩn hóa và khử trùng lặp cho toàn bộ **25.000 bài báo / 41.629 phiên bản** (`papers_failed = 0`), sinh ra **`14.880.359` phần tử `elements`** (giảm `34,90%` so với `22.856.948` nút trước khử trùng lặp), **`22.516.391` cạnh `hierarchy`**, và **`1.390.532` bản ghi `bibtex`** (giảm `57,76%` so với `3.292.097` bản ghi thô), lưu trên `50` shard/bảng (`898,48 MiB` đầu ra từ `23,550 GiB` mã nguồn `.tex`/`.bib` — thu gọn `26,84×`) trong **`1.688,11 s` (`28,14 phút`)** trên `12` worker song song. Đã đồng bộ trong Chương 5–8.
 
-Toàn bộ 4 tệp thống kê tại `arxiv-book/stats/` (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) và văn bản phân tích trong Chương 1, Chương 3 và Chương 4 đã được đồng bộ đầy đủ với bộ dữ liệu **25.000 ID hoàn chỉnh**. Quy trình tái cập nhật khi có dữ liệu mới:
+Quy trình tái cập nhật khi có dữ liệu mới:
 
-1. **Chép 4 tệp thống kê M1 (hoặc bộ tệp M2) vào `arxiv-book/stats/`** (`summary.json`, `papers_stats.csv`, `versions_stats.csv`, `performance.json`) — tuyệt đối không commit các tệp `.parquet`.
-2. **Kiểm tra & đồng bộ câu nhận xét tại Chương 1, Chương 3 và Chương 4** nếu số liệu thay đổi.
+1. **Chép 4 tệp thống kê M1 vào `arxiv-book/stats/m1/` hoặc bộ 4 tệp thống kê M2 vào `arxiv-book/stats/m2/`** — tuyệt đối không commit các tệp `.parquet`.
+2. **Kiểm tra & đồng bộ câu nhận xét tại các chương liên quan** nếu số liệu thay đổi.
 3. **Biên dịch & kiểm tra cục bộ:**
-   - Chạy `jupyter-book build .` để kiểm tra biên dịch sạch 100%, sau đó đẩy lên GitHub Pages.
+   - Chạy `jupyter-book build .` (hoặc `python build_book.py`) để kiểm tra biên dịch sạch 100%, sau đó đẩy lên GitHub Pages.

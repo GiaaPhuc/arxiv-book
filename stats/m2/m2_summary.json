@@ -1,0 +1,9 @@
+{
+  "papers": 25000,
+  "versions": 41629,
+  "empty_versions": 2894,
+  "elements": 14880359,
+  "hierarchy": 22516391,
+  "bibtex": 1390532,
+  "shards_per_table": 50
+}
