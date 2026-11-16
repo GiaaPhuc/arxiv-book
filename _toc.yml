@@ -12,3 +12,9 @@ parts:
       - file: m2/02_standardization_dedup
       - file: m2/03_parsing_statistics
       - file: m2/04_parser_performance
+  - caption: "Milestone 3 — Đối sánh Tham chiếu & Công bố Dữ liệu"
+    chapters:
+      - file: m3/01_cleaning_features
+      - file: m3/02_labelling_ranking_hf
+      - file: m3/03_matching_statistics
+      - file: m3/04_model_evaluation_hf

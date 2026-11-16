@@ -1,0 +1,116 @@
+{
+  "range": "range_0 (2408.11045..2408.16044, 5000 IDs)",
+  "range_index": 0,
+  "member": "A — Võ Gia Phúc",
+  "n_ids_assigned": 5000,
+  "n_papers_m1_success": 4979,
+  "n_papers_with_tex": 4580,
+  "n_papers_in_range": 4247,
+  "n_references_total_in_range": 260205,
+  "n_references_with_arxiv_id": 104529,
+  "n_bibtex_in_range": 229161,
+  "n_elements_in_range": 2945275,
+  "n_hierarchy_in_range": 4382402,
+  "n_papers_manual": 5,
+  "n_queries_manual": 114,
+  "n_positive_manual": 43,
+  "n_negative_manual": 71,
+  "n_qualified_eval_manual": 5,
+  "n_papers_auto": 510,
+  "n_queries_auto": 26845,
+  "n_positive_auto": 8504,
+  "n_negative_auto": 18341,
+  "n_eligible_nonmanual": 4242,
+  "n_assigned_nonmanual": 4995,
+  "eligible_coverage": 0.12022630834512023,
+  "assigned_coverage": 0.1021021021021021,
+  "n_papers_labeled_total": 515,
+  "n_predictions": 26959,
+  "n_predictions_positive": 8547,
+  "n_predictions_negative": 18412,
+  "n_features": 519700,
+  "blocking_threshold_n": 50,
+  "top_k_qratio": 20,
+  "elapsed_seconds": 347.087,
+  "training_seconds": 0.9740035000140779,
+  "train_rows": 210774,
+  "train_groups": 8456,
+  "valid_manual_groups": 8,
+  "best_iteration": 1,
+  "splits_breakdown": {
+    "train": {
+      "overall": {
+        "papers": 511,
+        "queries": 26789,
+        "positive_queries": 8456,
+        "negative_only_queries": 18333
+      },
+      "manual": {
+        "papers": 3,
+        "queries": 68,
+        "positive_queries": 26,
+        "negative_only_queries": 42
+      },
+      "auto": {
+        "papers": 508,
+        "queries": 26721,
+        "positive_queries": 8430,
+        "negative_only_queries": 18291
+      }
+    },
+    "valid": {
+      "overall": {
+        "papers": 2,
+        "queries": 72,
+        "positive_queries": 15,
+        "negative_only_queries": 57
+      },
+      "manual": {
+        "papers": 1,
+        "queries": 22,
+        "positive_queries": 8,
+        "negative_only_queries": 14
+      },
+      "auto": {
+        "papers": 1,
+        "queries": 50,
+        "positive_queries": 7,
+        "negative_only_queries": 43
+      }
+    },
+    "test": {
+      "overall": {
+        "papers": 2,
+        "queries": 98,
+        "positive_queries": 76,
+        "negative_only_queries": 22
+      },
+      "manual": {
+        "papers": 1,
+        "queries": 24,
+        "positive_queries": 9,
+        "negative_only_queries": 15
+      },
+      "auto": {
+        "papers": 1,
+        "queries": 74,
+        "positive_queries": 67,
+        "negative_only_queries": 7
+      }
+    }
+  },
+  "audit_auto_matcher": {
+    "precision": 1.0,
+    "recall": 0.6511627906976745,
+    "f1": 0.7887323943661972,
+    "tp": 28.0,
+    "fp": 0.0,
+    "fn": 15.0,
+    "tn": 71.0,
+    "n_queries": 114.0
+  },
+  "hf_total_rows": 7693326,
+  "hf_total_shards": 17,
+  "hf_total_bytes": 194277601,
+  "hf_total_mib": 185.28
+}

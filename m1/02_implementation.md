@@ -258,7 +258,7 @@ Với mỗi bài báo hợp lệ, `MainThread` duyệt tuần tự qua các phi�
 1. **Gom lô thông minh & Giới hạn nhịp độ:** Luồng `s2-worker` gom tối đa **25 bài báo** (mặc định, cấu hình qua `--s2-batch-size`) từ `s2_queue` trong cửa sổ chờ 45 giây. Giới hạn tần suất tối thiểu **1,1 giây / request** (End-to-Start) qua `AdaptiveRateLimiter`, gửi tới `POST https://api.semanticscholar.org/graph/v1/paper/batch` kèm `x-api-key` (tự che giấu trong nhật ký qua `SecretRedactingFilter`).
 2. **Chia đôi lô tự động (Bisection):** Khi gặp mã lỗi `HTTP 413 Payload Too Large` hoặc `5xx` trên mẻ có $\ge 2$ bài, hệ thống tự động chia đôi danh sách ($N/2$) và gửi đệ quy nhằm cô lập các bài chứa danh sách trích dẫn quá lớn mà không làm thất bại cả mẻ.
 3. **Phân trang dự phòng khi danh sách tham khảo bị cắt:** Nếu trường `referenceCount` lớn hơn số lượng trích dẫn trả về trong batch, hệ thống tự động kích hoạt truy vấn phân trang `GET /graph/v1/paper/ARXIV:{id}/references?offset=&limit=1000` cho tới khi thu thập đủ 100% trích dẫn.
-4. **Dự phòng trích dẫn cục bộ (Dual-Engine Reference Fallback):** Với các bài Semantic Scholar chưa lập chỉ mục (`HTTP 404`), khi kích hoạt cờ `--enable-bib-fallback`, worker tự động đọc và trích xuất danh sách trích dẫn từ các tệp `.bib` và `.bbl` có sẵn trong thư mục mã nguồn bài viết (hoặc chạy làm giàu ngoại tuyến qua `src/enrich_references.py`).
+4. **Dự phòng trích dẫn cục bộ (Dual-Engine Reference Fallback):** Với các bài Semantic Scholar chưa lập chỉ mục (`HTTP 404`), khi kích hoạt cờ `--enable-bib-fallback`, worker tự động đọc và trích xuất danh sách trích dẫn từ các tệp `.bib` và `.bbl` có sẵn trong thư mục mã nguồn bài viết (hoặc chạy làm giàu ngoại tuyến qua `src/crawler/enrich_references.py`).
 5. **Lưu trữ đồng bộ & Tách luồng linh hoạt (`--skip-s2` / `--s2-only`):** Ghi danh sách `references.json` vào **mọi thư mục phiên bản $v_1 \dots v_N$** của bài báo (`s2_scope = "paper"`), cập nhật trường `venue` vào `paper.json`, và nén file gốc thành `s2_references.raw.json.gz` (hoặc đánh dấu `source: local_bib`) làm marker hoàn tất. Hỗ trợ cờ `--skip-s2` để bỏ qua hoàn toàn truy vấn S2 trong luồng cào chính, ưu tiên tối đa thông lượng tải arXiv và để dành việc bù trích dẫn sau qua chế độ `--s2-only`.
 
 ---
@@ -277,16 +277,16 @@ Bảng dưới đây đối chiếu bộ công cụ kỹ thuật thực tế đ�
 | **Sao lưu nền & Chống thoái lui** | `checkpoint.py` (`tarfile`, `gzip`) | Chụp ảnh nóng SQLite qua `Connection.backup()`, nén streaming `.tar.gz` ở nền song song với lúc ngủ cooldown 429 hoặc định kỳ mỗi 1.000 ID, kèm `shrink guard` và bỏ qua nén khi dữ liệu không đổi (`skip_if_unchanged=True`). |
 | **Đo lường & Phân tích phiên** | `psutil`, `time.perf_counter`, `pyarrow`, `pandas`, `jupyter-book` | Luồng daemon `ResourceSampler` đo RAM RSS mỗi 5 s (truy xuất $O(1)$), bộ lọc bí mật `SecretRedactingFilter`, xuất Parquet chuẩn hóa, bộ tổng hợp đa phiên Colab `summarize_sessions()` bóc tách thời gian thực và thời gian chờ phạt. |
 
-Mã nguồn trong repository [`GiaaPhuc/arxiv-pipeline`](https://github.com/GiaaPhuc/arxiv-pipeline) được tổ chức phân tầng chặt chẽ và bảo vệ bằng **398 bài kiểm thử đơn vị (276 bài M1 và 122 bài M2 — pass 100%)** với `pytest` và fixtures ngoại tuyến:
+Mã nguồn trong repository [`GiaaPhuc/arxiv-pipeline`](https://github.com/GiaaPhuc/arxiv-pipeline) được tổ chức phân tầng chặt chẽ theo từng cột mốc và bảo vệ bằng **765 bài kiểm thử đơn vị (`278` bài M1, `324` bài M2 và `163` bài M3 trong `src/tests/{m1,m2,m3}/` — pass 100%, `0` failed/skipped)** với `pytest` và fixtures ngoại tuyến:
 
 | Nhóm chức năng | Các module trong `src/` | Trách nhiệm kỹ thuật chính |
 | :--- | :--- | :--- |
 | **Định danh & Hợp đồng dữ liệu** | `crawler/models.py`, `crawler/ids.py`, `crawler/config.py` | Hợp đồng dữ liệu bất biến (`SCHEMA_VERSION = 1`), chuẩn hóa định danh mới/cũ, mở rộng dải `id_ranges.csv` thành 25.000 ID, nạp cấu hình môi trường. |
 | **Khám phá & Siêu dữ liệu** | `crawler/snapshot.py`, `crawler/discovery.py`, `crawler/http.py` | Khám phá ngoại tuyến qua Kaggle snapshot (`--snapshot`) lọc 25.000 ID < 60s, phân loại v1 vs v2..vN, luồng dự phòng trực tuyến Atom API lô 250 + OAI-PMH bù ngày (`--enable-oai-dates`), quản lý phiên HTTP. |
 | **Giao tiếp mạng & Điều nhịp** | `crawler/source.py`, `crawler/s2.py` | Bộ điều nhịp Start-to-Start $3{,}15\text{ s} + \text{jitter}$, sàn nghỉ socket End-to-Start $3{,}05\text{ s}$, lưu trạng thái cooldown `rate_state.json`, tải đệm RAM 96 MiB, **Wire-Speed Streaming** (`--max-stream-mbps`), **Proportional Bandwidth Breather** (`_compute_proportional_breather`), đo timing thuần wire, **In-Place Range Resume** và S2 batch 25 ID kèm bisection. |
-| **Điều phối, Hàng đợi & Bền bỉ** | `crawler/pipeline.py`, `crawler/manifest.py`, `crawler/checkpoint.py`, `run_crawl.py` | Điều phối Producer–Consumer đa luồng (5 nhóm luồng), pool 2 luồng `extract-worker`, `s2-worker`, hàng đợi `extract_queue` (trần RAM 192 MiB), `deferred_ids` (tối đa 5 pass), khóa hệ điều hành OS mutex, checkpoint nền `skip_if_unchanged`, chế độ `--skip-s2` và `--s2-only`. |
-| **Đo lường, Kiểm định & Xuất bảng** | `crawler/metrics.py`, `corpus.py`, `validate_corpus.py`, `audit_corpus.py`, `enrich_references.py`, `crawler/export.py`, `export_data.py` | Lấy mẫu RAM $O(1)$, che bí mật nhật ký, kiểm tra 5 bất biến toàn vẹn, kiểm toán corpus vs manifest (`audit_corpus.py`), làm giàu trích dẫn offline từ `.bib/.bbl` (`enrich_references.py`), xuất 2 bảng Parquet cho Hugging Face, thống kê `cross_version_dedup` và tổng hợp đa phiên `benchmark_summary`. |
-| **Cầu nối Milestone 2** | `parsing/models.py`, `parsing/gathering.py`, `parsing/hierarchy.py`, `parsing/pipeline.py`, `run_parse.py` | Khóa hợp đồng dữ liệu M2 (Phase 0), hiện thực hóa Phase 1C: gom nguồn thông minh khử comment (`gathering.py`), dựng cây phân cấp tài liệu (`hierarchy.py`) và khung điều phối phân tích cú pháp đa nhân. |
+| **Điều phối, Hàng đợi & Bền bỉ** | `crawler/pipeline.py`, `crawler/manifest.py`, `crawler/checkpoint.py`, `run_crawl.py`, `notebooks/colab_run.ipynb` | Điều phối Producer–Consumer đa luồng (5 nhóm luồng), pool 2 luồng `extract-worker`, `s2-worker`, hàng đợi `extract_queue` (trần RAM 192 MiB), `deferred_ids` (tối đa 5 pass), khóa hệ điều hành OS mutex, checkpoint nền `skip_if_unchanged`, chế độ `--skip-s2` và `--s2-only`. |
+| **Đo lường, Kiểm định & Xuất bảng** | `crawler/metrics.py`, `corpus.py`, `crawler/validate_corpus.py`, `crawler/audit_corpus.py`, `crawler/enrich_references.py`, `crawler/export.py`, `crawler/export_data.py` | Lấy mẫu RAM $O(1)$, che bí mật nhật ký, kiểm tra 5 bất biến toàn vẹn, kiểm toán corpus vs manifest (`crawler/audit_corpus.py`), làm giàu trích dẫn offline từ `.bib/.bbl` (`crawler/enrich_references.py`), xuất 2 bảng Parquet cho Hugging Face, thống kê `cross_version_dedup` và tổng hợp đa phiên `benchmark_summary`. |
+| **Cầu nối Milestone 2 & 3** | `parsing/*`, `run_parse.py`, `notebooks/colab_parse.ipynb`, `matching/*`, `run_matching.py` | Phân tích cú pháp phân cấp M2 (`elements`, `hierarchy`, `bibtex`) và kiểm toán 8 bất biến (`parsing/validate_m2.py`); đối sánh tham chiếu không dùng LLM M3 (`matching/*`, `run_matching.py`) và đóng gói 6 bảng Parquet Hugging Face (`matching/export_hf.py`). |
 
 ````{admonition} Lệnh Vận hành Nhanh của Pipeline Thu thập (Quick Reference)
 :class: tip
@@ -326,14 +326,14 @@ python src/run_crawl.py \
   --s2-batch-size 25
 
 # Bù trích dẫn ngoại tuyến từ file .bib/.bbl có sẵn (100% offline, vài giây)
-python src/enrich_references.py --data-dir data
+python src/crawler/enrich_references.py --data-dir data
 
 # ==============================================================================
 # BỘ CÔNG CỤ KIỂM TOÁN, NGHIỆM THU & XUẤT DỮ LIỆU
 # ==============================================================================
-python src/audit_corpus.py --data-dir data --output data/stats/audit_report.json
-python src/validate_corpus.py --data-dir data
-python src/export_data.py --data-dir data --out-dir data/stats
+python src/crawler/audit_corpus.py --data-dir data --output data/stats/audit_report.json
+python src/crawler/validate_corpus.py --data-dir data
+python src/crawler/export_data.py --data-dir data --out-dir data/stats
 ```
 ````
 
@@ -364,15 +364,15 @@ Vận hành thu thập quy mô lớn trên Google Colab đòi hỏi sự cân b�
 3. **Cơ chế Semantic Scholar thông minh & Dự phòng trích dẫn kép (Dual-Engine Fallback):**
    - **Gom lô 25 bài & Chia đôi đệ quy (Bisection):** Sử dụng `POST /graph/v1/paper/batch` với kích thước 25 bài/lô. Khi gặp `HTTP 413 Payload Too Large` hoặc lỗi tạm thời `5xx` trên mẻ có $\ge 2$ bài, hệ thống tự động chia đôi mẻ ($N/2$) và gửi đệ quy nhằm cô lập bài báo có danh sách trích dẫn khổng lồ mà không làm thất bại cả mẻ.
    - **Phân trang trích dẫn:** Khi `referenceCount > len(references)`, hệ thống tự động gọi phân trang `GET /references?limit=1000` để lấy trọn vẹn 100% trích dẫn.
-   - **Dự phòng trích dẫn nội bộ (Dual-Engine Reference Fallback):** Khi Semantic Scholar chưa lập chỉ mục bài báo (`HTTP 404`), crawler tự động bóc tách trích dẫn từ các tệp `.bib` và `.bbl` có sẵn trong thư mục mã nguồn bài viết khi kích hoạt cờ `--enable-bib-fallback` (hoặc chạy ngoại tuyến qua `src/enrich_references.py`).
+   - **Dự phòng trích dẫn nội bộ (Dual-Engine Reference Fallback):** Khi Semantic Scholar chưa lập chỉ mục bài báo (`HTTP 404`), crawler tự động bóc tách trích dẫn từ các tệp `.bib` và `.bbl` có sẵn trong thư mục mã nguồn bài viết khi kích hoạt cờ `--enable-bib-fallback` (hoặc chạy ngoại tuyến qua `src/crawler/enrich_references.py`).
    - **Tách luồng linh hoạt (`--skip-s2` / `--s2-only`):** Hỗ trợ cờ `--skip-s2` để bỏ qua hoàn toàn truy vấn S2 trong luồng cào chính trong giờ cao điểm nhằm dồn băng thông cào gói arXiv nhanh nhất, và để dành việc bù trích dẫn sau qua chế độ `--s2-only`.
 4. **Khóa tiến trình cấp hệ điều hành OS Mutex & Checkpoint nền thông minh (`pipeline.py`, `checkpoint.py`):**
    - Hàm `_acquire_workspace_lock` sử dụng cơ chế khóa tệp cấp nhân hệ điều hành (`msvcrt.locking` trên Windows, `fcntl.flock` trên Linux) tại thư mục tạm hệ thống, ngăn chặn triệt để lỗi người dùng mở trùng 2 tiến trình crawler ghi đè lên cùng thư mục `data/`.
    - File `data/logs/rate_state.json` lưu trữ mốc thời gian phạt còn dư (`arxiv_cooldown_until`, `s2_cooldown_until`) giúp bảo toàn trạng thái phạt liên tiến trình.
    - Luồng `checkpoint-worker` chụp snapshot SQLite bằng `Connection.backup()` và nén streaming sang `arxiv-data.tar.gz` ở nền song song (trong lúc ngủ cooldown hoặc định kỳ mỗi 1.000 ID), hoàn toàn không chặn luồng tải chính. Bản backup mới được bảo vệ bởi tệp sidecar `.meta.json` (chống thoái lui `shrink protection` và bỏ qua nén khi dữ liệu không đổi `skip_if_unchanged=True`).
-5. **Kiểm chứng toàn vẹn hậu thu thập (`validate_corpus.py`, `audit_corpus.py`) & Hợp đồng dữ liệu đa Milestone:**
+5. **Kiểm chứng toàn vẹn hậu thu thập (`crawler/validate_corpus.py`, `crawler/audit_corpus.py`) & Hợp đồng dữ liệu đa Milestone:**
    - Trình kiểm định độc lập quét toàn bộ kho để xác nhận 5 bất biến: *(i)* đủ thư mục phiên bản liên tục `v1..vN`; *(ii)* không tồn tại tệp lạ ngoài siêu dữ liệu chuẩn và `.tex`/`.bib`/`.bbl`; *(iii)* khớp 100% dung lượng và mã băm `SHA-256` với `meta.json`; *(iv)* manifest nhất quán với đĩa và không còn bản ghi `pending`; *(v)* hai bảng Parquet tuân thủ đúng khóa không rỗng.
-   - Module `audit_corpus.py` kiểm toán đối chiếu chi tiết giữa cây thư mục trên đĩa và bảng `version_pairs` trong `manifest.sqlite`, xuất báo cáo JSON định lượng trạng thái kho dữ liệu.
+   - Module `crawler/audit_corpus.py` kiểm toán đối chiếu chi tiết giữa cây thư mục trên đĩa và bảng `version_pairs` trong `manifest.sqlite`, xuất báo cáo JSON định lượng trạng thái kho dữ liệu.
    - **Ghi nhận về đặc thù dữ liệu thượng nguồn và chuẩn bị cho Milestone 2:**
      1. *Phạm vi phiên bản trên S2 (`s2_scope = "paper"`):* Semantic Scholar lập chỉ mục danh sách tham khảo ở cấp bài báo gốc (`ARXIV:<base_id>`) thay vì từng phiên bản riêng biệt; do đó danh sách tham khảo phản ánh phiên bản mới nhất được S2 lập chỉ mục.
      2. *Dual-Engine Fallback cho bài chưa có trên S2:* Tận dụng các tệp `.bib` và `.bbl` có sẵn trong thư mục mã nguồn bài viết để trích xuất danh sách trích dẫn cho những bài S2 trả về null/404.

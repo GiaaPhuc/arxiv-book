@@ -10,6 +10,9 @@ exclude_patterns:
   - build_book.py
   - .venv*
   - .pytest_cache
+  - .mplcache
+  - .ipython
+  - .jupyter*
   - _build
 logo: ""
 

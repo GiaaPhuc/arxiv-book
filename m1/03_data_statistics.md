@@ -104,7 +104,7 @@ def show_pending_box(section_desc: str, preview_df: pd.DataFrame | None = None, 
         '<div class="jb-pending-title">⏳ Đang chờ tệp thống kê trong thư mục <code>arxiv-book/stats/</code></div>'
         f"<div>Hiện chưa tìm thấy: {missing_html}. "
         f"{section_desc} sẽ <strong>tự động sinh đầy đủ</strong> ngay khi chép đầu ra từ lệnh "
-        "<code>python src/export_data.py --data-dir data</code> vào <code>arxiv-book/stats/</code> "
+        "<code>python src/crawler/export_data.py --data-dir data</code> vào <code>arxiv-book/stats/</code> "
         "và biên dịch lại sách (không cần chỉnh sửa mã).</div>"
         "</div>"
     )

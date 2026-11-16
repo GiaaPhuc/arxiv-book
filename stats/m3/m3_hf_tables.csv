@@ -1,0 +1,7 @@
+table_name,milestone,rows,shards,bytes,mib,key_columns,description
+papers,M1,5000,1,535834,0.511,arxiv_id,Siêu dữ liệu 5.000 bài báo arXiv trong dải range_0
+references,M1,104529,1,11343397,10.8179,"arxiv_id, ref_arxiv_id",Tham khảo Semantic Scholar & fallback có arXiv ID
+elements,M2,2945275,10,143693880,137.0372,"arxivid, elementid",Phần tử nội dung LaTeX chuẩn hóa & khử trùng lặp
+hierarchy,M2,4382402,3,16405727,15.6457,"arxivid, version, elementid, parentid",Cạnh phân cấp nút-cha theo từng phiên bản v1..vN
+bibtex,M2,229161,1,21681330,20.6769,"arxivid, citationkey",Mục BibTeX chuẩn hóa & hợp nhất trường Field Union
+predictions,M3,26959,1,617433,0.5888,"arxivid, citationkey, cand1..cand5",Kết quả đối sánh Top-5 trên 515 bài (train/valid/test)

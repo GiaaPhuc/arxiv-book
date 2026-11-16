@@ -1,22 +1,35 @@
 # Chương 1. Tổng quan & Phạm vi Thu thập Dữ liệu
 
-```{admonition} Thông tin Dự án & Sản phẩm Bàn giao (Milestone 1)
+```{admonition} Thông tin Dự án & Sản phẩm Bàn giao (Chuỗi 3 Milestone)
 :class: note
 - **Môn học:** Nhập môn Khoa học Dữ liệu (*Introduction to Data Science*)
-- **Repository mã nguồn pipeline:** [`GiaaPhuc/arxiv-pipeline`](https://github.com/GiaaPhuc/arxiv-pipeline) *(tài liệu hướng dẫn thiết lập môi trường, cấu hình khóa API và vận hành chi tiết được trình bày riêng trong `README.md` của repository mã nguồn theo đúng quy định đề bài)*.
+- **Thành viên thực hiện:** **Võ Gia Phúc** *(Leader — Vai A)* · **Trần Thanh Sơn** *(Vai B)* · **Phạm Trường Quỳnh** *(Vai C)* · **Trần Nguyễn Lâm Gia Thụ** *(Vai D)* · **Thân Nguyễn Quang Triệu** *(Vai E)*.
+- **Repository mã nguồn pipeline:** [`GiaaPhuc/arxiv-pipeline`](https://github.com/GiaaPhuc/arxiv-pipeline) *(tài liệu hướng dẫn thiết lập môi trường, cấu hình khóa API và vận hành chi tiết được trình bày riêng trong `README.md` và `docs/` của repository mã nguồn theo đúng quy định đề bài)*.
 - **Repository báo cáo trực tuyến (Jupyter Book):** [`GiaaPhuc/arxiv-book`](https://github.com/GiaaPhuc/arxiv-book) · **GitHub Pages:** <https://giaaphuc.github.io/arxiv-book/>
-- **Nguyên tắc liêm chính dữ liệu:** Toàn bộ bảng tổng hợp và biểu đồ phân tích ở Chương 3 và Chương 4 đều được sinh tự động trực tiếp bằng Python trong quá trình biên dịch sách từ thư mục `stats/` (không sử dụng ảnh chụp tĩnh và không nhúng mã nguồn cài đặt của pipeline vào báo cáo).
+- **Nguyên tắc liêm chính dữ liệu:** Toàn bộ bảng tổng hợp và biểu đồ phân tích ở các chương định lượng (Chương 3–4 cho Milestone 1, Chương 7–8 cho Milestone 2, Chương 11–12 cho Milestone 3) đều được sinh tự động trực tiếp bằng Python trong quá trình biên dịch sách từ thư mục `stats/` (không sử dụng ảnh chụp tĩnh và không nhúng mã nguồn cài đặt của pipeline vào báo cáo).
 ```
 
 ## 1.1. Mục tiêu trong Chuỗi Dự án 3 Milestone
 
-Báo cáo này trình bày thiết kế kỹ thuật, quá trình triển khai, kết quả thống kê dữ liệu và đánh giá hiệu năng của **Milestone 1 (Data Crawling)** thuộc dự án xây dựng kho ngữ liệu khoa học từ **arXiv** — kho lưu trữ bản thảo mở với hơn hai triệu công bố học thuật. Thay vì chỉ thu thập siêu dữ liệu bề mặt hoặc tải các tệp PDF khó bóc tách cấu trúc, hệ thống ở giai đoạn này thu thập trực tiếp **mã nguồn LaTeX toàn văn** cùng **mạng lưới trích dẫn có cấu trúc**, tạo nền tảng dữ liệu đầu vào cho toàn bộ chuỗi dự án ba cột mốc:
+Báo cáo này trình bày thiết kế kỹ thuật, quá trình triển khai, kết quả thống kê dữ liệu và đánh giá hiệu năng xuyên suốt ba giai đoạn của dự án xây dựng kho ngữ liệu khoa học từ **arXiv** — kho lưu trữ bản thảo mở với hơn hai triệu công bố học thuật. Bắt đầu từ **Milestone 1 (Data Crawling)**, thay vì chỉ thu thập siêu dữ liệu bề mặt hoặc tải các tệp PDF khó bóc tách cấu trúc, hệ thống thu thập trực tiếp **mã nguồn LaTeX toàn văn** cùng **mạng lưới trích dẫn có cấu trúc**, tạo nền tảng dữ liệu đầu vào thống nhất cho cả ba cột mốc:
 
-1. **Milestone 1 — Thu thập dữ liệu (Hiện tại):** Xác định chính xác các bài báo thuộc dải định danh được giao, tải xuống gói mã nguồn của **tất cả các phiên bản hiện có** ($v_1 \dots v_N$), loại bỏ hình ảnh nhị phân bằng phương pháp trích xuất chọn lọc chỉ giữ **`.tex`, `.bib` và `.bbl`** (bảo toàn tệp bibliography đã biên dịch phụ trợ), đồng thời thu thập siêu dữ liệu bài báo và tài liệu tham khảo qua **Semantic Scholar Academic Graph API** (kèm cơ chế gom lô, chia đôi lô đệ quy bisection và dự phòng bóc tách trích dẫn cục bộ từ `.bib`/`.bbl`).
-2. **Milestone 2 — Phân tích cú pháp & Chuẩn hóa:** Đọc cây thư mục mã nguồn `.tex`/`.bib` từ Milestone 1 để phân tích cấu trúc phân cấp tài liệu, chuẩn hóa nội dung văn bản và biểu thức toán học, đồng thời thống nhất các mục trích dẫn về chuẩn BibTeX.
-3. **Milestone 3 — Liên kết tham khảo & Công bố bộ dữ liệu:** Đối sánh các mục tài liệu tham khảo trích xuất từ LaTeX với tập ứng viên chuẩn trong bảng `references`, đánh giá mô hình liên kết và công bố bộ dữ liệu hoàn chỉnh lên Hugging Face.
+1. **Milestone 1 — Thu thập dữ liệu (Chương 1–4):** Xác định chính xác các bài báo thuộc dải định danh được giao, tải xuống gói mã nguồn của **tất cả các phiên bản hiện có** ($v_1 \dots v_N$), loại bỏ hình ảnh nhị phân bằng phương pháp trích xuất chọn lọc chỉ giữ **`.tex`, `.bib` và `.bbl`** (bảo toàn tệp bibliography đã biên dịch phụ trợ), đồng thời thu thập siêu dữ liệu bài báo và tài liệu tham khảo qua **Semantic Scholar Academic Graph API** (kèm cơ chế gom lô, chia đôi lô đệ quy bisection và dự phòng bóc tách trích dẫn cục bộ từ `.bib`/`.bbl`).
+2. **Milestone 2 — Phân tích cú pháp & Chuẩn hóa (Chương 5–8):** Đọc cây thư mục mã nguồn `.tex`/`.bib`/`.bbl` từ Milestone 1 để phân tích cấu trúc phân cấp tài liệu (`hierarchy`), chuẩn hóa nội dung văn bản và biểu thức toán học (`elements`), đồng thời khử trùng lặp và hợp nhất các mục trích dẫn về chuẩn BibTeX (`bibtex`).
+3. **Milestone 3 — Liên kết tham khảo & Công bố bộ dữ liệu (Chương 9–12):** Đối sánh các mục tài liệu tham khảo `bibtex` với tập ứng viên `references` bằng bộ 21 đặc trưng cổ điển không dùng LLM/pretrained (tận dụng cấu trúc AST của Milestone 2), đánh giá mô hình xếp hạng `LightGBM LambdaMART` qua `MRR@5` và đóng gói bộ dữ liệu 6 bảng Parquet phân mảnh nén `ZSTD` chuẩn Hugging Face Hub.
 
-Theo đúng quy định của Milestone 1, kho ngữ liệu làm việc được lưu giữ cục bộ trong nhóm để phục vụ hai giai đoạn kế tiếp; sản phẩm bàn giao ở cột mốc này bao gồm repository mã nguồn công khai [`GiaaPhuc/arxiv-pipeline`](https://github.com/GiaaPhuc/arxiv-pipeline) và cuốn sách báo cáo trực tuyến này.
+Kho ngữ liệu làm việc được lưu giữ cục bộ (hoặc xuất bản dạng 6 bảng Sharded Parquet theo dải 5.000 ID lên Hugging Face Hub ở Milestone 3); sản phẩm báo cáo học thuật của toàn bộ ba giai đoạn được tích hợp liên hoàn trong repository mã nguồn công khai [`GiaaPhuc/arxiv-pipeline`](https://github.com/GiaaPhuc/arxiv-pipeline) và cuốn sách Jupyter Book trực tuyến này.
+
+### 1.1.1. Thành viên Nhóm & Phân công Vai trò (A–E)
+
+Dự án được thực hiện bởi nhóm **5 thành viên** phân công theo 5 vai kỹ thuật xuyên suốt từ Milestone 1 đến Milestone 3:
+
+| Vai | Họ và tên | Trọng tâm Milestone 1 | Trọng tâm Milestone 2 | Trọng tâm Milestone 3 |
+| :---: | :--- | :--- | :--- | :--- |
+| **A** | **Võ Gia Phúc** *(Leader)* | Điều phối pipeline (`pipeline.py`), HTTP/rate limits (`http.py`), SQLite manifest (`manifest.py`), sao lưu (`checkpoint.py`), đo lường (`metrics.py`) | Hợp đồng dữ liệu chung (`parsing/models.py`), CLI `run_parse.py`, điều phối đa tiến trình (`parsing/pipeline.py`) & profiling | Hợp đồng 21 đặc trưng (`matching/models.py`), Stage-1 blocking & đặc trưng tương đối (`features.py`), điều phối `matching/pipeline.py`, CLI `run_matching.py`, đóng gói 6 bảng Hugging Face (`export_hf.py`) |
+| **B** | **Trần Thanh Sơn** | Tiện ích dải ID (`ids.py`), khám phá Atom API & OAI-PMH (`discovery.py`), tích hợp Semantic Scholar (`s2.py`) | Mở rộng macro & dọn lệnh trình bày (`parsing/cleaner.py`), chuẩn hóa toán học (`math_normalizer.py`), tách câu ngữ cảnh (`sentence_splitter.py`) | Tiền xử lý thực thể TeX/Unicode & tách tác giả (`matching/cleaner.py`), 15 đặc trưng từ vựng/thực thể/thời gian/mỏ neo & TF-IDF ký tự cục bộ (`lexical_features.py`) |
+| **C** | **Phạm Trường Quỳnh** | Fixture lưu trữ tổng hợp (`conftest.py`), tải dòng `/src/` & giải nén chọn lọc `.tex`/`.bib`/`.bbl` (`source.py`) | Thu thập đa tệp & khử comment (`gathering.py`), dựng cây phân cấp & tách mục tham khảo (`hierarchy.py`) | CLI gán nhãn thủ công tương tác, chia tập cấp bài báo, Cohen's Kappa (`labelling.py`), bộ đối sánh tự động 3 tầng & kiểm toán P/R/F1 (`auto_matcher.py`) |
+| **D** | **Trần Nguyễn Lâm Gia Thụ** | Giao diện đọc kho dữ liệu (`corpus.py`), xuất bảng Parquet/CSV & thống kê tổng hợp (`export.py`, `export_data.py`) | Trích xuất BibTeX/BibLaTeX & `.bbl`/`\bibitem` (`bib_extractor.py`), khử trùng lặp 2 tầng xuyên phiên bản (`dedup.py`), xuất Sharded Parquet (`export_m2.py`) | Huấn luyện có trọng số theo nhóm truy vấn (`train_ranker.py`), 3 mô hình baseline & `LightGBM LambdaMART` kèm hậu xử lý Top-5 (`ranker.py`) |
+| **E** | **Thân Nguyễn Quang Triệu** | Kiểm định 5 bất biến kho ngữ liệu hậu thu thập (`crawler/validate_corpus.py`), xây dựng báo cáo Jupyter Book (`arxiv-book`) | Kiểm định 8 bất biến Parquet & độ bao phủ phiên bản (`parsing/validate_m2.py`), chương thống kê & hiệu năng M2 trên sách | Chỉ mục trích dẫn cây AST M2 (`hierarchy_features.py`), đánh giá `MRR@5` hai mẫu số (`evaluation.py`) & sinh biểu đồ Poster 300 DPI (`plots.py`) |
 
 ---
 
@@ -94,7 +107,7 @@ Tuân thủ quy ước tổ chức dữ liệu gợi ý của đề bài và h�
     </div>
     <div class="ct-row">
       <div class="ct-path"><span class="ct-branch">├── </span><span class="ct-dir">stats/</span></div>
-      <div class="ct-desc">Đầu ra từ <code>export_data.py</code> &amp; <code>audit_corpus.py</code> (Parquet cục bộ, <code>audit_report.json</code> &amp; CSV/JSON cho báo cáo)</div>
+      <div class="ct-desc">Đầu ra từ <code>crawler/export_data.py</code> &amp; <code>crawler/audit_corpus.py</code> (Parquet cục bộ, <code>audit_report.json</code> &amp; CSV/JSON cho báo cáo)</div>
     </div>
     <div class="ct-row">
       <div class="ct-path"><span class="ct-branch">└── </span><span class="ct-dir">papers/</span></div>
@@ -131,7 +144,7 @@ Tuân thủ quy ước tổ chức dữ liệu gợi ý của đề bài và h�
   </div>
 </div>
 
-Từ kho dữ liệu làm việc trên, module `export_data.py` (`crawler/export.py`) kết xuất hai bảng dữ liệu chuẩn dạng Apache Parquet theo đúng lược đồ cột và kiểu dữ liệu được quy định cho bộ dữ liệu công bố cuối khóa:
+Từ kho dữ liệu làm việc trên, module `crawler/export_data.py` (`crawler/export.py`) kết xuất hai bảng dữ liệu chuẩn dạng Apache Parquet theo đúng lược đồ cột và kiểu dữ liệu được quy định cho bộ dữ liệu công bố cuối khóa:
 
 | Bảng | Đơn vị bản ghi | Lược đồ cột & Kiểu dữ liệu (`pyarrow`) | Quy tắc lọc và chuẩn hóa nghiệp vụ |
 | :--- | :--- | :--- | :--- |
