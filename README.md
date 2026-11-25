@@ -12,7 +12,8 @@ Báo cáo trực tuyến chính thức bằng tiếng Việt của dự án môn
 ```text
 arxiv-book/
 ├── _config.yml                      # Cấu hình Jupyter Book v1, thực thi notebook tự động & CSS
-├── _toc.yml                         # Mục lục phân theo Part (Milestone 1, Milestone 2 & Milestone 3)
+├── _toc.yml                         # Mục lục phân theo Part (Milestone 1, Milestone 2 & Phụ lục Milestone 3)
+├── intro.md                         # Trang bìa: thông tin dự án, chiến lược D8 & bảng thành viên A–E
 ├── _static/custom.css               # Định dạng bảng biểu học thuật, sơ đồ luồng & thẻ DAG
 ├── requirements.txt                 # Môi trường biên dịch sách (Python 3.11)
 ├── stats/                           # Nơi đặt tệp thống kê JSON/CSV gọn nhẹ của M1, M2 & M3
@@ -20,17 +21,17 @@ arxiv-book/
 │   ├── m1/                          # Bộ 4 tệp thống kê Milestone 1 (25.000 ID — JSON/CSV)
 │   ├── m2/                          # Bộ 4 tệp thống kê Milestone 2 (25.000 ID — JSON/CSV)
 │   └── m3/                          # Bộ 4 tệp thống kê Milestone 3 (range_0 5.000 ID — JSON/CSV)
-├── m1/                              # Phần 1 — Milestone 1: Thu thập Dữ liệu
+├── m1/                              # Chương I — Milestone 1: Thu thập Dữ liệu (v3.18)
 │   ├── 01_overview.md               # Chương 1: Tổng quan, phạm vi 25.000 ID & lược đồ 2 bảng M1
 │   ├── 02_implementation.md         # Chương 2: Pipeline thu thập, công cụ & chịu lỗi Colab
 │   ├── 03_data_statistics.md        # Chương 3: Thống kê & phân tích dữ liệu thu thập (MyST Notebook)
 │   └── 04_performance.md            # Chương 4: Hiệu năng bộ thu thập Runtime, RAM & Đĩa (MyST Notebook)
-├── m2/                              # Phần 2 — Milestone 2: Phân tích Cú pháp & Chuẩn hóa
+├── m2/                              # Chương II — Milestone 2: Phân tích Cú pháp & Chuẩn hóa
 │   ├── 01_parsing_hierarchy.md      # Chương 5: Lược đồ 3 bảng M2, thu thập đa tệp & cây phân cấp thích ứng
 │   ├── 02_standardization_dedup.md  # Chương 6: Chuẩn hóa nội dung/toán, BibTeX & khử trùng lặp 2 tầng
 │   ├── 03_parsing_statistics.md     # Chương 7: Thống kê phân tích cú pháp & hiệu quả khử trùng lặp (MyST Notebook)
 │   └── 04_parser_performance.md     # Chương 8: Đánh giá hiệu năng bộ phân tích cú pháp (MyST Notebook)
-└── m3/                              # Phần 3 — Milestone 3: Đối sánh Tham chiếu & Công bố Dữ liệu
+└── m3/                              # Phụ lục Mở rộng — Milestone 3: Đối sánh Tham chiếu & Công bố Dữ liệu
     ├── 01_cleaning_features.md      # Chương 9: Tiền xử lý thực thể & Bộ 21 đặc trưng đa chiều (Non-LLM)
     ├── 02_labelling_ranking_hf.md   # Chương 10: Gán nhãn 2 tầng, LambdaMART & Đóng gói 6 bảng Hugging Face
     ├── 03_matching_statistics.md    # Chương 11: Thống kê gán nhãn, kiểm toán & đóng góp đặc trưng (MyST Notebook)

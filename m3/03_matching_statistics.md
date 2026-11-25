@@ -15,7 +15,7 @@ Toàn bộ bảng tổng hợp và biểu đồ phân tích trong chương này 
 
 ```{admonition} Phạm vi bộ số liệu Milestone 3: Dải range_0 (2408.11045 – 2408.16044 · 5.000 ID)
 :class: note
-Pipeline đối sánh tham chiếu (`src/run_matching.py --range-index 0`) đã chạy hoàn chỉnh trên dữ liệu thực tế của lát cắt **`range_0`** (**5.000** định danh được giao: `2408.11045`–`2408.16044`, phần phụ trách công bố Hugging Face của thành viên **A — Võ Gia Phúc**). Trên `4.247` bài báo có danh mục BibTeX, hệ thống đã gán nhãn và đối sánh đầy đủ cho **`515` bài báo** (`5` bài thủ công + `510` bài tự động), tạo ra **`26.959` dòng dự đoán** (`predictions.parquet`) từ **`519.700` cặp vector 21 đặc trưng**.
+Pipeline đối sánh tham chiếu (`src/run_matching.py --range-index 0`) đã chạy hoàn chỉnh trên dữ liệu thực tế của lát cắt **`range_0`** (**5.000** định danh được giao: `2408.11045`–`2408.16044`, phần phụ trách công bố Hugging Face của thành viên **A — Võ Gia Phúc**). Kết quả thực nghiệm Milestone 3 trên sách minh họa trực tiếp phân vùng `range_0` (5.000 ID) đã đóng băng cho đợt nộp bộ dữ liệu Hugging Face cá nhân, trong khi tổng hợp liên dải trên cả 5 thành viên (`range_0..range_4`, 25.000 ID) được trình bày trên Poster A2 chung của nhóm. Trên `4.247` bài báo có danh mục BibTeX, hệ thống đã gán nhãn và đối sánh đầy đủ cho **`515` bài báo** (`5` bài thủ công + `510` bài tự động), tạo ra **`26.959` dòng dự đoán** (`predictions.parquet`) từ **`519.700` cặp vector 21 đặc trưng**.
 ```
 
 ```{code-cell} ipython3

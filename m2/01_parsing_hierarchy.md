@@ -21,6 +21,11 @@ Khác với các ngôn ngữ đánh dấu có ngữ pháp phi ngữ cảnh (CFG)
 
 Để giải quyết triệt để cả bốn thách thức trên trong giới hạn tài nguyên của **môi trường xử lý CPU đám mây** (vận hành thực nghiệm trên cấu hình **12 worker song song** với lô xả 500 bài/shard), hệ thống phân tích cú pháp trong `src/parsing/` được thiết kế theo kiến trúc luồng **7 bước khép kín cấp bài báo**, xử lý song song đa tiến trình và xả trực tiếp ra các phân mảnh Parquet:
 
+```{admonition} Tuân thủ Môi trường CPU-Only & Thuật toán Tất định Cục bộ
+:class: note
+Toàn bộ quy trình phân tích cú pháp, mở rộng macro, chuẩn hóa biểu thức toán học, tách câu lá và trích xuất tham khảo `.bib`/`.bbl` của Milestone 2 đều là **thuật toán tất định chạy cục bộ 100% trên CPU thuần túy** (không sử dụng GPU/TPU, không dùng mô hình ngôn ngữ lớn hay mô hình học sâu ngoại vi, và tuyệt đối không phát sinh bất kỳ cuộc gọi API mạng nào ra bên ngoài).
+```
+
 <div class="pipeline-flow" role="region" aria-label="Sơ đồ Quy trình Phân tích Cú pháp và Khử trùng lặp Milestone 2">
   <div class="pf-endpoint-node pf-input">
     <span class="pf-icon">&#128193;</span>

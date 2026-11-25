@@ -67,16 +67,23 @@ Tách đoạn văn thành các nút lá `sentence` trên văn bản khoa học L
 
 ### Luồng 2 — Khôi phục `.bbl` & Chuyển đổi `\bibitem` bằng *Anchor-First + 4-Template Cascade*
 
-Thực tế khảo sát kho ngữ liệu arXiv cho thấy rất nhiều bài báo không nộp kèm tệp `.bib` gốc mà dán trực tiếp `\begin{thebibliography}` vào `.tex` hoặc đính kèm tệp `.bbl` đã biên dịch sẵn. Với mỗi mục `\bibitem[label]{key} ...`, hệ thống áp dụng chiến lược **bắt mỏ neo cứng trước — phân đoạn mẫu ngữ pháp sau**:
+Thực tế khảo sát kho ngữ liệu arXiv cho thấy rất nhiều bài báo không nộp kèm tệp `.bib` gốc mà dán trực tiếp `\begin{thebibliography}` vào `.tex` hoặc đính kèm tệp `.bbl` đã biên dịch sẵn. Liên hệ trực tiếp với quyết định **bảo toàn nguyên bản các tệp `.bbl` bên cạnh `.tex` và `.bib` ngay từ Milestone 1** (`source.py`), vì `.bbl` chính là sản phẩm biên dịch có cấu trúc từ `.bib`, bộ phân tích `parse_bibitems()` (`bib_extractor.py`) đóng vai trò **chuyển đổi ngược các mục `\bibitem` trong `.bbl` về đúng lược đồ `BibtexRow` chuẩn** (hỗ trợ đầy đủ `\bibinfo`, `\bibfield`, `\showarticletitle` và chuỗi 4 mẫu ngữ pháp) mà không làm thất thoát nguồn tài liệu tham khảo. Với mỗi mục `\bibitem[label]{key} ...`, hệ thống áp dụng chiến lược **bắt mỏ neo cứng trước — phân đoạn mẫu ngữ pháp sau**:
 
 1. **Tầng 0 — Trích xuất Mỏ neo Cứng & Thẻ `\bibinfo` (Anchor-First):**
-   - Nhận diện trực tiếp các thẻ cấu trúc `\bibinfo{author}{...}`, `\bibinfo{title}{...}`, `\bibinfo{journal}{...}`, `\bibinfo{year}{...}` do các gói `revtex`/`apsrev` sinh ra trong tệp `.bbl` — giúp đạt độ chính xác gần như tuyệt đối trên nhóm bài Vật lý và Toán–Lý.
+   - Nhận diện trực tiếp các thẻ cấu trúc `\bibinfo{author}{...}`, `\bibinfo{title}{...}`, `\bibinfo{journal}{...}`, `\bibinfo{year}{...}` (cùng biến thể `\bibfield` và `\showarticletitle`) do các gói `revtex`/`apsrev` sinh ra trong tệp `.bbl` — giúp đạt độ chính xác gần như tuyệt đối trên nhóm bài Vật lý và Toán–Lý.
    - Quét biểu thức chính quy bắt cứng các trường có định dạng bất biến: `doi` (`10.\d{4,9}/...`), `url` (`\url{...}`, `\href{...}`, `https?://...`), định danh `arXiv:YYMM.NNNNN` / `hep-th/NNNNNNN` và năm xuất bản 4 chữ số `(19|20)\d{2}`.
 2. **Tầng 1–4 — Chuỗi 4 Mẫu Ngữ pháp Học thuật (4-Template Cascade):** Với các mục `\bibitem` văn bản tự do không có thẻ `\bibinfo`, bộ phân tích thử tuần tự từ đặc thù đến tổng quát:
    - *Mẫu 1 (Tiêu đề đặt trong ngoặc kép — chuẩn IEEE / NeurIPS / Nature):* Bắt cụm `` ``Title'' ``, `"Title"` hoặc `\enquote{Title}`; phần đứng trước là danh sách tác giả, phần đứng sau là tên tạp chí/hội nghị.
    - *Mẫu 2 (Khối in nghiêng `\emph{...}` / `\textit{...}` — chuẩn APS / AMS / Springer):* Phân biệt thông minh xem khối in nghiêng là **tên tạp chí** (chứa từ khóa viết tắt như `Phys. Rev.`, `J.`, `Proc.`, `IEEE`, `Trans.`, `Lett.` hoặc đi kèm số tập in đậm `\textbf{42}`) hay là **tiêu đề bài báo**, từ đó suy ra hai thành phần còn lại.
    - *Mẫu 3 (Phân đoạn theo dấu chấm câu có bảo vệ tên tắt — chuẩn ACM / APA):* Bảo vệ chữ tắt tên tác giả (`A. Vaswani`) rồi phân tách theo ranh giới `. ` thành ba đoạn chuẩn `Authors` $\rightarrow$ `Title` $\rightarrow$ `Venue & Year`.
    - *Mẫu 4 (Định dạng bản thảo Preprint arXiv):* Xử lý mẫu rút gọn `Authors, Title, arXiv preprint arXiv:XXXX.XXXXX (Year)` và suy diễn tự động `entrytype` (`inproceedings`, `book`, `article`, hoặc `misc`).
+
+### Xử lý tình huống biên: Danh mục References viết tay không dùng `.bib` và không dùng `\bibitem`
+
+Một số ít tác giả tự soạn danh mục tài liệu tham khảo dưới `\section{References}` (hoặc `\section*{References}`) bằng văn bản thuần túy hoặc danh sách `\begin{enumerate}\item...\end{enumerate}` mà không nộp kèm tệp `.bib`/.bbl và cũng không dùng môi trường `thebibliography` / `\bibitem`. Hệ thống xử lý tình huống biên này nhất quán qua hai tầng:
+
+- **Ở tầng cấu trúc cây (`hierarchy.py`):** Bộ lọc tiêu đề mục (`References`, `Bibliography`, `Literature Cited`, `Works Cited`) tự động bật cờ loại trừ và cắt triệt để toàn bộ khối văn bản hoặc danh sách `\begin{enumerate}` nằm dưới đề mục tham khảo ra khỏi cây nội dung. Nhờ đó, **0% mục tài liệu tham khảo viết tay bị rò rỉ vào bảng `elements`** (được kiểm chứng tự động qua Bất biến 6 của `validate_m2.py`).
+- **Ở tầng trích xuất tham chiếu (`bib_extractor.py`):** Nhóm giữ nguyên tắc **chỉ trích xuất các mục có khóa định danh thật từ `.bib` và `\bibitem`**, không tự sinh khóa giả từ các đoạn văn bản liệt kê tự do. Lý do kỹ thuật là bảng `bibtex` sử dụng khóa kép `(arxivid, citationkey)` để đối chiếu trực tiếp với lệnh `\cite{key}` trong cây AST ở Milestone 3 — nếu gán khóa nhân tạo cho đoạn văn bản tự do thì không tồn tại `\cite{key}` tương ứng trong văn bản gốc. Số liệu kiểm chứng trên toàn bộ `23.029` bài có TeX (`stats/m2/m2_papers_stats.csv`) cho thấy **`22.369` bài (`97,13%`)** trích xuất được bản ghi `bibtex` chuẩn xác, chỉ có `660` bài (`2,87%`) có `n_bibtex = 0` (bao gồm các bản thảo ngắn/ghi chú không có trích dẫn và tỷ lệ nhỏ các bài gõ tay không dùng `\bibitem`).
 
 ---
 

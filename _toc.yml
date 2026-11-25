@@ -1,18 +1,19 @@
 format: jb-book
-root: m1/01_overview
+root: intro
 parts:
-  - caption: "Milestone 1 — Thu thập Dữ liệu"
+  - caption: "Chương I — Milestone 1: Thu thập Dữ liệu (Data Crawling)"
     chapters:
+      - file: m1/01_overview
       - file: m1/02_implementation
       - file: m1/03_data_statistics
       - file: m1/04_performance
-  - caption: "Milestone 2 — Phân tích Cú pháp & Chuẩn hóa"
+  - caption: "Chương II — Milestone 2: Phân tích Cú pháp & Chuẩn hóa"
     chapters:
       - file: m2/01_parsing_hierarchy
       - file: m2/02_standardization_dedup
       - file: m2/03_parsing_statistics
       - file: m2/04_parser_performance
-  - caption: "Milestone 3 — Đối sánh Tham chiếu & Công bố Dữ liệu"
+  - caption: "Phụ lục Mở rộng — Milestone 3: Đối sánh Tham chiếu & Hugging Face"
     chapters:
       - file: m3/01_cleaning_features
       - file: m3/02_labelling_ranking_hf
