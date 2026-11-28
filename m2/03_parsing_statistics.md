@@ -13,9 +13,9 @@ kernelspec:
 
 Toàn bộ bảng tổng hợp và biểu đồ trực quan trong chương này được tính toán và kết xuất tự động ngay trong quá trình biên dịch sách (`jupyter-book build .`) từ bộ tệp thống kê đầu ra của Milestone 2 đặt tại `arxiv-book/stats/m2/` (`m2_summary.json`, `m2_papers_stats.csv`, `m2_elements_kind.csv`, `m2_performance.json`).
 
-```{admonition} Phạm vi bộ số liệu Milestone 2: Toàn bộ 25.000 Định danh (41.629 Phiên bản)
+```{admonition} Phạm vi bộ số liệu Milestone 2: Toàn bộ 25.000 Định danh (41.615 Phiên bản)
 :class: note
-Bộ phân tích cú pháp Milestone 2 đã hoàn tất xử lý **100% kho ngữ liệu 25.000 bài báo** (**41.629 phiên bản**, `2406.07938` – `2408.16044`) kế thừa từ Milestone 1 với **0 lỗi ngoại lệ (`25.000 / 25.000` bài báo hoàn tất)**. Kết quả kết xuất thành **50 phân mảnh Parquet cho mỗi bảng**, tổng hợp **14.880.359** phần tử nội dung duy nhất (`elements`), **22.516.391** cạnh phân cấp (`hierarchy`) và **1.390.532** mục tài liệu tham khảo chuẩn hóa (`bibtex`).
+Bộ phân tích cú pháp Milestone 2 đã hoàn tất xử lý **100% kho ngữ liệu 25.000 bài báo** (**41.615 phiên bản**, `2406.07938` – `2408.16044`) kế thừa từ bản thu thập chính thức Milestone 1 (`v3.18`) với **0 lỗi ngoại lệ (`25.000 / 25.000` bài báo hoàn tất)**. Kết quả kết xuất thành **50 phân mảnh Parquet cho mỗi bảng**, tổng hợp **14.879.728** phần tử nội dung duy nhất (`elements`), **22.503.080** cạnh phân cấp (`hierarchy`) và **1.407.279** mục tài liệu tham khảo chuẩn hóa (`bibtex`).
 ```
 
 ```{code-cell} ipython3
@@ -221,10 +221,10 @@ else:
 
 **Phân tích kết quả độ bao phủ và lọc đa tệp trên toàn tập 25.000 bài báo:**
 
-- **Đối soát độ bao phủ 100% với Milestone 1:** Toàn bộ **25.000 / 25.000 bài báo** và **41.629 / 41.629 phiên bản** của Milestone 1 đều đi qua pipeline Milestone 2 với **0 bài báo gặp ngoại lệ (`papers_failed = 0`)**. Trong đó, **23.029 bài báo (92,12%)** có ít nhất một phiên bản sinh cây phân cấp (khớp chính xác con số `papers_with_tex = 23.029` của Milestone 1), còn lại **1.971 bài báo (7,88%)** có toàn bộ phiên bản ở trạng thái rỗng (`0` nút).
-- **Giải phẫu 2.894 phiên bản rỗng (`6,95%`):** Có **38.735 phiên bản (93,05%)** sinh cây thành công (khớp từng đơn vị với **38.735** nút gốc `document` trong bảng `elements`). Tập **2.894 phiên bản rỗng** bao gồm **2.892 phiên bản** không có mã nguồn TeX hợp lệ từ Milestone 1 (`2.751 no_source`, `121 not_found`, `15 corrupt`, `5 ok_no_tex`) cộng thêm đúng **2 phiên bản** (`2406.09978` và `2406.12868`, mỗi bài có 1 phiên bản tuy Milestone 1 đánh dấu `ok` nhưng không có tệp gốc `.tex` biên dịch được trong `gathering.py`). Việc bảo toàn đầy đủ các phiên bản rỗng giúp loại bỏ hoàn toàn thiên kiến sống sót (*survivorship bias*).
-- **Hiệu quả cô lập tệp dư thừa của `elect_root_tex` & DFS:** Trên tổng số **151.228 tệp `.tex`** được quét, bộ thu thập chỉ đưa **127.057 tệp (84,02%)** thuộc đường biên dịch chính từ gốc vào cây phân cấp và loại bỏ **24.171 tệp `.tex` dư thừa (15,98%)** trên **4.019 bài báo** chứa tệp phụ trợ/nháp (điển hình như bài `2406.11779` gồm 14 phiên bản với `2.245` tệp `.tex`, trong đó `1.462` tệp dư thừa đã được tách lọc sạch).
-- **Tổng nén đồ thị & tham chiếu toàn kho:** Khử trùng lặp hai tầng giảm số nút nội dung từ **22.856.948** xuống **14.880.359** dòng trong `elements` (**-34,90%**), và giảm số mục tham chiếu thô từ **3.292.097** xuống **1.390.532** dòng trong `bibtex` (**-57,76%**). Bảng `hierarchy` lưu **22.516.391** cạnh quan hệ (trung bình **1,51 cạnh/phần tử** duy nhất; trong tổng `22.818.213` lần xuất hiện nút khác gốc trước khử trùng, có `301.822` cạnh trùng `(version, elementid, parentid)` đã được gộp thành đồ thị DAG sạch).
+- **Đối soát độ bao phủ 100% với Milestone 1:** Toàn bộ **25.000 / 25.000 bài báo** và **41.615 / 41.615 phiên bản** của Milestone 1 đều đi qua pipeline Milestone 2 với **0 bài báo gặp ngoại lệ (`papers_failed = 0`)**. Trong đó, **23.029 bài báo (92,12%)** có ít nhất một phiên bản sinh cây phân cấp (khớp chính xác con số `papers_with_tex = 23.029` của Milestone 1), còn lại **1.971 bài báo (7,88%)** có toàn bộ phiên bản ở trạng thái rỗng (`0` nút).
+- **Giải phẫu 2.892 phiên bản rỗng (`6,95%`):** Có **38.723 phiên bản (93,05%)** sinh cây thành công (khớp từng đơn vị với **38.723** nút gốc `document` trong bảng `elements`). Tập **2.892 phiên bản rỗng** bao gồm **2.890 phiên bản** không có mã nguồn TeX hợp lệ từ Milestone 1 (`2.749 no_source`, `121 not_found`, `15 corrupt`, `5 ok_no_tex`) cộng thêm đúng **2 phiên bản** (`2406.09978` và `2406.12868`, mỗi bài có 1 phiên bản tuy Milestone 1 đánh dấu `ok` nhưng không có tệp gốc `.tex` biên dịch được trong `gathering.py`). Việc bảo toàn đầy đủ các phiên bản rỗng giúp loại bỏ hoàn toàn thiên kiến sống sót (*survivorship bias*).
+- **Hiệu quả cô lập tệp dư thừa của `elect_root_tex` & DFS:** Trên tổng số **151.172 tệp `.tex`** được quét, bộ thu thập chỉ đưa **127.005 tệp (84,01%)** thuộc đường biên dịch chính từ gốc vào cây phân cấp và loại bỏ **24.167 tệp `.tex` dư thừa (15,99%)** trên **4.018 bài báo** chứa tệp phụ trợ/nháp (điển hình như bài `2406.11779` gồm 14 phiên bản với `2.245` tệp `.tex`, trong đó `1.462` tệp dư thừa đã được tách lọc sạch).
+- **Tổng nén đồ thị & tham chiếu toàn kho:** Khử trùng lặp hai tầng giảm số nút nội dung từ **22.843.408** xuống **14.879.728** dòng trong `elements` (**-34,86%**), và giảm số mục tham chiếu thô từ **3.421.236** xuống **1.407.279** dòng trong `bibtex` (**-58,87%**). Bảng `hierarchy` lưu **22.503.080** cạnh quan hệ (trung bình **1,51 cạnh/phần tử** duy nhất; trong tổng `22.804.685` lần xuất hiện nút khác gốc trước khử trùng, có `301.605` cạnh trùng `(version, elementid, parentid)` đã được gộp thành đồ thị DAG sạch).
 
 ---
 
@@ -353,9 +353,9 @@ else:
 
 **Nhận xét cấu trúc phân cấp và quy mô nút lá thực nghiệm:**
 
-- **Nút lá câu văn (`sentence`) chiếm 61,45% toàn kho:** Với **9.144.698 câu** tách bằng thuật toán `Protect–Mask–Split–Restore` (theo sau bởi **3.473.190 đoạn văn `paragraph` — 23,34%**), dữ liệu đạt độ mịn chuẩn xác để ở Milestone 3 có thể trích xuất trực tiếp **ngữ cảnh câu chứa `\cite{key}`** làm đặc trưng đối sánh tài liệu tham khảo.
-- **Tách bạch triệt để phương trình và hình/bảng:** Toàn kho thu được **997.127 công thức khối (`block_formula` — 6,70%)** và **297.146 khối hình/bảng/thuật toán (`figure` — 2,00%)**, cùng **528.205 đề mục (`heading` — 3,55%)**, **96.617 danh sách (`list` — 0,65%)** với **304.641 mục liệt kê (`item` — 2,05%)**, và đúng **38.735 nút gốc phiên bản (`document` — 0,26%)**.
-- **Quy mô phần tử mỗi bài báo:** Trong **23.029 bài báo có mã nguồn TeX**, mỗi bài chứa trung vị **483** phần tử duy nhất (`Q25 = 314`, `Q75 = 763`, trung bình **646,16**) và **601** cạnh phân cấp (`Q25 = 348`, `Q75 = 1.144`, trung bình **977,74**). Nhóm đuôi dài (`P99 = 2.998` phần tử) đạt cực đại **15.439** phần tử duy nhất ở bài `2408.07915` (một chuyên khảo dài 36 tệp `.tex`) và **35.011** cạnh phân cấp ở các bài nhiều phiên bản dài hơi.
+- **Nút lá câu văn (`sentence`) chiếm 61,46% toàn kho:** Với **9.144.477 câu** tách bằng thuật toán `Protect–Mask–Split–Restore` (theo sau bởi **3.473.171 đoạn văn `paragraph` — 23,34%**), dữ liệu đạt độ mịn chuẩn xác để ở Milestone 3 có thể trích xuất trực tiếp **ngữ cảnh câu chứa `\cite{key}`** làm đặc trưng đối sánh tài liệu tham khảo.
+- **Tách bạch triệt để phương trình và hình/bảng:** Toàn kho thu được **996.867 công thức khối (`block_formula` — 6,70%)** và **297.152 khối hình/bảng/thuật toán (`figure` — 2,00%)**, cùng **528.092 đề mục (`heading` — 3,55%)**, **96.619 danh sách (`list` — 0,65%)** với **304.627 mục liệt kê (`item` — 2,05%)**, và đúng **38.723 nút gốc phiên bản (`document` — 0,26%)**.
+- **Quy mô phần tử mỗi bài báo:** Trong **23.029 bài báo có mã nguồn TeX**, mỗi bài chứa trung vị **483** phần tử duy nhất (`Q25 = 314`, `Q75 = 763`, trung bình **646,13**) và **601** cạnh phân cấp (`Q25 = 348`, `Q75 = 1.143`, trung bình **977,16**). Nhóm đuôi dài (`P99 = 3.009` phần tử, `P95 = 1.637`) đạt cực đại **15.439** phần tử duy nhất ở bài `2408.07915` (một chuyên khảo dài 36 tệp `.tex`) và **35.011** cạnh phân cấp ở bài `2406.10476` (`30` phiên bản).
 
 ---
 
@@ -464,8 +464,8 @@ else:
 
 **Phân tích động học khử trùng lặp theo lịch sử sửa đổi ($N = 1 \dots \ge 4$):**
 
-- **Nhóm bài chỉ có một phiên bản ($N = 1$, `12.616` bài có TeX):** Ngay cả khi chỉ tồn tại một bản nộp duy nhất, số nút giảm nhẹ **3,09%** (từ `6.343.860` xuống `6.147.674` dòng) nhờ hợp nhất các đề mục chuẩn lặp tên, câu ghi chú bảng biểu hoặc thông báo bản quyền giống hệt nhau trong cùng bài báo (còn lại `1.540` bài $N=1$ không có mã nguồn TeX nên đóng góp `0` nút).
-- **Bước nhảy nén theo số vòng chỉnh sửa ($N = 2, 3, \ge 4$):** Tỷ lệ loại bỏ phần tử trùng lặp tăng mạnh theo lịch sử phiên bản: đạt **37,91%** ở nhóm $N = 2$ (`6.774` bài có TeX; `7.949.649` $\rightarrow$ `4.935.580`), lên **51,35%** ở nhóm $N = 3$ (`2.497` bài; `4.938.215` $\rightarrow$ `2.402.331`) và đạt **61,53%** ở nhóm $N \ge 4$ (`1.142` bài; `3.625.224` $\rightarrow$ `1.394.774`). Kết quả này khẳng định hiệu quả của **Thứ tự Vàng**: đồng bộ khóa `\cite{...}` trước khi băm toàn văn giúp các câu chứa trích dẫn vẫn khớp chính xác 100% giữa các bản thảo $v_1 \dots v_N$.
+- **Nhóm bài chỉ có một phiên bản ($N = 1$, `12.620` bài có TeX / `14.160` bài):** Ngay cả khi chỉ tồn tại một bản nộp duy nhất, số nút giảm nhẹ **3,09%** (từ `6.346.740` xuống `6.150.468` dòng) nhờ hợp nhất các đề mục chuẩn lặp tên, câu ghi chú bảng biểu hoặc thông báo bản quyền giống hệt nhau trong cùng bài báo (còn lại `1.540` bài $N=1$ không có mã nguồn TeX nên đóng góp `0` nút).
+- **Bước nhảy nén theo số vòng chỉnh sửa ($N = 2, 3, \ge 4$):** Tỷ lệ loại bỏ phần tử trùng lặp tăng mạnh theo lịch sử phiên bản: đạt **37,91%** ở nhóm $N = 2$ (`6.773` bài có TeX; `7.955.517` $\rightarrow$ `4.939.956`), lên **51,32%** ở nhóm $N = 3$ (`2.495` bài; `4.923.825` $\rightarrow$ `2.396.738`) và đạt **61,50%** ở nhóm $N \ge 4$ (`1.141` bài; `3.617.326` $\rightarrow$ `1.392.566`). Kết quả này khẳng định hiệu quả của **Thứ tự Vàng**: đồng bộ khóa `\cite{...}` trước khi băm toàn văn giúp các câu chứa trích dẫn vẫn khớp chính xác 100% giữa các bản thảo $v_1 \dots v_N$.
 
 ---
 
@@ -513,8 +513,8 @@ if HAS_M2_STATS:
             field_rows,
             columns=[
                 "Trường BibTeX",
-                "Trước Field Union (trên 3.292.097 mục)",
-                "Sau Field Union (trên 1.390.532 mục)",
+                f"Trước Field Union (trên {tot_bib_before:,} mục)",
+                f"Sau Field Union (trên {tot_bib_after:,} mục)",
                 "Chênh lệch toàn kho",
                 "TB theo bài (Macro: Trước → Sau)",
                 "Số bài tăng độ phủ",
@@ -567,7 +567,10 @@ if HAS_M2_STATS:
     q_bib = has_bib_papers["n_bibtex"].quantile([0.25, 0.5, 0.75, 0.95, 0.99, 1.0])
     bib_quant_df = pd.DataFrame([
         {
-            "Tập bài báo có trích xuất BibTeX": f"{len(has_bib_papers):,} / {len(m2_papers):,} bài (89,48%)",
+            "Tập bài báo có trích xuất BibTeX": (
+                f"{len(has_bib_papers):,} / {len(m2_papers):,} bài "
+                f"({len(has_bib_papers) / max(len(m2_papers), 1) * 100:.2f}%)"
+            ),
             "Trung bình / bài": f"{has_bib_papers['n_bibtex'].mean():,.2f}",
             "Q25": f"{q_bib[0.25]:,.0f}",
             "Trung vị (Q50)": f"{q_bib[0.5]:,.0f}",
@@ -584,6 +587,6 @@ else:
 
 **Đánh giá định lượng hiệu quả khử trùng lặp và `Field Union` cho Milestone 3:**
 
-- **Nén 57,76% kho tài liệu tham khảo (`3.292.097` $\rightarrow$ `1.390.532` mục):** Ngay ở nhóm bài chỉ có một phiên bản ($N = 1$), tỷ lệ gộp trùng đã đạt **-35,43%** (`1.011.375` $\rightarrow$ `653.039`) do nhiều bài báo đính kèm đồng thời tệp `.bib` gốc lẫn tệp `.bbl` đã biên dịch (hoặc khối `\begin{thebibliography}`). Ở nhóm đa phiên bản, tỷ lệ gộp trùng tăng dần lên **-59,06%** ($N = 2$: `1.206.850` $\rightarrow$ `494.123`), **-74,69%** ($N = 3$: `640.749` $\rightarrow$ `162.187`) và **-81,26%** ($N \ge 4$: `433.123` $\rightarrow$ `81.183`).
-- **Tăng vọt độ lấp đầy các trường định danh thưa nhờ `Field Union`:** Khi hợp nhất các trường khuyết từ nhiều nguồn/phiên bản trong cùng cụm tương đương, tỷ lệ bản ghi có `journal` tăng mạnh **+11,93 điểm phần trăm** (`65,84%` $\rightarrow$ `77,77%`, cải thiện trên **13.368 bài báo**), trường `url` (bao gồm cả URL `https://arxiv.org/abs/<id>` được tổng hợp tự động) tăng **+10,62 điểm phần trăm** (`37,95%` $\rightarrow$ `48,57%`, cải thiện trên **14.139 bài báo**), và trường `doi` tăng **+4,11 điểm phần trăm** (`29,96%` $\rightarrow$ `34,06%`, cải thiện trên **7.686 bài báo**). Các trường nòng cốt giữ mức phủ gần tuyệt đối (`title` `99,55%`, `authors` `98,79%`, `year` `98,54%`); xét trung bình trên từng bài báo (*macro-average*), **cả 6/6 trường** đều cải thiện sau `Field Union` (dao động vi mô `-0,05` và `-0,22` điểm phần trăm trên tổng toàn kho ở `title` và `authors` chỉ phản ánh việc mẫu số của các bó `.bib` đầy đủ bị nén mạnh hơn so với các mục đơn lẻ).
-- **Quy mô danh mục tham khảo cấp bài báo & hiện tượng đuôi cực nặng:** Trong **22.369 bài báo** trích xuất được tài liệu tham khảo (còn **660** bài có TeX không chứa khối tham chiếu và **1.971** bài không có TeX), số mục `bibtex` trung vị là **44 mục/bài** (`Q25 = 29`, `Q75 = 66`, `P95 = 119`). Cá biệt tồn tại hai bài ngoại lai là `2408.01285` (**102.109** mục sau dedup từ `104.336` mục thô) và `2408.09430` (**90.079** mục sau dedup từ `92.168` mục thô) do tác giả đính kèm toàn bộ kho cơ sở dữ liệu `.bib` cá nhân/nhóm nghiên cứu vào gói nguồn arXiv dù chỉ trích dẫn thực tế vài chục bài. Hai trường hợp cực trị này chiếm `13,82%` tổng số dòng bảng `bibtex` toàn kho và là tâm điểm phân tích độ trễ $\mathcal{O}(R^2)$ tại Chương 8.
+- **Nén 58,87% kho tài liệu tham khảo (`3.421.236` $\rightarrow$ `1.407.279` mục):** Ngay ở nhóm bài chỉ có một phiên bản ($N = 1$), tỷ lệ gộp trùng đã đạt **-37,21%** (`1.053.083` $\rightarrow$ `661.185`) do nhiều bài báo đính kèm đồng thời tệp `.bib` gốc lẫn tệp `.bbl` đã biên dịch (hoặc khối `\begin{thebibliography}`). Ở nhóm đa phiên bản, tỷ lệ gộp trùng tăng dần lên **-60,11%** ($N = 2$: `1.254.752` $\rightarrow$ `500.477`), **-75,34%** ($N = 3$: `664.348` $\rightarrow$ `163.851`) và **-81,79%** ($N \ge 4$: `449.053` $\rightarrow$ `81.766`).
+- **Tăng vọt độ lấp đầy các trường định danh thưa nhờ `Field Union`:** Khi hợp nhất các trường khuyết từ nhiều nguồn/phiên bản trong cùng cụm tương đương, tỷ lệ bản ghi có `journal` tăng mạnh **+12,31 điểm phần trăm** (`65,28%` $\rightarrow$ `77,59%`, cải thiện trên **14.349 bài báo**), trường `url` (bao gồm cả URL `https://arxiv.org/abs/<id>` được tổng hợp tự động) tăng **+11,22 điểm phần trăm** (`37,91%` $\rightarrow$ `49,13%`, cải thiện trên **15.054 bài báo**), và trường `doi` tăng **+4,30 điểm phần trăm** (`29,81%` $\rightarrow$ `34,11%`, cải thiện trên **8.089 bài báo**). Các trường nòng cốt giữ mức phủ gần tuyệt đối (`title` `99,57%`, `authors` `98,81%`, `year` `98,53%` — tăng `+0,04` điểm %); xét trung bình trên từng bài báo (*macro-average*), **cả 6/6 trường** đều cải thiện sau `Field Union` (dao động vi mô `-0,05` và `-0,21` điểm phần trăm trên tổng toàn kho ở `title` và `authors` chỉ phản ánh việc mẫu số của các bó `.bib` đầy đủ bị nén mạnh hơn so với các mục đơn lẻ).
+- **Quy mô danh mục tham khảo cấp bài báo & hiện tượng đuôi cực nặng:** Trong **22.630 bài báo** trích xuất được tài liệu tham khảo (`90,52%` toàn kho và `98,27%` tập có TeX; chỉ còn **399** bài có TeX không chứa khối tham chiếu và **1.971** bài không có TeX), số mục `bibtex` trung bình là **62,19 mục/bài**, trung vị **44 mục/bài** (`Q25 = 29`, `Q75 = 66`, `P95 = 119`, `P99 = 205`). Cá biệt tồn tại hai bài ngoại lai là `2408.01285` (**102.109** mục sau dedup từ `104.336` mục thô) và `2408.09430` (**90.079** mục sau dedup từ `92.168` mục thô) do tác giả đính kèm toàn bộ kho cơ sở dữ liệu `.bib` cá nhân/nhóm nghiên cứu vào gói nguồn arXiv dù chỉ trích dẫn thực tế vài chục bài. Hai trường hợp cực trị này chiếm `13,66%` tổng số dòng bảng `bibtex` toàn kho và là tâm điểm phân tích độ trễ $\mathcal{O}(R^2)$ tại Chương 8.

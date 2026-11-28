@@ -28,13 +28,13 @@ Tập thống kê Milestone 1 quy mô toàn bộ `25.000` ID được đặt t�
 
 ## 2. Bộ 4 tệp thống kê của Milestone 2 (`stats/m2/`)
 
-Tập thống kê Milestone 2 (`25.000` bài báo / `41.629` phiên bản) được đặt tại `stats/m2/`. Quy ước đọc chuỗi ID `arxivid` luôn dùng `dtype={"arxivid": str}` khi nạp bằng `pandas.read_csv()`.
+Tập thống kê Milestone 2 (`25.000` bài báo / `41.615` phiên bản) được đặt tại `stats/m2/`. Quy ước đọc chuỗi ID `arxivid` luôn dùng `dtype={"arxivid": str}` khi nạp bằng `pandas.read_csv()`.
 
 | Tệp bắt buộc | Nguồn sinh ra | Chương sử dụng trong sách |
 | :--- | :--- | :--- |
 | `stats/m2/m2_summary.json` | `parsing/export_m2.py` (`ShardedParquetExporter.close`) | Chương 7 (Mục 7.1–7.4 — độ phủ phiên bản, tỷ lệ dùng tệp `.tex`, khử trùng lặp văn bản & BibTeX tổng hợp) |
 | `stats/m2/m2_papers_stats.csv` | `parsing/export_m2.py` (`PaperStats` cấp bài báo) | Chương 7 (Mục 7.2 phân phối `n_elements`; Mục 7.3 phân tầng $N=1,2,3,\ge 4$; Mục 7.4 `Field Union` từ các cột `*_before`/`*_after` & phân vị BibTeX) & Chương 8 (Mục 8.2 phân phối độ trễ cấp bài báo) |
-| `stats/m2/m2_elements_kind.csv` | `parsing/export_m2.py` | Chương 7 (Mục 7.2 — phân bố 8 loại nút `kind` trên `14.880.359` phần tử duy nhất) |
+| `stats/m2/m2_elements_kind.csv` | `parsing/export_m2.py` | Chương 7 (Mục 7.2 — phân bố 8 loại nút `kind` trên `14.879.728` phần tử duy nhất) |
 | `stats/m2/m2_performance.json` | `parsing/pipeline.py` (`_save_performance`) | Chương 8 (Mục 8.2 Runtime thực thi & phân rã CPU 4 chặng trên `12` worker; Mục 8.3 RAM RSS & dung lượng Sharded Parquet) |
 
 ## 3. Bộ 4 tệp thống kê của Milestone 3 (`stats/m3/`)

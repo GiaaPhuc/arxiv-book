@@ -145,8 +145,8 @@ if HAS_STATS:
         ("Kích thước TB mỗi bài báo SAU khi bỏ ảnh — giữ .tex/.bib/.bbl (bytes)", fmt_bytes_dual(b_paper.get("kept_tex_bib"))),
         ("Tỷ lệ dung lượng giữ lại trên tổng dung lượng giải nén", fmt_pct(summary.get("kept_over_raw_uncompressed"))),
         ("Số tài liệu tham khảo trung bình mỗi bài báo", fmt_float(summary.get("mean_refs_per_paper"))),
-        ("Độ phủ bài báo tìm thấy trên Semantic Scholar — tỷ lệ (a)", f"{fmt_pct(summary.get('s2_coverage_papers'))} ({fmt_int(s2_found)} bài)"),
-        ("Số bài S2 trả HTTP 404 / chưa lập chỉ mục (not_indexed)", fmt_int(s2_not_indexed)),
+        ("Độ phủ bài báo có dữ liệu tham khảo — tỷ lệ (a)", f"{fmt_pct(summary.get('s2_coverage_papers'))} ({fmt_int(s2_found)} bài)"),
+        ("Số bài khuyết tham khảo sau dự phòng cục bộ (not_indexed — S2 404)", fmt_int(s2_not_indexed)),
     ]
     if s2_local_bib > 0:
         overview_rows.append(("Số bài S2 404 bù từ .bib/.bbl cục bộ (local_bib — tách riêng)", fmt_int(s2_local_bib)))
@@ -199,16 +199,15 @@ if HAS_STATS:
     ax1.set_xlabel("Số lượng phiên bản")
     ax1.set_title("Phân bố trạng thái xử lý các phiên bản")
     for b, c in zip(bars1, s_counts):
-        if c > 0:
-            pct = c / total_p * 100
-            pct_str = "<0.01%" if pct < 0.01 else f"{pct:.2f}%"
-            ax1.text(
-                b.get_width() + total_p * 0.015,
-                b.get_y() + b.get_height() / 2,
-                f"{c:,} ({pct_str})",
-                va="center",
-                fontsize=8.5,
-            )
+        pct = c / total_p * 100
+        pct_str = "0.00%" if c == 0 else ("<0.01%" if pct < 0.01 else f"{pct:.2f}%")
+        ax1.text(
+            b.get_width() + total_p * 0.015,
+            b.get_y() + b.get_height() / 2,
+            f"{c:,} ({pct_str})",
+            va="center",
+            fontsize=8.5,
+        )
     ax1.set_xlim(0, max(s_counts) * 1.44 if max(s_counts) else 10)
 
     ver_dist = {int(k): int(v) for k, v in summary.get("versions_per_paper", {}).items()}
@@ -244,13 +243,13 @@ else:
     show_pending_box("Cặp biểu đồ phân bố trạng thái gói nguồn và phân phối số phiên bản v1..vN tại Mục 3.2")
 ```
 
-- **Phân bố trạng thái gói nguồn:** Kết quả phân loại trên tổng số **41.629 phiên bản** phản ánh sát đặc trưng xuất bản thực tế trên arXiv [[4, 5]](#tai-lieu-tham-khao):
-  - Có **38.737 phiên bản (93,05%)** ở trạng thái `ok` (cung cấp đầy đủ mã nguồn `.tex`, `.bib` và `.bbl`), cùng **5 phiên bản (0,01%)** ở trạng thái `ok_no_tex` (giải nén thành công nhưng gói nguồn không chứa tệp `.tex` hợp lệ).
-  - Có **2.751 phiên bản (6,61%)** ở trạng thái `no_source` (bài báo nộp trực tiếp tệp PDF biên dịch sẵn hoặc kho zip nhị phân; ở kiến trúc mới được ngắt sớm ngay tại HTTP Header `Content-Type` với `wire_bytes = 0` và lớp dự phòng 512 bytes magic `%PDF`/`PK` nhằm tiết kiệm băng thông).
+- **Phân bố trạng thái gói nguồn:** Kết quả phân loại trên tổng số **41.615 phiên bản** phản ánh sát đặc trưng xuất bản thực tế trên arXiv [[4, 5]](#tai-lieu-tham-khao):
+  - Có **38.725 phiên bản (93,06%)** ở trạng thái `ok` (cung cấp đầy đủ mã nguồn `.tex`, `.bib` và `.bbl` xuyên suốt cả 5 dải), cùng **5 phiên bản (0,01%)** ở trạng thái `ok_no_tex` (giải nén thành công nhưng gói nguồn không chứa tệp `.tex` hợp lệ).
+  - Có **2.749 phiên bản (6,61%)** ở trạng thái `no_source` (bài báo nộp trực tiếp tệp PDF biên dịch sẵn hoặc kho zip nhị phân; ở kiến trúc `v3.18` được ngắt sớm ngay tại HTTP Header `Content-Type` với `wire_bytes = 0` và lớp dự phòng 512 bytes magic `%PDF`/`PK` nhằm tiết kiệm băng thông).
   - **Giải trình minh bạch `121` phiên bản `not_found (0,29%)` trên `/src/<id>v<n>`:** Dù siêu dữ liệu bài báo có liệt kê đủ các phiên bản `v1..vN`, máy chủ nguồn `export.arxiv.org/src/<id>v<n>` vẫn trả `HTTP 404` trên một số ít bản nháp (thường do bản nháp bị rút/ẩn nguồn hoặc lỗi AutoTeX phía arXiv). Tuân thủ đúng quy ước bản ghi rỗng của đề bài, hệ thống **vẫn khởi tạo thư mục phiên bản và lưu tệp rỗng `v<n>/meta.json` (`kept_bytes = 0`, kèm `error = "HTTP 404 on /src/"`)** giống như bản chỉ có PDF (`no_source`) để bảo đảm dãy `v1..vN` liên tục, nhưng gắn trạng thái `not_found` và **không tính vào số bài/phiên bản thu thập thành công (`papers_success`, `success_rate_pairs`)**.
-  - **Cô lập an toàn `15` phiên bản `corrupt (0,04%)`:** Toàn bộ 15 ca `corrupt` ghi nhận trong `summary.json["top_errors"]` đều xuất phát từ gói nguồn chứa tên tệp trùng thiết bị hệ thống dành riêng của Windows (`aux` 6 ca, `weixiang/con.tex` 2 ca, `con.tex` 2 ca, `AAAI25/LaTeX/con.pdf` 2 ca, `img/aux.pdf`, `Sections/con.tex`, và 1 tên tệp dài/đặc biệt). Cơ chế kiểm tra an toàn đường dẫn `_safe_member_path` cùng kiểm tra CRC32/ISIZE tầng C của `_FastGzipStream` giúp cô lập từng gói lỗi này mà không làm gián đoạn quá trình thu thập 25.000 bài báo; ghi nhận **0 phiên bản (0,00%)** `failed` do đứt kết nối chưa phục hồi.
-  - Tỷ lệ thành công cấp phiên bản hợp lệ (`ok` + `ok_no_tex` + `no_source`) đạt mức rất cao: **99,67%** (**41.493 / 41.629** phiên bản).
-- **Phân phối số phiên bản mỗi bài báo ($\bar{V}$):** Biểu đồ bên phải thể hiện quy luật lệch phải điển hình của chu kỳ hoàn thiện bản thảo khoa học: hơn một nửa số bài báo dừng ở bản nộp gốc $v_1$ (**14.156 bài**, chiếm **56,62%**), tiếp theo là $v_2$ (**7.072 bài**, **28,29%**) và $v_3$ (**2.584 bài**, **10,34%**); nhóm từ $v_4$ đến $v_{30}$ chỉ chiếm **1.188 bài (4,75%)**. Số phiên bản trung bình thực tế đạt **$\bar{V} = 1{,}67$ phiên bản/bài**, với phiên bản cao nhất ghi nhận được trong toàn tập là **$N = 30$** (`v30`, mã bài `2406.10476`).
+  - **Cô lập an toàn `15` phiên bản `corrupt (0,04%)`:** Toàn bộ 15 ca `corrupt` ghi nhận trong `summary.json["top_errors"]` đều xuất phát từ gói nguồn chứa tên tệp trùng thiết bị hệ thống dành riêng của Windows (`aux` 6 ca, `weixiang/con.tex` 2 ca, `con.tex` 2 ca, `AAAI25/LaTeX/con.pdf` 2 ca, `img/aux.pdf`, `Sections/con.tex`, và 1 đường dẫn bảng đặt tên đặc biệt). Cơ chế kiểm tra an toàn đường dẫn `_safe_member_path` cùng kiểm tra CRC32/ISIZE tầng C của `_FastGzipStream` giúp cô lập từng gói lỗi này mà không làm gián đoạn quá trình thu thập 25.000 bài báo; ghi nhận **0 phiên bản (0,00%)** `failed` do đứt kết nối chưa phục hồi.
+  - Tỷ lệ thành công cấp phiên bản hợp lệ (`ok` + `ok_no_tex` + `no_source`) đạt mức rất cao: **99,67%** (**41.479 / 41.615** phiên bản).
+- **Phân phối số phiên bản mỗi bài báo ($\bar{V}$):** Biểu đồ bên phải thể hiện quy luật lệch phải điển hình của chu kỳ hoàn thiện bản thảo khoa học: hơn một nửa số bài báo dừng ở bản nộp gốc $v_1$ (**14.160 bài**, chiếm **56,64%**), tiếp theo là $v_2$ (**7.071 bài**, **28,28%**) và $v_3$ (**2.582 bài**, **10,33%**); nhóm từ $v_4$ đến $v_{30}$ chỉ chiếm **1.187 bài (4,75%)** (`v4 = 733`, `v5 = 282`, `v6 = 96`, `v7 = 40`, `v8+ = 36`). Số phiên bản trung bình thực tế đạt **$\bar{V} = 1{,}66$ phiên bản/bài** (`1,6646`), với phiên bản cao nhất ghi nhận được trong toàn tập là **$N = 30$** (`v30`, mã bài `2406.10476`).
 
 ---
 
@@ -355,11 +354,11 @@ else:
 ```
 
 - **Tác động định lượng của việc loại bỏ hình ảnh nhị phân & Bảo toàn `.tex / .bib / .bbl`:** Bảng số liệu trình bày đồng thời ở cả cấp bài báo lẫn cấp phiên bản giải nén để bảo đảm tính minh bạch tuyệt đối:
-  - Ở cấp bài báo (tổng hợp mọi phiên bản), kích thước giải nén gốc trung bình là **9.106.173 B (~8,68 MiB/bài)**. Sau khi trích xuất chọn lọc loại bỏ toàn bộ ảnh nhị phân và chỉ giữ lại **`.tex`, `.bib` và `.bbl`**, dung lượng lưu trữ chỉ còn **922.392 B (~900,8 KiB/bài)**, đạt mức giảm dung lượng thực tế **-89,87%** (chỉ giữ lại **10,13%** dung lượng ban đầu). Việc bổ sung giữ lại tệp `.bbl` chỉ chiếm tỷ trọng dung lượng rất nhỏ nhưng bảo toàn nguyên vẹn nguồn trích dẫn cho những bài báo không đính kèm `.bib`, phục vụ trực tiếp quá trình chuyển đổi ngược về `BibtexRow` ở Milestone 2.
-  - Ở cấp phiên bản, dung lượng giải nén trung bình giảm mạnh từ **5.876.164 B (~5,60 MiB/phiên bản)** xuống còn **595.215 B (~581,3 KiB/phiên bản)**, cũng ghi nhận mức giảm **-89,87%**.
-  - Kết quả này chứng minh hình ảnh nhị phân (ảnh biểu đồ `.pdf`, vector `.eps`, bitmap `.png`/`.jpg`) chiếm tới gần **90%** (**89,87%**) tổng trọng lượng giải nén của các gói nguồn trên arXiv.
-- **Khử trùng lặp liên phiên bản (`cross_version_dedup`):** Phân tích hàm băm SHA-256 trên tập **10.279 bài báo đa phiên bản có mã nguồn** cho thấy có tới **35.175 tệp** hoàn toàn trùng khớp nội dung giữa các phiên bản (chiếm **6.438.032.446 B (~6,00 GiB)**, tương đương tỷ lệ trùng lặp **38,92%** dung lượng mã nguồn). Ngoài ra, có **699 cặp phiên bản** hoàn toàn không thay đổi bất kỳ tệp mã nguồn nào (chỉ cập nhật metadata hoặc lời nhận xét trên arXiv). Đây là phát hiện thực nghiệm quý giá làm đầu vào trực tiếp cho mô-đun Deduplication ở Milestone 2.
-- **Lợi ích thiết thực cho toàn chuỗi dự án:** Việc lọc bỏ hình ảnh ngay trong luồng giải nén `_FastGzipStream` giúp gói gọn toàn bộ kho ngữ liệu **25.000 bài báo** (**41.629 phiên bản**) chỉ còn **23,69 GiB** trên đĩa thay vì hàng trăm GiB, bảo toàn hoàn toàn dung lượng khả dụng của máy ảo và tối ưu hóa vượt bậc tốc độ I/O cho bộ phân tích cú pháp LaTeX ở Milestone 2.
+  - Ở cấp bài báo (tổng hợp mọi phiên bản), kích thước gói nén tải về trung bình là `7.440.290 B (~7,10 MiB/bài)` và kích thước giải nén gốc kèm ảnh là **9.104.284 B (~8,68 MiB/bài)**. Sau khi trích xuất chọn lọc loại bỏ toàn bộ ảnh nhị phân và chỉ giữ lại **`.tex`, `.bib` và `.bbl`**, dung lượng lưu trữ chỉ còn **924.821 B (~903,1 KiB/bài)**, đạt mức giảm dung lượng thực tế **-89,84%** (chỉ giữ lại **10,16%** dung lượng ban đầu). Việc bảo toàn đầy đủ tệp `.bbl` xuyên suốt cả 5 dải chỉ chiếm tỷ trọng dung lượng rất nhỏ nhưng khôi phục nguyên vẹn nguồn trích dẫn cho hàng trăm bài báo không đính kèm `.bib`, phục vụ trực tiếp quá trình chuyển đổi ngược về `BibtexRow` ở Milestone 2.
+  - Ở cấp phiên bản giải nén, dung lượng gói nén tải về trung bình là `4.610.562 B (~4,40 MiB/phiên bản)` và dung lượng giải nén gốc giảm mạnh từ **5.876.765 B (~5,60 MiB/phiên bản)** xuống còn **596.967 B (~583,0 KiB/phiên bản)**, cũng ghi nhận mức giảm **-89,84%**.
+  - Kết quả này chứng minh hình ảnh nhị phân (ảnh biểu đồ `.pdf`, vector `.eps`, bitmap `.png`/`.jpg`) chiếm tới gần **90%** (**89,84%**) tổng trọng lượng giải nén của các gói nguồn trên arXiv.
+- **Khử trùng lặp liên phiên bản (`cross_version_dedup`):** Phân tích hàm băm SHA-256 trên tập **10.276 bài báo đa phiên bản có mã nguồn** cho thấy có tới **35.458 tệp** hoàn toàn trùng khớp nội dung giữa các phiên bản (chiếm **6.444.652.027 B (~6,00 GiB)**, tương đương tỷ lệ trùng lặp **38,86%** dung lượng mã nguồn). Ngoài ra, có **694 cặp phiên bản** hoàn toàn không thay đổi bất kỳ tệp mã nguồn nào (chỉ cập nhật metadata hoặc lời nhận xét trên arXiv). Đây là phát hiện thực nghiệm quý giá làm đầu vào trực tiếp cho mô-đun Deduplication ở Milestone 2.
+- **Lợi ích thiết thực cho toàn chuỗi dự án:** Việc lọc bỏ hình ảnh ngay trong luồng giải nén Cut-Through / `_FastGzipStream` giúp gói gọn toàn bộ kho ngữ liệu **25.000 bài báo** (**41.615 phiên bản**) chỉ còn **22,52 GiB** (`22,517 GiB`) trên đĩa thay vì hàng trăm GiB, bảo toàn hoàn toàn dung lượng khả dụng của máy ảo và tối ưu hóa vượt bậc tốc độ I/O cho bộ phân tích cú pháp LaTeX ở Milestone 2.
 
 ---
 
@@ -439,7 +438,7 @@ if HAS_STATS:
             {
                 "Tổng tham khảo thu được": fmt_int(summary.get("refs_total")),
                 "Tham khảo có arXiv ID (vào bảng references)": fmt_int(summary.get("refs_with_arxiv_id")),
-                "Trung bình / bài": round(float(refs_s.mean()), 2),
+                "Trung bình / bài": f"{float(refs_s.mean()):.2f}",
                 "Q25": round(float(q[0.25]), 1),
                 "Trung vị (Q50)": round(float(q[0.5]), 1),
                 "Q75": round(float(q[0.75]), 1),
@@ -455,10 +454,10 @@ else:
 ```
 
 - **Phân phối số tham khảo trên mỗi bài báo:**
-  - Tổng số tài liệu tham khảo thu được qua Semantic Scholar Batch API là **3.480.899 mục**.
-  - Giá trị trung vị ($Q_{50}$) đạt **40,0 mục/bài**, với các phân vị $Q_{25} = 24{,}0$, $Q_{75} = 61{,}0$ và $P_{95} = 119{,}0$, phản ánh rằng đại đa số công bố khoa học có từ 24 đến 61 trích dẫn (có 634 bài ghi nhận 0 tham khảo, gồm 623 bài được S2 lập chỉ mục và 11 bài `not_indexed`).
-  - Giá trị trung bình toàn cục tăng lên **139,24 mục/bài** (`139,30` trong nhóm được S2 lập chỉ mục), bỏ xa trung vị do hiện tượng đuôi cực nặng: toàn tập tồn tại **79 bài báo ngoại lai** (`n_refs > 1.000`, chỉ chiếm **0,32%** số bài, cực đại lên tới **96.376 mục** ở bài `2407.09252`) nhưng đóng góp tới **2.239.779 mục tham khảo (64,34% tổng số tham khảo)**. Nếu tách riêng nhóm 79 bài ngoại lai này, **24.921 bài báo phổ thông còn lại** đạt trung bình **49,80 mục/bài**, tiệm cận quy luật phân phối log-normal chuẩn trong trích dẫn khoa học.
+  - Tổng số tài liệu tham khảo thu được trên toàn bộ 25.000 bài báo là **1.055.072 mục**.
+  - Giá trị trung vị ($Q_{50}$) đạt **37,0 mục/bài**, với các phân vị $Q_{25} = 21{,}0$, $Q_{75} = 56{,}0$, $P_{95} = 97{,}0$ và $P_{99} = 160{,}0$, phản ánh rằng đại đa số công bố khoa học có từ 21 đến 56 trích dẫn (có `1.677` bài ghi nhận `0` tham khảo, gồm `1.665` bài ở trạng thái `found` chưa có liên kết trích dẫn trích xuất trên S2 và `12` bài `not_indexed`).
+  - Giá trị trung bình toàn cục đạt **42,20 mục/bài** (`42,22` trên nhóm `found`), bám sát trung vị `37,0` và tuân theo đúng quy luật phân phối lệch phải tự nhiên của văn bản khoa học: giá trị cực đại là **770 mục** (bài khảo sát `2408.15323`) và **không có bất kỳ bài báo nào vượt quá `1.000` tham khảo** — chứng minh việc siết điều kiện phân trang `_references_truncated()` trong `v3.18` đã triệt tiêu hoàn toàn hiện tượng lặp trang giả tạo từng gặp ở phiên bản cũ.
 - **Giải nghĩa, đánh giá ba tỷ lệ chất lượng & Minh bạch hóa `HTTP 404` trên Semantic Scholar:** Nhóm bóc tách rành mạch ba chỉ số bổ trợ nhau cùng tỷ lệ `HTTP 404` thực tế của S2 API:
-  - **Tỷ lệ (a) — Độ phủ bài báo (`s2_coverage_papers`) & Số bài S2 trả `HTTP 404` (`not_indexed`):** Trong tập `summary.json`, có **24.989 / 25.000 bài báo (`99,96%`)** ghi nhận trạng thái `found` và đúng **11 bài (`0,04%`)** ở trạng thái `not_indexed` (lưu marker `raw: {"status": 404}` — do độ trễ lập chỉ mục của S2 đối với một số bài nộp mới hoặc thuộc chuyên ngành hẹp chưa có liên kết trích dẫn). Lưu ý rằng nhật ký thực thi `performance.json["s2"]` ghi nhận tổng cộng **18** bài gặp phản hồi `404` trong các lượt quét trực tuyến trước khi xử lý bổ sung (tức có `7` bài đã được bù/khôi phục từ lần kiểm tra lại hoặc nhánh dự phòng `.bib/.bbl`, tương ứng độ phủ S2 API thuần ở mức `99,93%`). Để phản ánh trung thực hành vi của S2 API mà không bị sai lệch bởi nguồn dự phòng cục bộ, chuẩn `v3.18` tách riêng hoàn toàn trạng thái `not_indexed` (`HTTP 404`) khỏi nguồn `local_bib`.
-  - **Tỷ lệ (b) — Độ hoàn chỉnh siêu dữ liệu tham khảo (`mean_refs_complete_ratio`):** Đạt **85,46%**. Trung bình mỗi bài báo có tới 85,46% số trích dẫn thu thập được đầy đủ cả ba trường thông tin nòng cốt: *tiêu đề, danh sách tác giả và năm công bố*.
-  - **Tỷ lệ (c) — Tỷ trọng tham khảo có arXiv ID (`share_refs_with_arxiv_id`):** Toàn tập ghi nhận **547.991** trích dẫn mang định danh arXiv hợp lệ, tương ứng tỷ trọng toàn cục **15,74%** (sụt giảm mạnh so với tỷ lệ nội bộ thông thường do 79 bài ngoại lai `> 1.000` trích dẫn chỉ có **1,16%** — 26.030 mục — mang arXiv ID; trên **24.921 bài báo phổ thông còn lại**, tỷ trọng tham khảo có arXiv ID đạt mức rất cao là **42,06%** — `521.961 / 1.241.120`, bảo đảm nguồn liên kết dồi dào cho đồ thị trích dẫn ở Milestone 3).
+  - **Tỷ lệ (a) — Độ phủ bài báo (`s2_coverage_papers`) & Tách bạch `HTTP 404` của S2 API so với nhánh dự phòng cục bộ:** Trong `summary.json`, có **24.988 / 25.000 bài báo (`99,95%`)** có dữ liệu ở trạng thái `found` và **12 bài (`0,05%`)** giữ nguyên trạng thái `not_indexed` (`raw: {"status": 404}`). Đối chiếu trực tiếp toàn bộ `25.000` tệp phản hồi gốc `s2_references.raw.json.gz` cho thấy: có **24.972 / 25.000 bài báo (`99,89%`)** nhận phản hồi `HTTP 200 OK` trực tiếp từ **Semantic Scholar Graph API** (`24.968` bài qua `POST /paper/batch` và `4` bài gọi phân trang `GET /references`), trong khi tổng cộng **28 bài (`0,11%`)** bị S2 API trả `HTTP 404` (do độ trễ lập chỉ mục đối với một số bản thảo mới hoặc chuyên ngành hẹp). Trong `28` bài S2 trả `404` này, có **16 bài (`0,06%`)** sở hữu danh mục `.bib`/`.bbl` hợp lệ đã được khôi phục cục bộ qua nhánh dự phòng `--enable-bib-fallback` (được đóng dấu nguồn gốc riêng `source: "local_bib"` trong dữ liệu thô) và **12 bài (`0,05%`)** không có tham chiếu `.bib`/`.bbl` nên giữ nguyên `not_indexed`. Cách báo cáo tách lớp này bảo đảm phản ánh trung thực độ phủ thực tế `99,89%` (`28` ca `404`) của S2 API mà không bị che khuất bởi nguồn dự phòng cục bộ.
+  - **Tỷ lệ (b) — Độ hoàn chỉnh siêu dữ liệu tham khảo (`mean_refs_complete_ratio`):** Đạt **85,55%**. Trung bình mỗi bài báo có tới 85,55% số trích dẫn thu thập được đầy đủ cả ba trường thông tin nòng cốt: *tiêu đề, danh sách tác giả và năm công bố*.
+  - **Tỷ lệ (c) — Tỷ trọng tham khảo có arXiv ID (`share_refs_with_arxiv_id`):** Toàn tập ghi nhận **499.378 / 1.055.072** trích dẫn mang định danh arXiv hợp lệ, tương ứng tỷ trọng toàn cục rất cao là **47,33%**, cung cấp tập ứng viên đối sánh (*matching pool*) dồi dào và sạch nhiễu cho bài toán liên kết tham khảo ở Milestone 3.

@@ -1,132 +1,813 @@
 {
-  "active_seconds": 251113.45258814588,
+  "active_seconds": 153401.39052682233,
   "arxiv": {
-    "auto_resumes": 371,
-    "cooldown_seconds": 36690.0,
-    "http_429": 311,
-    "range_resumes": 344,
-    "retry_wait_seconds": 375.0,
-    "thermal_cooldowns": 96
+    "auto_resumes": 1,
+    "byte_budget_breathers": 35,
+    "cdn_edge_hits": 25702,
+    "cdn_hit_bytes": 132799779101,
+    "cdn_hit_seconds": 21369.068217664968,
+    "cdn_miss_bytes": 46643140573,
+    "cdn_miss_seconds": 21618.59539251425,
+    "cdn_origin_misses": 9399,
+    "cdn_shield_hits": 6662,
+    "cdn_unknown": 0,
+    "cooldown_seconds": 852.49,
+    "defensive_soft_pacing_triggers": 3,
+    "early_header_rejects": 2767,
+    "heavy_versions_interleaved": 316,
+    "hit_recovery_cooldowns": 0,
+    "http_429": 1,
+    "http_429_edge_fast": 1,
+    "http_429_queue_timeout": 0,
+    "in_flight_extractions": 41763,
+    "range_resumes": 0,
+    "rate_limit_wait_seconds": 99916.007361,
+    "requests_ok": 41763,
+    "retry_wait_seconds": 0.0,
+    "thermal_cooldowns": 2,
+    "wire_bytes": 179442919674,
+    "wire_download_seconds": 49278.09494128025
   },
-  "cooldown_retry_seconds": 120810.0,
+  "cooldown_retry_seconds": 2118.76,
   "environment": {
-    "colab_cpu": false,
-    "cpu_count_logical": 12,
-    "cpu_only": false,
+    "colab_cpu": true,
+    "cpu_count_logical": 8,
+    "cpu_only": true,
     "is_google_colab": true,
-    "python_version": "3.13.16"
+    "python_version": "3.13.18"
   },
-  "last_run_at": "2026-11-13T16:13:34+00:00",
+  "last_run_at": "2026-11-27T18:56:56+00:00",
   "resources": {
-    "disk_final_bytes": 25433014346.0,
-    "disk_peak_bytes": 25433014346.0,
-    "ram_mean_bytes": 204661193.55987757,
-    "ram_peak_bytes": 380502016.0,
-    "ram_samples": 60774.0
+    "disk_final_bytes": 24177261700.0,
+    "disk_peak_bytes": 24177261700.0,
+    "ram_mean_bytes": 108178711.55848308,
+    "ram_peak_bytes": 292298752.0,
+    "ram_samples": 31274.0
   },
-  "runs": 38,
+  "runs": 18,
   "s2": {
-    "batches": 2077,
-    "http_429": 2592,
-    "papers_not_indexed": 18,
-    "papers_ok": 23523,
-    "retry_wait_seconds": 83745.0
+    "batches": 172,
+    "http_429": 251,
+    "papers_not_indexed": 12,
+    "papers_ok": 25623,
+    "retry_wait_seconds": 1266.2700000000002
   },
   "sessions": [
     {
-      "active_seconds": 5303.749969709999,
-      "cooldown_retry_seconds": 3885.0,
-      "ended_at": "2026-11-07T06:36:15+00:00",
-      "papers_done": 3070,
-      "run": 7,
-      "source_code_hash": "94f3a5a85759d633",
-      "stage_seconds": {
-        "discovery": 20.409849500000064,
-        "download": 4678.236873176993,
-        "extract": 53.08847795900351,
-        "s2": 552.014769074003
+      "active_seconds": 26365.556625,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 8108,
+        "hit_bytes": 35395342405,
+        "hit_seconds": 4960.992936,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 4988311,
+        "miss_seconds": 0.657367,
+        "origin_misses": 1,
+        "shield_hits": 69,
+        "unknown": 0
       },
-      "started_at": "2026-11-07T05:17:47+00:00"
-    },
-    {
-      "active_seconds": 35.7373017459995,
       "cooldown_retry_seconds": 0.0,
-      "ended_at": "2026-11-07T06:37:11+00:00",
-      "papers_done": 3071,
-      "run": 8,
-      "source_code_hash": "94f3a5a85759d633",
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 21010.235109,
+        "requests_ok": 8178,
+        "wire_bytes": 35400330716,
+        "wire_download_seconds": 5037.721468
+      },
+      "ended_at": "2026-11-20T13:51:41+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-20T13:51:41+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 5000,
+      "papers_skipped": 0,
+      "processed_attempts": 5000,
+      "resources": {
+        "avg_rss_mib": 88.316067,
+        "disk_final_bytes": 3018729331.0,
+        "disk_peak_bytes": 3018729331.0,
+        "final_disk_bytes": 3018729331,
+        "peak_disk_bytes": 3018729331,
+        "peak_rss_mib": 125.761719,
+        "ram_mean_bytes": 92606108.19521387,
+        "ram_peak_bytes": 131870720.0,
+        "ram_samples": 5307.0
+      },
+      "resumed": false,
+      "run": 1,
+      "run_id": "run-1-2026-11-20T06:28:58+00:00",
+      "source_code_hash": "77309efbcf92db39",
+      "source_revision": "77309efbcf92db39",
       "stage_seconds": {
         "discovery": 0.0,
-        "download": 35.09120620900012,
-        "extract": 0.37693029299953196,
-        "s2": 0.26916524399985065
-      },
-      "started_at": "2026-11-07T06:36:34+00:00"
-    },
-    {
-      "active_seconds": 4058.9511140700015,
-      "cooldown_retry_seconds": 2445.0,
-      "ended_at": "2026-11-07T08:22:10+00:00",
-      "papers_done": 3552,
-      "run": 9,
-      "source_code_hash": "94f3a5a85759d633",
-      "stage_seconds": {
-        "discovery": 8.881822296999871,
-        "download": 3492.843254349996,
-        "extract": 28.80311546300379,
-        "s2": 528.4229219600016
-      },
-      "started_at": "2026-11-07T07:23:32+00:00"
-    },
-    {
-      "active_seconds": 1813.154939885003,
-      "cooldown_retry_seconds": 1215.0,
-      "ended_at": "2026-11-07T08:51:52+00:00",
-      "papers_done": 3739,
-      "run": 10,
-      "source_code_hash": "94f3a5a85759d633",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 1607.5911027740021,
-        "extract": 10.308606300000065,
-        "s2": 195.25523081100073
-      },
-      "started_at": "2026-11-07T08:25:01+00:00"
-    },
-    {
-      "active_seconds": 2106.505940306025,
-      "cooldown_retry_seconds": 1515.0,
-      "ended_at": "2026-11-07T09:38:49+00:00",
-      "papers_done": 4000,
-      "run": 11,
-      "source_code_hash": "94f3a5a85759d633",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 1908.7755159729968,
-        "extract": 16.607119528026487,
-        "s2": 181.12330480500168
-      },
-      "started_at": "2026-11-07T09:06:51+00:00"
-    },
-    {
-      "active_seconds": 0.0,
-      "cooldown_retry_seconds": 0.0,
-      "ended_at": "2026-11-07T09:41:48+00:00",
-      "papers_done": 4000,
-      "run": 12,
-      "source_code_hash": "94f3a5a85759d633",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 0.0,
-        "extract": 0.0,
+        "download": 26049.90098,
+        "extract": 315.6556456055632,
         "s2": 0.0
       },
-      "started_at": "2026-11-07T09:41:44+00:00"
+      "started_at": "2026-11-20T06:28:58+00:00",
+      "started_at_utc": "2026-11-20T06:28:58+00:00",
+      "total_profiler_sec": 26365.556625,
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000078-IAD",
+        "early_header_rejects": 612,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 8178,
+        "use_http2": true
+      }
     },
     {
-      "active_seconds": 3383.063513881984,
-      "cooldown_retry_seconds": 2070.0,
-      "ended_at": "2026-11-07T15:29:51+00:00",
+      "active_seconds": 2980.474398284997,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 47,
+        "hit_bytes": 2183493731,
+        "hit_seconds": 325.83111,
+        "http_429_edge_fast": 1,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 994875885,
+        "miss_seconds": 525.746803,
+        "origin_misses": 207,
+        "shield_hits": 557,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 120.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 1881.129905,
+        "requests_ok": 811,
+        "wire_bytes": 3178369616,
+        "wire_download_seconds": 1064.200317
+      },
+      "ended_at": "2026-11-21T06:33:19+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-21T06:33:19+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 486,
+      "papers_skipped": 5000,
+      "processed_attempts": 486,
+      "resources": {
+        "avg_rss_mib": 78.899513,
+        "disk_final_bytes": 3363784307.0,
+        "disk_peak_bytes": 3363784307.0,
+        "final_disk_bytes": 3363784307,
+        "peak_disk_bytes": 3363784307,
+        "peak_rss_mib": 127.601562,
+        "ram_mean_bytes": 82732135.88405797,
+        "ram_peak_bytes": 133799936.0,
+        "ram_samples": 621.0
+      },
+      "resumed": true,
+      "run": 2,
+      "run_id": "run-2-2026-11-21T05:41:29+00:00",
+      "source_code_hash": "70e275bafe28cd70",
+      "source_revision": "70e275bafe28cd70",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 2958.8286958700696,
+        "extract": 21.645702414927428,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-21T05:41:29+00:00",
+      "started_at_utc": "2026-11-21T05:41:29+00:00",
+      "total_profiler_sec": 2980.474398284997,
+      "transport": {
+        "cdn_pop": "cache-ams-eham8680046-AMS",
+        "early_header_rejects": 70,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 811,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 9214.999551824025,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 2494,
+        "hit_bytes": 10313343273,
+        "hit_seconds": 1578.384544,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 833988238,
+        "miss_seconds": 768.953303,
+        "origin_misses": 74,
+        "shield_hits": 25,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 0.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 6631.616549,
+        "requests_ok": 2593,
+        "wire_bytes": 11147331511,
+        "wire_download_seconds": 2457.906659
+      },
+      "ended_at": "2026-11-21T13:44:45+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-21T13:44:45+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 1576,
+      "papers_skipped": 5486,
+      "processed_attempts": 1576,
+      "resources": {
+        "avg_rss_mib": 80.006949,
+        "disk_final_bytes": 4658078119.0,
+        "disk_peak_bytes": 4658078119.0,
+        "final_disk_bytes": 4658078119,
+        "peak_disk_bytes": 4658078119,
+        "peak_rss_mib": 84.464844,
+        "ram_mean_bytes": 83893366.474742,
+        "ram_peak_bytes": 88567808.0,
+        "ram_samples": 1841.0
+      },
+      "resumed": true,
+      "run": 3,
+      "run_id": "run-3-2026-11-21T11:10:55+00:00",
+      "source_code_hash": "70e275bafe28cd70",
+      "source_revision": "70e275bafe28cd70",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 9099.655992204072,
+        "extract": 115.34355961995266,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-21T11:10:55+00:00",
+      "started_at_utc": "2026-11-21T11:10:55+00:00",
+      "total_profiler_sec": 9214.999551824025,
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000055-IAD",
+        "early_header_rejects": 195,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 2593,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 1635.285755074994,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 1,
+        "edge_hits": 19,
+        "hit_bytes": 113121606,
+        "hit_seconds": 46.48267,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 1449695390,
+        "miss_seconds": 735.630293,
+        "origin_misses": 262,
+        "shield_hits": 61,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 0.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 677.68787,
+        "requests_ok": 342,
+        "wire_bytes": 1562816996,
+        "wire_download_seconds": 940.00246
+      },
+      "ended_at": "2026-11-21T14:17:34+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-21T14:17:34+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 181,
+      "papers_skipped": 7070,
+      "processed_attempts": 181,
+      "resources": {
+        "avg_rss_mib": 73.724866,
+        "disk_final_bytes": 4719066104.0,
+        "disk_peak_bytes": 4719066104.0,
+        "final_disk_bytes": 4719066104,
+        "peak_disk_bytes": 4719066104,
+        "peak_rss_mib": 78.109375,
+        "ram_mean_bytes": 77306125.3088685,
+        "ram_peak_bytes": 81903616.0,
+        "ram_samples": 327.0
+      },
+      "resumed": true,
+      "run": 4,
+      "run_id": "run-4-2026-11-21T13:50:14+00:00",
+      "source_code_hash": "70e275bafe28cd70",
+      "source_revision": "70e275bafe28cd70",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 1618.7616639910848,
+        "extract": 16.524091083909298,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-21T13:50:14+00:00",
+      "started_at_utc": "2026-11-21T13:50:14+00:00",
+      "total_profiler_sec": 1635.285755074994,
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000167-IAD",
+        "early_header_rejects": 14,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 342,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 19812.828005811836,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 221,
+        "hit_bytes": 3418374533,
+        "hit_seconds": 543.464675,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 16618292575,
+        "miss_seconds": 7633.232354,
+        "origin_misses": 2949,
+        "shield_hits": 1414,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 0.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 9855.390244,
+        "requests_ok": 4584,
+        "wire_bytes": 20036667108,
+        "wire_download_seconds": 9833.134815
+      },
+      "ended_at": "2026-11-22T00:21:49+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-22T00:21:49+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 2770,
+      "papers_skipped": 7254,
+      "processed_attempts": 2770,
+      "resources": {
+        "avg_rss_mib": 86.747863,
+        "disk_final_bytes": 6790104140.0,
+        "disk_peak_bytes": 6790104140.0,
+        "final_disk_bytes": 6790104140,
+        "peak_disk_bytes": 6790104140,
+        "peak_rss_mib": 150.632812,
+        "ram_mean_bytes": 90961727.51490653,
+        "ram_peak_bytes": 157949952.0,
+        "ram_samples": 3958.0
+      },
+      "resumed": true,
+      "run": 5,
+      "run_id": "run-5-2026-11-21T18:51:17+00:00",
+      "source_code_hash": "70e275bafe28cd70",
+      "source_revision": "70e275bafe28cd70",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 19700.12815188279,
+        "extract": 112.69985392904834,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-21T18:51:17+00:00",
+      "started_at_utc": "2026-11-21T18:51:17+00:00",
+      "total_profiler_sec": 19812.828005811836,
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000124-IAD",
+        "early_header_rejects": 290,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 4584,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 7970.949102254959,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 31,
+        "hit_bytes": 8999515251,
+        "hit_seconds": 2587.484813,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 8015250,
+        "miss_seconds": 3.227417,
+        "origin_misses": 9,
+        "shield_hits": 2176,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 0.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 4554.226748,
+        "requests_ok": 2216,
+        "wire_bytes": 9007530501,
+        "wire_download_seconds": 3329.739567
+      },
+      "ended_at": "2026-11-22T07:07:31+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-22T07:07:31+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 1315,
+      "papers_skipped": 10000,
+      "processed_attempts": 1315,
+      "resources": {
+        "avg_rss_mib": 86.224011,
+        "disk_final_bytes": 7874679665.0,
+        "disk_peak_bytes": 7874679665.0,
+        "final_disk_bytes": 7874679665,
+        "peak_disk_bytes": 7874679665,
+        "peak_rss_mib": 92.691406,
+        "ram_mean_bytes": 90412428.22110553,
+        "ram_peak_bytes": 97193984.0,
+        "ram_samples": 1592.0
+      },
+      "resumed": true,
+      "run": 6,
+      "run_id": "run-6-2026-11-22T04:54:29+00:00",
+      "source_code_hash": "70e275bafe28cd70",
+      "source_revision": "70e275bafe28cd70",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 7914.362541353992,
+        "extract": 56.58656090096747,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-22T04:54:29+00:00",
+      "started_at_utc": "2026-11-22T04:54:29+00:00",
+      "total_profiler_sec": 7970.949102254959,
+      "transport": {
+        "cdn_pop": "cache-itm1220077-ITM",
+        "early_header_rejects": 148,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 2216,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 8172.741254422936,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 1,
+        "edge_hits": 1676,
+        "hit_bytes": 8580808801,
+        "hit_seconds": 1710.536039,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 853444647,
+        "miss_seconds": 349.410107,
+        "origin_misses": 198,
+        "shield_hits": 494,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 360.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 5883.174812,
+        "requests_ok": 2368,
+        "wire_bytes": 9434253448,
+        "wire_download_seconds": 2217.39102
+      },
+      "ended_at": "2026-11-22T13:17:34+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-22T13:17:34+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 1414,
+      "papers_skipped": 11319,
+      "processed_attempts": 1414,
+      "resources": {
+        "avg_rss_mib": 122.5805,
+        "disk_final_bytes": 9020493204.0,
+        "disk_peak_bytes": 9020493204.0,
+        "final_disk_bytes": 9020493204,
+        "peak_disk_bytes": 9020493204,
+        "peak_rss_mib": 171.410156,
+        "ram_mean_bytes": 128534970.29107982,
+        "ram_peak_bytes": 179736576.0,
+        "ram_samples": 1704.0
+      },
+      "resumed": true,
+      "run": 7,
+      "run_id": "run-7-2026-11-22T10:55:03+00:00",
+      "source_code_hash": "70e275bafe28cd70",
+      "source_revision": "70e275bafe28cd70",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 8107.181521803218,
+        "extract": 65.55973261971849,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-22T10:55:03+00:00",
+      "started_at_utc": "2026-11-22T10:55:03+00:00",
+      "total_profiler_sec": 8172.741254422936,
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000028-IAD",
+        "early_header_rejects": 162,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 2368,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 1195.3426815450093,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 8,
+        "hit_bytes": 20638922,
+        "hit_seconds": 3.759895,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 904966705,
+        "miss_seconds": 428.520596,
+        "origin_misses": 217,
+        "shield_hits": 54,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 0.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 615.57201,
+        "requests_ok": 279,
+        "wire_bytes": 925605627,
+        "wire_download_seconds": 572.624066
+      },
+      "ended_at": "2026-11-22T13:50:15+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-22T13:50:15+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 184,
+      "papers_skipped": 12738,
+      "processed_attempts": 184,
+      "resources": {
+        "avg_rss_mib": 81.6419,
+        "disk_final_bytes": 9196203481.0,
+        "disk_peak_bytes": 9196203481.0,
+        "final_disk_bytes": 9196203481,
+        "peak_disk_bytes": 9196203481,
+        "peak_rss_mib": 83.148438,
+        "ram_mean_bytes": 85607736.76987448,
+        "ram_peak_bytes": 87187456.0,
+        "ram_samples": 239.0
+      },
+      "resumed": true,
+      "run": 8,
+      "run_id": "run-8-2026-11-22T13:30:07+00:00",
+      "source_code_hash": "70e275bafe28cd70",
+      "source_revision": "70e275bafe28cd70",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 1188.759839659977,
+        "extract": 6.582841885032394,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-22T13:30:07+00:00",
+      "started_at_utc": "2026-11-22T13:30:07+00:00",
+      "total_profiler_sec": 1195.3426815450093,
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000080-IAD",
+        "early_header_rejects": 15,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 279,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 7517.377165474985,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 1258,
+        "hit_bytes": 8004335462,
+        "hit_seconds": 1367.609534,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 943385692,
+        "miss_seconds": 399.774924,
+        "origin_misses": 158,
+        "shield_hits": 788,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 0.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 5499.20862,
+        "requests_ok": 2204,
+        "wire_bytes": 8947721154,
+        "wire_download_seconds": 1919.374471
+      },
+      "ended_at": "2026-11-23T11:54:56+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-23T11:54:56+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 1372,
+      "papers_skipped": 12923,
+      "processed_attempts": 1372,
+      "resources": {
+        "avg_rss_mib": 88.372975,
+        "disk_final_bytes": 10291991784.0,
+        "disk_peak_bytes": 10291991784.0,
+        "final_disk_bytes": 10291991784,
+        "peak_disk_bytes": 10291991784,
+        "peak_rss_mib": 92.097656,
+        "ram_mean_bytes": 92665780.85657105,
+        "ram_peak_bytes": 96571392.0,
+        "ram_samples": 1499.0
+      },
+      "resumed": true,
+      "run": 9,
+      "run_id": "run-9-2026-11-23T09:49:18+00:00",
+      "source_code_hash": "7489c4f3dd5731ac",
+      "source_revision": "7489c4f3dd5731ac",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 7427.03016696709,
+        "extract": 90.34699850789548,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-23T09:49:18+00:00",
+      "started_at_utc": "2026-11-23T09:49:18+00:00",
+      "total_profiler_sec": 7517.377165474985,
+      "traffic_shaping": {
+        "byte_budget_breathers": 0,
+        "enabled": true,
+        "heavy_versions_interleaved": 33,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000093-IAD",
+        "early_header_rejects": 144,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 2204,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 473.65988333200403,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 7,
+        "hit_bytes": 43883791,
+        "hit_seconds": 11.332975,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 435962251,
+        "miss_seconds": 218.779396,
+        "origin_misses": 70,
+        "shield_hits": 22,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 0.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 193.322111,
+        "requests_ok": 99,
+        "wire_bytes": 479846042,
+        "wire_download_seconds": 274.756185
+      },
+      "ended_at": "2026-11-23T12:23:58+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-23T12:23:58+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 67,
+      "papers_skipped": 14295,
+      "processed_attempts": 67,
+      "resources": {
+        "avg_rss_mib": 82.626069,
+        "disk_final_bytes": 10404563317.0,
+        "disk_peak_bytes": 10404563317.0,
+        "final_disk_bytes": 10404563317,
+        "peak_disk_bytes": 10404563317,
+        "peak_rss_mib": 85.191406,
+        "ram_mean_bytes": 86639713.01052631,
+        "ram_peak_bytes": 89329664.0,
+        "ram_samples": 95.0
+      },
+      "resumed": true,
+      "run": 10,
+      "run_id": "run-10-2026-11-23T12:15:56+00:00",
+      "source_code_hash": "7489c4f3dd5731ac",
+      "source_revision": "7489c4f3dd5731ac",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 468.77591757099617,
+        "extract": 4.8839657610078575,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-23T12:15:56+00:00",
+      "started_at_utc": "2026-11-23T12:15:56+00:00",
+      "total_profiler_sec": 473.65988333200403,
+      "traffic_shaping": {
+        "byte_budget_breathers": 0,
+        "enabled": true,
+        "heavy_versions_interleaved": 1,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000203-IAD",
+        "early_header_rejects": 12,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 99,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 1369.5257592089984,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 0,
+        "hit_bytes": 0,
+        "hit_seconds": 0.0,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 0,
+        "miss_seconds": 0.0,
+        "origin_misses": 0,
+        "shield_hits": 0,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 685.9000000000003,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 0.0,
+        "requests_ok": 0,
+        "wire_bytes": 0,
+        "wire_download_seconds": 0.0
+      },
+      "ended_at": "2026-11-23T18:03:40+00:00",
       "environment": {
         "colab_cpu": true,
         "cpu_count_logical": 2,
@@ -134,131 +815,389 @@
         "is_google_colab": true,
         "python_version": "3.13.18"
       },
-      "finished_at_utc": "2026-11-07T15:29:51+00:00",
+      "finished_at_utc": "2026-11-23T18:03:40+00:00",
       "intervals": {
-        "arxiv_min_interval": 3.0,
-        "s2_min_interval": 1.0
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
       },
-      "papers_done": 4520,
-      "processed_attempts": 4520,
+      "papers_done": 0,
+      "papers_skipped": 0,
+      "processed_attempts": 0,
       "resources": {
-        "avg_rss_mib": 109.926867,
-        "disk_final_bytes": 2988467169.0,
-        "disk_peak_bytes": 2988467169.0,
-        "final_disk_bytes": 2988467169,
-        "peak_disk_bytes": 2988467169,
-        "peak_rss_mib": 164.078125,
-        "ram_mean_bytes": 115266674.9946524,
-        "ram_peak_bytes": 172048384.0,
-        "ram_samples": 561.0
+        "avg_rss_mib": 162.3297,
+        "disk_final_bytes": 10946097023.0,
+        "disk_peak_bytes": 10946097023.0,
+        "final_disk_bytes": 10946097023,
+        "peak_disk_bytes": 10946097023,
+        "peak_rss_mib": 213.46875,
+        "ram_mean_bytes": 170215027.3153153,
+        "ram_peak_bytes": 223838208.0,
+        "ram_samples": 444.0
+      },
+      "resumed": true,
+      "run": 11,
+      "run_id": "run-11-2026-11-23T17:25:42+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 0.0,
+        "extract": 0.0,
+        "s2": 1369.5257592089984
+      },
+      "started_at": "2026-11-23T17:25:42+00:00",
+      "started_at_utc": "2026-11-23T17:25:42+00:00",
+      "total_profiler_sec": 1369.5257592089984,
+      "traffic_shaping": {
+        "byte_budget_breathers": 0,
+        "enabled": true,
+        "heavy_versions_interleaved": 0,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "",
+        "early_header_rejects": 0,
+        "http_protocol": "HTTP/1.1",
+        "in_flight_extract": true,
+        "in_flight_extractions": 0,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 23297.808690512014,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 6335,
+        "hit_bytes": 28013847865,
+        "hit_seconds": 4034.582641,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 1688438845,
+        "miss_seconds": 783.863886,
+        "origin_misses": 254,
+        "shield_hits": 398,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 67.95,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 17888.680898,
+        "requests_ok": 6987,
+        "wire_bytes": 29702286710,
+        "wire_download_seconds": 5056.808596
+      },
+      "ended_at": "2026-11-24T12:47:24+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-24T12:47:24+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 4249,
+      "papers_skipped": 14365,
+      "processed_attempts": 4249,
+      "resources": {
+        "avg_rss_mib": 132.967087,
+        "disk_final_bytes": 14289027662.0,
+        "disk_peak_bytes": 14289027662.0,
+        "final_disk_bytes": 14289027662,
+        "peak_disk_bytes": 14289027662,
+        "peak_rss_mib": 229.472656,
+        "ram_mean_bytes": 139426096.28940567,
+        "ram_peak_bytes": 240619520.0,
+        "ram_samples": 4644.0
+      },
+      "resumed": true,
+      "run": 12,
+      "run_id": "run-12-2026-11-24T06:17:22+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
+      "stage_seconds": {
+        "discovery": 0.0,
+        "download": 23008.133035417093,
+        "extract": 289.6756550949199,
+        "s2": 0.0
+      },
+      "started_at": "2026-11-24T06:17:22+00:00",
+      "started_at_utc": "2026-11-24T06:17:22+00:00",
+      "total_profiler_sec": 23297.808690512014,
+      "traffic_shaping": {
+        "byte_budget_breathers": 6,
+        "enabled": true,
+        "heavy_versions_interleaved": 99,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000117-IAD",
+        "early_header_rejects": 507,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 6987,
+        "use_http2": true
+      }
+    },
+    {
+      "active_seconds": 7325.015495121021,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 2229,
+        "hit_bytes": 10348256350,
+        "hit_seconds": 1451.676938,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 2025407,
+        "miss_seconds": 0.124248,
+        "origin_misses": 4,
+        "shield_hits": 19,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 90.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 5681.370627,
+        "requests_ok": 2252,
+        "wire_bytes": 10350281757,
+        "wire_download_seconds": 1535.532856
+      },
+      "ended_at": "2026-11-25T13:19:17+00:00",
+      "environment": {
+        "colab_cpu": true,
+        "cpu_count_logical": 8,
+        "cpu_only": true,
+        "is_google_colab": true,
+        "python_version": "3.13.18"
+      },
+      "finished_at_utc": "2026-11-25T13:19:17+00:00",
+      "intervals": {
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
+      },
+      "papers_done": 1377,
+      "papers_skipped": 18623,
+      "processed_attempts": 1377,
+      "resources": {
+        "avg_rss_mib": 98.039888,
+        "disk_final_bytes": 16077700546.0,
+        "disk_peak_bytes": 16077700546.0,
+        "final_disk_bytes": 16077700546,
+        "peak_disk_bytes": 16077700546,
+        "peak_rss_mib": 101.632812,
+        "ram_mean_bytes": 102802273.23493569,
+        "ram_peak_bytes": 106569728.0,
+        "ram_samples": 1477.0
       },
       "resumed": true,
       "run": 13,
-      "run_id": "run-13-2026-11-07T14:43:03+00:00",
-      "source_code_hash": "11c1dfe26923569e",
-      "source_revision": "11c1dfe26923569e",
+      "run_id": "run-13-2026-11-25T11:15:24+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
       "stage_seconds": {
-        "discovery": 16.25419777399975,
-        "download": 2700.229998699993,
-        "extract": 37.20762749998448,
-        "s2": 629.3716899080068
+        "discovery": 0.0,
+        "download": 7225.044939148868,
+        "extract": 99.9705559721524,
+        "s2": 0.0
       },
-      "started_at": "2026-11-07T14:43:03+00:00",
-      "started_at_utc": "2026-11-07T14:43:03+00:00",
-      "total_profiler_sec": 3383.063513881984
+      "started_at": "2026-11-25T11:15:24+00:00",
+      "started_at_utc": "2026-11-25T11:15:24+00:00",
+      "total_profiler_sec": 7325.015495121021,
+      "traffic_shaping": {
+        "byte_budget_breathers": 9,
+        "enabled": true,
+        "heavy_versions_interleaved": 42,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000023-IAD",
+        "early_header_rejects": 135,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 2252,
+        "use_http2": true
+      }
     },
     {
-      "active_seconds": 2750.1175794769997,
-      "cooldown_retry_seconds": 1935.0,
-      "ended_at": "2026-11-08T08:22:57+00:00",
+      "active_seconds": 6929.826202325046,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 1015,
+        "hit_bytes": 4785472840,
+        "hit_seconds": 717.072899,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 3592290371,
+        "miss_seconds": 1678.301668,
+        "origin_misses": 730,
+        "shield_hits": 48,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 31.29,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 4028.116,
+        "requests_ok": 1793,
+        "wire_bytes": 8377763211,
+        "wire_download_seconds": 2821.004065
+      },
+      "ended_at": "2026-11-25T16:15:16+00:00",
       "environment": {
         "colab_cpu": true,
-        "cpu_count_logical": 2,
+        "cpu_count_logical": 8,
         "cpu_only": true,
         "is_google_colab": true,
         "python_version": "3.13.18"
       },
-      "finished_at_utc": "2026-11-08T08:22:57+00:00",
+      "finished_at_utc": "2026-11-25T16:15:16+00:00",
       "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
       },
-      "papers_done": 4975,
-      "processed_attempts": 4975,
+      "papers_done": 1089,
+      "papers_skipped": 20000,
+      "processed_attempts": 1089,
       "resources": {
-        "avg_rss_mib": 123.59279,
-        "disk_final_bytes": 3161692693.0,
-        "disk_peak_bytes": 3161692693.0,
-        "final_disk_bytes": 3161692693,
-        "peak_disk_bytes": 3161692693,
-        "peak_rss_mib": 217.234375,
-        "ram_mean_bytes": 129596433.73858267,
-        "ram_peak_bytes": 227786752.0,
-        "ram_samples": 635.0
+        "avg_rss_mib": 104.592041,
+        "disk_final_bytes": 16805055558.0,
+        "disk_peak_bytes": 16805055558.0,
+        "final_disk_bytes": 16805055558,
+        "peak_disk_bytes": 16805055558,
+        "peak_rss_mib": 106.761719,
+        "ram_mean_bytes": 109672704.18510485,
+        "ram_peak_bytes": 111947776.0,
+        "ram_samples": 1383.0
       },
       "resumed": true,
       "run": 14,
-      "run_id": "run-14-2026-11-08T07:29:52+00:00",
-      "source_code_hash": "40e789c4765bed65",
-      "source_revision": "40e789c4765bed65",
+      "run_id": "run-14-2026-11-25T14:18:59+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
       "stage_seconds": {
         "discovery": 0.0,
-        "download": 2667.692079549,
-        "extract": 32.46375698299971,
-        "s2": 49.96174294499997
+        "download": 6855.010725901948,
+        "extract": 74.81547642309852,
+        "s2": 0.0
       },
-      "started_at": "2026-11-08T07:29:52+00:00",
-      "started_at_utc": "2026-11-08T07:29:52+00:00",
-      "total_profiler_sec": 2750.1175794769997
+      "started_at": "2026-11-25T14:18:59+00:00",
+      "started_at_utc": "2026-11-25T14:18:59+00:00",
+      "total_profiler_sec": 6929.826202325046,
+      "traffic_shaping": {
+        "byte_budget_breathers": 2,
+        "enabled": true,
+        "heavy_versions_interleaved": 25,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000144-IAD",
+        "early_header_rejects": 99,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 1793,
+        "use_http2": true
+      }
     },
     {
-      "active_seconds": 13.34553388599943,
-      "cooldown_retry_seconds": 15.0,
-      "ended_at": "2026-11-08T08:24:18+00:00",
+      "active_seconds": 4370.537912885005,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 616,
+        "hit_bytes": 3694659556,
+        "hit_seconds": 550.099501,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 2538528012,
+        "miss_seconds": 1065.487936,
+        "origin_misses": 480,
+        "shield_hits": 38,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 80.0,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 2464.544059,
+        "requests_ok": 1134,
+        "wire_bytes": 6233187568,
+        "wire_download_seconds": 1867.247527
+      },
+      "ended_at": "2026-11-26T12:49:27+00:00",
       "environment": {
         "colab_cpu": true,
-        "cpu_count_logical": 2,
+        "cpu_count_logical": 8,
         "cpu_only": true,
         "is_google_colab": true,
         "python_version": "3.13.18"
       },
-      "finished_at_utc": "2026-11-08T08:24:18+00:00",
+      "finished_at_utc": "2026-11-26T12:49:27+00:00",
       "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
       },
-      "papers_done": 0,
-      "processed_attempts": 0,
+      "papers_done": 641,
+      "papers_skipped": 21091,
+      "processed_attempts": 641,
       "resources": {
-        "avg_rss_mib": 58.419643,
-        "disk_final_bytes": 3170286022.0,
-        "disk_peak_bytes": 3170286022.0,
-        "final_disk_bytes": 3170286022,
-        "peak_disk_bytes": 3170286022,
-        "peak_rss_mib": 62.96875,
-        "ram_mean_bytes": 61257435.428571425,
-        "ram_peak_bytes": 66027520.0,
-        "ram_samples": 7.0
+        "avg_rss_mib": 100.159707,
+        "disk_final_bytes": 17775571712.0,
+        "disk_peak_bytes": 17775571712.0,
+        "final_disk_bytes": 17775571712,
+        "peak_disk_bytes": 17775571712,
+        "peak_rss_mib": 104.773438,
+        "ram_mean_bytes": 105025064.98308906,
+        "ram_peak_bytes": 109862912.0,
+        "ram_samples": 887.0
       },
       "resumed": true,
       "run": 15,
-      "run_id": "run-15-2026-11-08T08:23:43+00:00",
-      "source_code_hash": "40e789c4765bed65",
-      "source_revision": "40e789c4765bed65",
+      "run_id": "run-15-2026-11-26T11:35:04+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
       "stage_seconds": {
         "discovery": 0.0,
-        "download": 0.0,
-        "extract": 0.0,
-        "s2": 13.34553388599943
+        "download": 4333.975921885038,
+        "extract": 36.56199099996729,
+        "s2": 0.0
       },
-      "started_at": "2026-11-08T08:23:43+00:00",
-      "started_at_utc": "2026-11-08T08:23:43+00:00",
-      "total_profiler_sec": 13.34553388599943
+      "started_at": "2026-11-26T11:35:04+00:00",
+      "started_at_utc": "2026-11-26T11:35:04+00:00",
+      "total_profiler_sec": 4370.537912885005,
+      "traffic_shaping": {
+        "byte_budget_breathers": 8,
+        "enabled": true,
+        "heavy_versions_interleaved": 21,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000120-IAD",
+        "early_header_rejects": 50,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 1134,
+        "use_http2": true
+      }
     },
     {
-      "active_seconds": 322.7912732019988,
-      "cooldown_retry_seconds": 1290.0,
-      "ended_at": "2026-11-08T09:37:27+00:00",
+      "active_seconds": 21000.33005440994,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 1,
+        "edge_hits": 778,
+        "hit_bytes": 5008742526,
+        "hit_seconds": 944.358201,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 15774242994,
+        "miss_seconds": 7026.885093,
+        "origin_misses": 3786,
+        "shield_hits": 499,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 51.06,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 10839.63693,
+        "requests_ok": 5063,
+        "wire_bytes": 20782985520,
+        "wire_download_seconds": 9795.388894
+      },
+      "ended_at": "2026-11-27T15:53:54+00:00",
       "environment": {
         "colab_cpu": true,
         "cpu_count_logical": 2,
@@ -266,1013 +1205,216 @@
         "is_google_colab": true,
         "python_version": "3.13.18"
       },
-      "finished_at_utc": "2026-11-08T09:37:27+00:00",
+      "finished_at_utc": "2026-11-27T15:53:54+00:00",
       "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
       },
-      "papers_done": 4987,
-      "processed_attempts": 4987,
+      "papers_done": 2934,
+      "papers_skipped": 21733,
+      "processed_attempts": 2934,
       "resources": {
-        "avg_rss_mib": 63.634944,
-        "disk_final_bytes": 3203294215.0,
-        "disk_peak_bytes": 3203294230.0,
-        "final_disk_bytes": 3203294215,
-        "peak_disk_bytes": 3203294230,
-        "peak_rss_mib": 105.617188,
-        "ram_mean_bytes": 66726075.39869281,
-        "ram_peak_bytes": 110747648.0,
-        "ram_samples": 306.0
+        "avg_rss_mib": 111.354941,
+        "disk_final_bytes": 23290111210.0,
+        "disk_peak_bytes": 23290111210.0,
+        "final_disk_bytes": 23290111210,
+        "peak_disk_bytes": 23290111210,
+        "peak_rss_mib": 277.902344,
+        "ram_mean_bytes": 116764118.51310411,
+        "ram_peak_bytes": 291401728.0,
+        "ram_samples": 4159.0
       },
       "resumed": true,
       "run": 16,
-      "run_id": "run-16-2026-11-08T09:11:55+00:00",
-      "source_code_hash": "4e771c0adef1d72b",
-      "source_revision": "4e771c0adef1d72b",
+      "run_id": "run-16-2026-11-27T10:01:57+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
       "stage_seconds": {
         "discovery": 0.0,
-        "download": 322.3514209469995,
-        "extract": 0.4398522549993231,
+        "download": 20710.995904125364,
+        "extract": 289.334150284576,
         "s2": 0.0
       },
-      "started_at": "2026-11-08T09:11:55+00:00",
-      "started_at_utc": "2026-11-08T09:11:55+00:00",
-      "total_profiler_sec": 322.7912732019988
+      "started_at": "2026-11-27T10:01:57+00:00",
+      "started_at_utc": "2026-11-27T10:01:57+00:00",
+      "total_profiler_sec": 21000.33005440994,
+      "traffic_shaping": {
+        "byte_budget_breathers": 5,
+        "enabled": true,
+        "heavy_versions_interleaved": 75,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000024-IAD",
+        "early_header_rejects": 277,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 5063,
+        "use_http2": true
+      }
     },
     {
-      "active_seconds": 354.5182471560006,
-      "cooldown_retry_seconds": 465.0,
-      "ended_at": "2026-11-08T09:56:23+00:00",
+      "active_seconds": 2818.113300288005,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 860,
+        "hit_bytes": 3875942189,
+        "hit_seconds": 535.398848,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 0,
+        "miss_seconds": 0.0,
+        "origin_misses": 0,
+        "shield_hits": 0,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 52.19,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 2212.094869,
+        "requests_ok": 860,
+        "wire_bytes": 3875942189,
+        "wire_download_seconds": 555.261975
+      },
+      "ended_at": "2026-11-27T18:11:50+00:00",
       "environment": {
         "colab_cpu": true,
-        "cpu_count_logical": 2,
+        "cpu_count_logical": 8,
         "cpu_only": true,
         "is_google_colab": true,
         "python_version": "3.13.18"
       },
-      "finished_at_utc": "2026-11-08T09:56:23+00:00",
+      "finished_at_utc": "2026-11-27T18:11:50+00:00",
       "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
       },
-      "papers_done": 5000,
-      "processed_attempts": 5000,
+      "papers_done": 501,
+      "papers_skipped": 24499,
+      "processed_attempts": 501,
       "resources": {
-        "avg_rss_mib": 69.250426,
-        "disk_final_bytes": 3126481210.0,
-        "disk_peak_bytes": 3167285882.0,
-        "final_disk_bytes": 3126481210,
-        "peak_disk_bytes": 3167285882,
-        "peak_rss_mib": 120.085938,
-        "ram_mean_bytes": 72614334.83636364,
-        "ram_peak_bytes": 125919232.0,
-        "ram_samples": 165.0
+        "avg_rss_mib": 102.057964,
+        "disk_final_bytes": 23765748930.0,
+        "disk_peak_bytes": 23765748930.0,
+        "final_disk_bytes": 23765748930,
+        "peak_disk_bytes": 23765748930,
+        "peak_rss_mib": 107.066406,
+        "ram_mean_bytes": 107015532.04903677,
+        "ram_peak_bytes": 112267264.0,
+        "ram_samples": 571.0
       },
       "resumed": true,
       "run": 17,
-      "run_id": "run-17-2026-11-08T09:42:41+00:00",
-      "source_code_hash": "4ac49649b67b60c4",
-      "source_revision": "4ac49649b67b60c4",
+      "run_id": "run-17-2026-11-27T17:23:40+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
       "stage_seconds": {
         "discovery": 0.0,
-        "download": 352.99292497399983,
-        "extract": 1.5253221820007639,
+        "download": 2770.5986455649677,
+        "extract": 47.514654723037665,
         "s2": 0.0
       },
-      "started_at": "2026-11-08T09:42:41+00:00",
-      "started_at_utc": "2026-11-08T09:42:41+00:00",
-      "total_profiler_sec": 354.5182471560006
+      "started_at": "2026-11-27T17:23:40+00:00",
+      "started_at_utc": "2026-11-27T17:23:40+00:00",
+      "total_profiler_sec": 2818.113300288005,
+      "traffic_shaping": {
+        "byte_budget_breathers": 5,
+        "enabled": true,
+        "heavy_versions_interleaved": 20,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "cache-iad-kiad7000049-IAD",
+        "early_header_rejects": 37,
+        "http_protocol": "HTTP/2",
+        "in_flight_extract": true,
+        "in_flight_extractions": 860,
+        "use_http2": true
+      }
     },
     {
-      "active_seconds": 1.7204312189987832,
-      "cooldown_retry_seconds": 15.0,
-      "ended_at": "2026-11-08T10:03:41+00:00",
+      "active_seconds": 951.0186884409995,
+      "cdn_breakdown": {
+        "defensive_soft_pacing_triggers": 0,
+        "edge_hits": 0,
+        "hit_bytes": 0,
+        "hit_seconds": 0.0,
+        "http_429_edge_fast": 0,
+        "http_429_queue_timeout": 0,
+        "miss_bytes": 0,
+        "miss_seconds": 0.0,
+        "origin_misses": 0,
+        "shield_hits": 0,
+        "unknown": 0
+      },
+      "cooldown_retry_seconds": 580.3699999999999,
+      "download_breakdown": {
+        "rate_limit_wait_seconds": 0.0,
+        "requests_ok": 0,
+        "wire_bytes": 0,
+        "wire_download_seconds": 0.0
+      },
+      "ended_at": "2026-11-27T18:56:56+00:00",
       "environment": {
         "colab_cpu": true,
-        "cpu_count_logical": 2,
+        "cpu_count_logical": 8,
         "cpu_only": true,
         "is_google_colab": true,
         "python_version": "3.13.18"
       },
-      "finished_at_utc": "2026-11-08T10:03:41+00:00",
+      "finished_at_utc": "2026-11-27T18:56:56+00:00",
       "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
+        "arxiv_min_interval": 3.05,
+        "s2_min_interval": 1.1
       },
       "papers_done": 0,
+      "papers_skipped": 0,
       "processed_attempts": 0,
       "resources": {
-        "avg_rss_mib": 46.779688,
-        "disk_final_bytes": 3143747994.0,
-        "disk_peak_bytes": 3143747994.0,
-        "final_disk_bytes": 3143747994,
-        "peak_disk_bytes": 3143747994,
-        "peak_rss_mib": 50.109375,
-        "ram_mean_bytes": 49052057.6,
-        "ram_peak_bytes": 52543488.0,
-        "ram_samples": 5.0
+        "avg_rss_mib": 187.764333,
+        "disk_final_bytes": 24177261700.0,
+        "disk_peak_bytes": 24177261700.0,
+        "final_disk_bytes": 24177261700,
+        "peak_disk_bytes": 24177261700,
+        "peak_rss_mib": 278.757812,
+        "ram_mean_bytes": 196885173.04942966,
+        "ram_peak_bytes": 292298752.0,
+        "ram_samples": 526.0
       },
       "resumed": true,
       "run": 18,
-      "run_id": "run-18-2026-11-08T10:03:20+00:00",
-      "source_code_hash": "4ac49649b67b60c4",
-      "source_revision": "4ac49649b67b60c4",
+      "run_id": "run-18-2026-11-27T18:11:53+00:00",
+      "source_code_hash": "aa6e4bec37233fb1",
+      "source_revision": "aa6e4bec37233fb1",
       "stage_seconds": {
         "discovery": 0.0,
         "download": 0.0,
         "extract": 0.0,
-        "s2": 1.7204312189987832
-      },
-      "started_at": "2026-11-08T10:03:20+00:00",
-      "started_at_utc": "2026-11-08T10:03:20+00:00",
-      "total_profiler_sec": 1.7204312189987832
-    },
-    {
-      "active_seconds": 440.4808460179961,
-      "cooldown_retry_seconds": 1485.0,
-      "ended_at": "2026-11-08T12:12:26+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-08T12:12:26+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 5029,
-      "processed_attempts": 5029,
-      "resources": {
-        "avg_rss_mib": 73.343316,
-        "disk_final_bytes": 3237123627.0,
-        "disk_peak_bytes": 3237123627.0,
-        "final_disk_bytes": 3237123627,
-        "peak_disk_bytes": 3237123627,
-        "peak_rss_mib": 78.691406,
-        "ram_mean_bytes": 76906040.8888889,
-        "ram_peak_bytes": 82513920.0,
-        "ram_samples": 333.0
-      },
-      "resumed": true,
-      "run": 19,
-      "run_id": "run-19-2026-11-08T11:44:39+00:00",
-      "source_code_hash": "27c71b6ebf75f4de",
-      "source_revision": "27c71b6ebf75f4de",
-      "stage_seconds": {
-        "discovery": 14.957227308000029,
-        "download": 418.90814310299857,
-        "extract": 1.365673503997641,
-        "s2": 5.249802102999865
-      },
-      "started_at": "2026-11-08T11:44:39+00:00",
-      "started_at_utc": "2026-11-08T11:44:39+00:00",
-      "total_profiler_sec": 440.4808460179961
-    },
-    {
-      "active_seconds": 1.1153446480002458,
-      "cooldown_retry_seconds": 180.0,
-      "ended_at": "2026-11-08T12:20:20+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-08T12:20:20+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 5000,
-      "processed_attempts": 5000,
-      "resources": {
-        "avg_rss_mib": 88.539379,
-        "disk_final_bytes": 3246094104.0,
-        "disk_peak_bytes": 3246094104.0,
-        "final_disk_bytes": 3246094104,
-        "peak_disk_bytes": 3246094104,
-        "peak_rss_mib": 109.105469,
-        "ram_mean_bytes": 92840268.1081081,
-        "ram_peak_bytes": 114405376.0,
-        "ram_samples": 37.0
-      },
-      "resumed": true,
-      "run": 20,
-      "run_id": "run-20-2026-11-08T12:17:15+00:00",
-      "source_code_hash": "2238c76e73e75b0e",
-      "source_revision": "2238c76e73e75b0e",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 1.1153446480002458,
-        "extract": 0.0,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-08T12:17:15+00:00",
-      "started_at_utc": "2026-11-08T12:17:15+00:00",
-      "total_profiler_sec": 1.1153446480002458
-    },
-    {
-      "active_seconds": 21608.733782778836,
-      "cooldown_retry_seconds": 16950.0,
-      "ended_at": "2026-11-10T06:19:26+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-10T06:19:26+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 6937,
-      "processed_attempts": 6937,
-      "resources": {
-        "avg_rss_mib": 158.827522,
-        "disk_final_bytes": 5115652772.0,
-        "disk_peak_bytes": 5115652772.0,
-        "final_disk_bytes": 5115652772,
-        "peak_disk_bytes": 5115652772,
-        "peak_rss_mib": 294.136719,
-        "ram_mean_bytes": 166542727.7568613,
-        "ram_peak_bytes": 308424704.0,
-        "ram_samples": 5429.0
-      },
-      "resumed": true,
-      "run": 21,
-      "run_id": "run-21-2026-11-09T22:43:25+00:00",
-      "source_code_hash": "eba92d99fd7b4ad1",
-      "source_revision": "eba92d99fd7b4ad1",
-      "stage_seconds": {
-        "discovery": 183.3376878939962,
-        "download": 20902.17397698694,
-        "extract": 146.56917763590297,
-        "s2": 376.6529402619983
-      },
-      "started_at": "2026-11-09T22:43:25+00:00",
-      "started_at_utc": "2026-11-09T22:43:25+00:00",
-      "total_profiler_sec": 21608.733782778836
-    },
-    {
-      "active_seconds": 593.5337234629982,
-      "cooldown_retry_seconds": 1845.0,
-      "ended_at": "2026-11-10T10:22:42+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-10T10:22:42+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 6568,
-      "processed_attempts": 6568,
-      "resources": {
-        "avg_rss_mib": 81.44956,
-        "disk_final_bytes": 4852300777.0,
-        "disk_peak_bytes": 4852300777.0,
-        "final_disk_bytes": 4852300777,
-        "peak_disk_bytes": 4852300777,
-        "peak_rss_mib": 142.371094,
-        "ram_mean_bytes": 85406053.58730158,
-        "ram_peak_bytes": 149286912.0,
-        "ram_samples": 378.0
-      },
-      "resumed": true,
-      "run": 22,
-      "run_id": "run-22-2026-11-10T09:51:09+00:00",
-      "source_code_hash": "eba92d99fd7b4ad1",
-      "source_revision": "eba92d99fd7b4ad1",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 567.4560464290007,
-        "extract": 2.2102389689973734,
-        "s2": 23.8674380650001
-      },
-      "started_at": "2026-11-10T09:51:09+00:00",
-      "started_at_utc": "2026-11-10T09:51:09+00:00",
-      "total_profiler_sec": 593.5337234629982
-    },
-    {
-      "active_seconds": 46013.99529222603,
-      "cooldown_retry_seconds": 30105.0,
-      "ended_at": "2026-11-11T04:28:23+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-11T04:28:23+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 10361,
-      "processed_attempts": 10361,
-      "resources": {
-        "avg_rss_mib": 183.666848,
-        "disk_final_bytes": 8101150167.0,
-        "disk_peak_bytes": 8101150167.0,
-        "final_disk_bytes": 8101150167,
-        "peak_disk_bytes": 8101150167,
-        "peak_rss_mib": 262.25,
-        "ram_mean_bytes": 192588648.550653,
-        "ram_peak_bytes": 274989056.0,
-        "ram_samples": 11332.0
-      },
-      "resumed": true,
-      "run": 23,
-      "run_id": "run-23-2026-11-10T12:32:28+00:00",
-      "source_code_hash": "f1a7cdbb171c3dea",
-      "source_revision": "f1a7cdbb171c3dea",
-      "stage_seconds": {
-        "discovery": 141.6487687200006,
-        "download": 45147.90218178495,
-        "extract": 330.897978971002,
-        "s2": 393.5463627500774
-      },
-      "started_at": "2026-11-10T12:32:28+00:00",
-      "started_at_utc": "2026-11-10T12:32:28+00:00",
-      "total_profiler_sec": 46013.99529222603
-    },
-    {
-      "active_seconds": 10851.06453802801,
-      "cooldown_retry_seconds": 7785.0,
-      "ended_at": "2026-11-11T08:50:06+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-11T08:50:06+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 10963,
-      "processed_attempts": 10963,
-      "resources": {
-        "avg_rss_mib": 194.070805,
-        "disk_final_bytes": 7884498812.0,
-        "disk_peak_bytes": 7884498812.0,
-        "final_disk_bytes": 7884498812,
-        "peak_disk_bytes": 7884498812,
-        "peak_rss_mib": 289.277344,
-        "ram_mean_bytes": 203497988.53097346,
-        "ram_peak_bytes": 303329280.0,
-        "ram_samples": 2712.0
-      },
-      "resumed": true,
-      "run": 24,
-      "run_id": "run-24-2026-11-11T05:00:29+00:00",
-      "source_code_hash": "f1a7cdbb171c3dea",
-      "source_revision": "f1a7cdbb171c3dea",
-      "stage_seconds": {
-        "discovery": 77.95450433899987,
-        "download": 10447.358297859988,
-        "extract": 84.95243543801007,
-        "s2": 240.79930039101146
-      },
-      "started_at": "2026-11-11T05:00:29+00:00",
-      "started_at_utc": "2026-11-11T05:00:29+00:00",
-      "total_profiler_sec": 10851.06453802801
-    },
-    {
-      "active_seconds": 1072.130283486993,
-      "cooldown_retry_seconds": 1290.0,
-      "ended_at": "2026-11-11T09:18:50+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-11T09:18:50+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 11008,
-      "processed_attempts": 11008,
-      "resources": {
-        "avg_rss_mib": 173.019367,
-        "disk_final_bytes": 7890361969.0,
-        "disk_peak_bytes": 7890361969.0,
-        "final_disk_bytes": 7890361969,
-        "peak_disk_bytes": 7890361969,
-        "peak_rss_mib": 221.90625,
-        "ram_mean_bytes": 181423955.5368421,
-        "ram_peak_bytes": 232685568.0,
-        "ram_samples": 285.0
-      },
-      "resumed": true,
-      "run": 25,
-      "run_id": "run-25-2026-11-11T08:54:39+00:00",
-      "source_code_hash": "f1a7cdbb171c3dea",
-      "source_revision": "f1a7cdbb171c3dea",
-      "stage_seconds": {
-        "discovery": 20.422474937997322,
-        "download": 995.8760034109946,
-        "extract": 11.464831227003742,
-        "s2": 44.36697391099733
-      },
-      "started_at": "2026-11-11T08:54:39+00:00",
-      "started_at_utc": "2026-11-11T08:54:39+00:00",
-      "total_profiler_sec": 1072.130283486993
-    },
-    {
-      "active_seconds": 1196.9066150620165,
-      "cooldown_retry_seconds": 60.0,
-      "ended_at": "2026-11-11T09:40:41+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-11T09:40:41+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 11034,
-      "processed_attempts": 11034,
-      "resources": {
-        "avg_rss_mib": 115.661568,
-        "disk_final_bytes": 7881222737.0,
-        "disk_peak_bytes": 7881222737.0,
-        "final_disk_bytes": 7881222737,
-        "peak_disk_bytes": 7881222737,
-        "peak_rss_mib": 239.011719,
-        "ram_mean_bytes": 121279944.48192771,
-        "ram_peak_bytes": 250621952.0,
-        "ram_samples": 249.0
-      },
-      "resumed": true,
-      "run": 26,
-      "run_id": "run-26-2026-11-11T09:19:34+00:00",
-      "source_code_hash": "f1a7cdbb171c3dea",
-      "source_revision": "f1a7cdbb171c3dea",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 1186.7277847010082,
-        "extract": 10.178830361008295,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-11T09:19:34+00:00",
-      "started_at_utc": "2026-11-11T09:19:34+00:00",
-      "total_profiler_sec": 1196.9066150620165
-    },
-    {
-      "active_seconds": 5336.119673344998,
-      "cooldown_retry_seconds": 1140.0,
-      "ended_at": "2026-11-11T12:04:34+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-11T12:04:34+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 11550,
-      "processed_attempts": 11550,
-      "resources": {
-        "avg_rss_mib": 183.122174,
-        "disk_final_bytes": 8599857937.0,
-        "disk_peak_bytes": 8599857937.0,
-        "final_disk_bytes": 8599857937,
-        "peak_disk_bytes": 8599857937,
-        "peak_rss_mib": 307.597656,
-        "ram_mean_bytes": 192017517.14106584,
-        "ram_peak_bytes": 322539520.0,
-        "ram_samples": 1276.0
-      },
-      "resumed": true,
-      "run": 27,
-      "run_id": "run-27-2026-11-11T10:16:57+00:00",
-      "source_code_hash": "f1a7cdbb171c3dea",
-      "source_revision": "f1a7cdbb171c3dea",
-      "stage_seconds": {
-        "discovery": 13.351849025002593,
-        "download": 5280.411159921012,
-        "extract": 42.35666439898341,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-11T10:16:57+00:00",
-      "started_at_utc": "2026-11-11T10:16:57+00:00",
-      "total_profiler_sec": 5336.119673344998
-    },
-    {
-      "active_seconds": 11119.491931689947,
-      "cooldown_retry_seconds": 4020.0,
-      "ended_at": "2026-11-11T16:22:29+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-11T16:22:29+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 12310,
-      "processed_attempts": 12310,
-      "resources": {
-        "avg_rss_mib": 219.67828,
-        "disk_final_bytes": 9117557675.0,
-        "disk_peak_bytes": 9117557675.0,
-        "final_disk_bytes": 9117557675,
-        "peak_disk_bytes": 9117557675,
-        "peak_rss_mib": 279.878906,
-        "ram_mean_bytes": 230349371.72757924,
-        "ram_peak_bytes": 293474304.0,
-        "ram_samples": 2966.0
-      },
-      "resumed": true,
-      "run": 28,
-      "run_id": "run-28-2026-11-11T12:10:49+00:00",
-      "source_code_hash": "6f13309c6b1a716b",
-      "source_revision": "6f13309c6b1a716b",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 11042.64232283286,
-        "extract": 76.84960885708642,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-11T12:10:49+00:00",
-      "started_at_utc": "2026-11-11T12:10:49+00:00",
-      "total_profiler_sec": 11119.491931689947
-    },
-    {
-      "active_seconds": 36578.151908686916,
-      "cooldown_retry_seconds": 1200.0,
-      "ended_at": "2026-11-12T03:03:27+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-12T03:03:27+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.1,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 15017,
-      "processed_attempts": 15017,
-      "resources": {
-        "avg_rss_mib": 242.206681,
-        "disk_final_bytes": 11039040102.0,
-        "disk_peak_bytes": 11039040102.0,
-        "final_disk_bytes": 11039040102,
-        "peak_disk_bytes": 11039040102,
-        "peak_rss_mib": 362.875,
-        "ram_mean_bytes": 253972113.14470145,
-        "ram_peak_bytes": 380502016.0,
-        "ram_samples": 7436.0
-      },
-      "resumed": true,
-      "run": 29,
-      "run_id": "run-29-2026-11-11T16:34:35+00:00",
-      "source_code_hash": "6f13309c6b1a716b",
-      "source_revision": "6f13309c6b1a716b",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 36453.61269269702,
-        "extract": 124.53921598989587,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-11T16:34:35+00:00",
-      "started_at_utc": "2026-11-11T16:34:35+00:00",
-      "total_profiler_sec": 36578.151908686916
-    },
-    {
-      "active_seconds": 15203.564308112927,
-      "cooldown_retry_seconds": 900.0,
-      "ended_at": "2026-11-12T08:04:07+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-12T08:04:07+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.1,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 16802,
-      "processed_attempts": 16802,
-      "resources": {
-        "avg_rss_mib": 255.504966,
-        "disk_final_bytes": 12758518830.0,
-        "disk_peak_bytes": 12758518830.0,
-        "final_disk_bytes": 12758518830,
-        "peak_disk_bytes": 12758518830,
-        "peak_rss_mib": 341.105469,
-        "ram_mean_bytes": 267916375.7151107,
-        "ram_peak_bytes": 357675008.0,
-        "ram_samples": 3117.0
-      },
-      "resumed": true,
-      "run": 30,
-      "run_id": "run-30-2026-11-12T03:37:25+00:00",
-      "source_code_hash": "6f13309c6b1a716b",
-      "source_revision": "6f13309c6b1a716b",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 15019.647751965998,
-        "extract": 183.91655614692968,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-12T03:37:25+00:00",
-      "started_at_utc": "2026-11-12T03:37:25+00:00",
-      "total_profiler_sec": 15203.564308112927
-    },
-    {
-      "active_seconds": 23053.218835935008,
-      "cooldown_retry_seconds": 690.0,
-      "ended_at": "2026-11-12T15:10:23+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-12T15:10:23+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.1,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 19660,
-      "processed_attempts": 19660,
-      "resources": {
-        "avg_rss_mib": 266.666047,
-        "disk_final_bytes": 15342643580.0,
-        "disk_peak_bytes": 15342643580.0,
-        "final_disk_bytes": 15342643580,
-        "peak_disk_bytes": 15342643580,
-        "peak_rss_mib": 362.511719,
-        "ram_mean_bytes": 279619616.47929513,
-        "ram_peak_bytes": 380121088.0,
-        "ram_samples": 4540.0
-      },
-      "resumed": true,
-      "run": 31,
-      "run_id": "run-31-2026-11-12T08:38:26+00:00",
-      "source_code_hash": "6f13309c6b1a716b",
-      "source_revision": "6f13309c6b1a716b",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 22710.905601798077,
-        "extract": 342.313234136931,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-12T08:38:26+00:00",
-      "started_at_utc": "2026-11-12T08:38:26+00:00",
-      "total_profiler_sec": 23053.218835935008
-    },
-    {
-      "active_seconds": 30176.966925457215,
-      "cooldown_retry_seconds": 1950.0,
-      "ended_at": "2026-11-13T00:02:19+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-13T00:02:19+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.1,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 23718,
-      "processed_attempts": 23718,
-      "resources": {
-        "avg_rss_mib": 288.606567,
-        "disk_final_bytes": 20947573646.0,
-        "disk_peak_bytes": 20947573646.0,
-        "final_disk_bytes": 20947573646,
-        "peak_disk_bytes": 20947573646,
-        "peak_rss_mib": 357.21875,
-        "ram_mean_bytes": 302625919.4751517,
-        "ram_peak_bytes": 374571008.0,
-        "ram_samples": 6097.0
-      },
-      "resumed": true,
-      "run": 32,
-      "run_id": "run-32-2026-11-12T15:13:23+00:00",
-      "source_code_hash": "6f13309c6b1a716b",
-      "source_revision": "6f13309c6b1a716b",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 29613.49563059033,
-        "extract": 563.4712948668857,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-12T15:13:23+00:00",
-      "started_at_utc": "2026-11-12T15:13:23+00:00",
-      "total_profiler_sec": 30176.966925457215
-    },
-    {
-      "active_seconds": 3782.5796666709575,
-      "cooldown_retry_seconds": 120.0,
-      "ended_at": "2026-11-13T02:41:05+00:00",
-      "environment": {
-        "colab_cpu": true,
-        "cpu_count_logical": 2,
-        "cpu_only": true,
-        "is_google_colab": true,
-        "python_version": "3.13.18"
-      },
-      "finished_at_utc": "2026-11-13T02:41:05+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.15,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 24237,
-      "processed_attempts": 24237,
-      "resources": {
-        "avg_rss_mib": 271.843104,
-        "disk_final_bytes": 22178788734.0,
-        "disk_peak_bytes": 22178788734.0,
-        "final_disk_bytes": 22178788734,
-        "peak_disk_bytes": 22178788734,
-        "peak_rss_mib": 311.230469,
-        "ram_mean_bytes": 285048154.92896175,
-        "ram_peak_bytes": 326348800.0,
-        "ram_samples": 732.0
-      },
-      "resumed": true,
-      "run": 33,
-      "run_id": "run-33-2026-11-13T01:36:37+00:00",
-      "source_code_hash": "6f13309c6b1a716b",
-      "source_revision": "6f13309c6b1a716b",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 3681.9959350349236,
-        "extract": 100.58373163603392,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-13T01:36:37+00:00",
-      "started_at_utc": "2026-11-13T01:36:37+00:00",
-      "total_profiler_sec": 3782.5796666709575
-    },
-    {
-      "active_seconds": 7307.8777971930285,
-      "cooldown_retry_seconds": 0.0,
-      "ended_at": "2026-11-13T06:15:20+00:00",
-      "environment": {
-        "colab_cpu": false,
-        "cpu_count_logical": 12,
-        "cpu_only": false,
-        "is_google_colab": true,
-        "python_version": "3.13.16"
-      },
-      "finished_at_utc": "2026-11-13T06:15:20+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 25000,
-      "processed_attempts": 25000,
-      "resources": {
-        "avg_rss_mib": 287.975176,
-        "disk_final_bytes": 23580587495.0,
-        "disk_peak_bytes": 23580587495.0,
-        "final_disk_bytes": 23580587495,
-        "peak_disk_bytes": 23580587495,
-        "peak_rss_mib": 352.953125,
-        "ram_mean_bytes": 301963858.6722107,
-        "ram_peak_bytes": 370098176.0,
-        "ram_samples": 1443.0
-      },
-      "resumed": true,
-      "run": 34,
-      "run_id": "run-34-2026-11-13T04:13:39+00:00",
-      "source_code_hash": "13d78785f5f941bc",
-      "source_revision": "13d78785f5f941bc",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 7256.867894070008,
-        "extract": 51.00990312301997,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-13T04:13:39+00:00",
-      "started_at_utc": "2026-11-13T04:13:39+00:00",
-      "total_profiler_sec": 7307.8777971930285
-    },
-    {
-      "active_seconds": 4374.018763325981,
-      "cooldown_retry_seconds": 25110.0,
-      "ended_at": "2026-11-13T14:40:33+00:00",
-      "environment": {
-        "colab_cpu": false,
-        "cpu_count_logical": 12,
-        "cpu_only": false,
-        "is_google_colab": true,
-        "python_version": "3.13.16"
-      },
-      "finished_at_utc": "2026-11-13T14:40:33+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 0,
-      "processed_attempts": 0,
-      "resources": {
-        "avg_rss_mib": 85.543893,
-        "disk_final_bytes": 24045358222.0,
-        "disk_peak_bytes": 24045358222.0,
-        "final_disk_bytes": 24045358222,
-        "peak_disk_bytes": 24045358222,
-        "peak_rss_mib": 87.746094,
-        "ram_mean_bytes": 89699273.64533196,
-        "ram_peak_bytes": 92008448.0,
-        "ram_samples": 5859.0
-      },
-      "resumed": true,
-      "run": 35,
-      "run_id": "run-35-2026-11-13T06:28:22+00:00",
-      "source_code_hash": "13d78785f5f941bc",
-      "source_revision": "13d78785f5f941bc",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 0.0,
-        "extract": 0.0,
-        "s2": 4374.018763325981
-      },
-      "started_at": "2026-11-13T06:28:22+00:00",
-      "started_at_utc": "2026-11-13T06:28:22+00:00",
-      "total_profiler_sec": 4374.018763325981
-    },
-    {
-      "active_seconds": 209.31639958401502,
-      "cooldown_retry_seconds": 630.0,
-      "ended_at": "2026-11-13T15:21:23+00:00",
-      "environment": {
-        "colab_cpu": false,
-        "cpu_count_logical": 12,
-        "cpu_only": false,
-        "is_google_colab": true,
-        "python_version": "3.13.16"
-      },
-      "finished_at_utc": "2026-11-13T15:21:23+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 0,
-      "processed_attempts": 0,
-      "resources": {
-        "avg_rss_mib": 61.433547,
-        "disk_final_bytes": 25432426834.0,
-        "disk_peak_bytes": 25432426834.0,
-        "final_disk_bytes": 25432426834,
-        "peak_disk_bytes": 25432426834,
-        "peak_rss_mib": 63.042969,
-        "ram_mean_bytes": 64417743.23809524,
-        "ram_peak_bytes": 66105344.0,
-        "ram_samples": 168.0
-      },
-      "resumed": true,
-      "run": 36,
-      "run_id": "run-36-2026-11-13T15:07:15+00:00",
-      "source_code_hash": "13d78785f5f941bc",
-      "source_revision": "13d78785f5f941bc",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 0.0,
-        "extract": 0.0,
-        "s2": 209.31639958401502
-      },
-      "started_at": "2026-11-13T15:07:15+00:00",
-      "started_at_utc": "2026-11-13T15:07:15+00:00",
-      "total_profiler_sec": 209.31639958401502
-    },
-    {
-      "active_seconds": 2.469982883994817,
-      "cooldown_retry_seconds": 0.0,
-      "ended_at": "2026-11-13T16:11:13+00:00",
-      "environment": {
-        "colab_cpu": false,
-        "cpu_count_logical": 12,
-        "cpu_only": false,
-        "is_google_colab": true,
-        "python_version": "3.13.16"
-      },
-      "finished_at_utc": "2026-11-13T16:11:13+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 0,
-      "processed_attempts": 0,
-      "resources": {
-        "avg_rss_mib": 57.947266,
-        "disk_final_bytes": 25433012425.0,
-        "disk_peak_bytes": 25433012425.0,
-        "final_disk_bytes": 25433012425,
-        "peak_disk_bytes": 25433012425,
-        "peak_rss_mib": 59.941406,
-        "ram_mean_bytes": 60762112.0,
-        "ram_peak_bytes": 62853120.0,
-        "ram_samples": 2.0
-      },
-      "resumed": true,
-      "run": 37,
-      "run_id": "run-37-2026-11-13T16:10:56+00:00",
-      "source_code_hash": "13d78785f5f941bc",
-      "source_revision": "13d78785f5f941bc",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 0.0,
-        "extract": 0.0,
-        "s2": 2.469982883994817
-      },
-      "started_at": "2026-11-13T16:10:56+00:00",
-      "started_at_utc": "2026-11-13T16:10:56+00:00",
-      "total_profiler_sec": 2.469982883994817
-    },
-    {
-      "active_seconds": 0.0,
-      "cooldown_retry_seconds": 0.0,
-      "ended_at": "2026-11-13T16:13:34+00:00",
-      "environment": {
-        "colab_cpu": false,
-        "cpu_count_logical": 12,
-        "cpu_only": false,
-        "is_google_colab": true,
-        "python_version": "3.13.16"
-      },
-      "finished_at_utc": "2026-11-13T16:13:34+00:00",
-      "intervals": {
-        "arxiv_min_interval": 3.35,
-        "s2_min_interval": 1.0
-      },
-      "papers_done": 0,
-      "processed_attempts": 0,
-      "resources": {
-        "avg_rss_mib": 57.140625,
-        "disk_final_bytes": 25433014346.0,
-        "disk_peak_bytes": 25433014346.0,
-        "final_disk_bytes": 25433014346,
-        "peak_disk_bytes": 25433014346,
-        "peak_rss_mib": 58.039062,
-        "ram_mean_bytes": 59916288.0,
-        "ram_peak_bytes": 60858368.0,
-        "ram_samples": 2.0
-      },
-      "resumed": true,
-      "run": 38,
-      "run_id": "run-38-2026-11-13T16:13:19+00:00",
-      "source_code_hash": "13d78785f5f941bc",
-      "source_revision": "13d78785f5f941bc",
-      "stage_seconds": {
-        "discovery": 0.0,
-        "download": 0.0,
-        "extract": 0.0,
-        "s2": 0.0
-      },
-      "started_at": "2026-11-13T16:13:19+00:00",
-      "started_at_utc": "2026-11-13T16:13:19+00:00",
-      "total_profiler_sec": 0.0
+        "s2": 951.0186884409995
+      },
+      "started_at": "2026-11-27T18:11:53+00:00",
+      "started_at_utc": "2026-11-27T18:11:53+00:00",
+      "total_profiler_sec": 951.0186884409995,
+      "traffic_shaping": {
+        "byte_budget_breathers": 0,
+        "enabled": true,
+        "heavy_versions_interleaved": 0,
+        "hit_recovery_cooldowns": 0
+      },
+      "transport": {
+        "cdn_pop": "",
+        "early_header_rejects": 0,
+        "http_protocol": "HTTP/1.1",
+        "in_flight_extract": true,
+        "in_flight_extractions": 0,
+        "use_http2": true
+      }
     }
   ],
-  "source_code_hash": "13d78785f5f941bc",
+  "source_code_hash": "aa6e4bec37233fb1",
   "stage_seconds": {
-    "discovery": 598.475408279998,
-    "download": 239279.0101954131,
-    "extract": 2393.822069984699,
-    "s2": 8842.144914468088
+    "discovery": 0.0,
+    "download": 149437.14464334655,
+    "extract": 1643.7014358257745,
+    "s2": 2320.544447649998
   }
 }

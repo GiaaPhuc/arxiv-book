@@ -54,14 +54,14 @@ Cả 5 dải định danh nêu trên đều nằm gọn trong phạm vi số th�
 :class: important
 Tiến trình thu thập của nhóm đã hoàn tất trọn vẹn **25.000 định danh arXiv được giao trên cả 5 dải (`2406.07938` – `2408.16044`)**, với kiến trúc chuẩn hóa hiện hành **`arxiv-pipeline v3.18`** (hợp nhất quy trình 2 giai đoạn tách rời `--skip-s2` / `--s2-only`, khám phá ngoại tuyến Kaggle snapshot `--snapshot` trong $<60\text{ s}$, nhịp **Start-to-Start $3{,}05\text{ s} + \text{jitter } 0\dots 0{,}10\text{ s}$** kèm đệm hậu tải $0{,}25\text{ s}$ & **Deficit Breather** trần $6{,}0\text{ s}$, **HTTP/2 kết nối đơn (`--http2`) + Zero-Body `Content-Type` Header Early-Reject**, giải nén **Cut-Through In-Flight `O(1)` RAM (`--in-flight-extract`)** song hành cùng `_FastGzipStream` $512\text{ KiB}$, **Traffic-Shaping Interleaver & Leaky Byte-Budget `360 MiB / 180 s`**, và **Semantic Scholar High-Density Batch `150` + Save-First Isolation + Fast Backoff/AIMD**).
 
-Bộ dữ liệu hoàn chỉnh gồm **41.629 phiên bản** ($v_1 \dots v_{30}$), đạt **24.878 / 25.000 bài báo thành công toàn phần (`99,51%`)**, **3.480.899 mục tài liệu tham khảo** (trong đó **547.991** mục mang `arXiv ID` hợp lệ cho Milestone 3), và toàn bộ kho ngữ liệu được đóng gói gọn trong **23,69 GiB** đĩa. Toàn bộ bảng biểu thống kê ở Chương 3 và số đo hiệu năng ở Chương 4 được kết xuất trực tiếp từ bộ tệp thống kê `stats/m1/` của 25.000 ID này.
+Bộ dữ liệu hoàn chỉnh gồm **41.615 phiên bản** ($v_1 \dots v_{30}$), đạt **24.878 / 25.000 bài báo thành công toàn phần (`99,51%`)**, **1.055.072 mục tài liệu tham khảo** (trong đó **499.378** mục — **47,33%** — mang `arXiv ID` hợp lệ cho Milestone 3), và toàn bộ kho ngữ liệu được đóng gói gọn trong **22,52 GiB** (`22,517 GiB`) đĩa. Toàn bộ bảng biểu thống kê ở Chương 3 và số đo hiệu năng ở Chương 4 được kết xuất trực tiếp từ bộ tệp thống kê `stats/m1/` của 25.000 ID này.
 ```
 
 ```{admonition} Mốc Thời gian Thu thập & Đối chiếu Kaggle Snapshot (Crawl & Snapshot Timestamp)
 :class: note
-Vì kho arXiv liên tục nhận thêm các bản sửa đổi mới (`v2`, `v3`...) theo thời gian thực, toàn bộ số lượng phiên bản (`num_versions`, tổng `41.629` phiên bản trên `25.000` bài báo) được khóa nhất quán theo mốc thời gian thực hiện thu thập:
-- **Nguồn siêu dữ liệu ngoại tuyến (`--snapshot`):** Tệp `arxiv-metadata-oai-snapshot.json` (Kaggle arXiv Dataset) được đồng bộ trước thời điểm chạy đợt thu thập chính thức.
-- **Khoảng thời gian chạy thực tế trên Google Colab:** Từ **`2026-11-07T05:17:47+00:00`** đến **`2026-11-13T16:13:34+00:00`** (UTC), ghi nhận đầy đủ trong nhật ký phiên chạy tại `stats/m1/performance.json` và `stats/m1/summary.json`.
+Vì kho arXiv liên tục nhận thêm các bản sửa đổi mới (`v2`, `v3`...) theo thời gian thực, toàn bộ số lượng phiên bản (`num_versions`, tổng `41.615` phiên bản trên `25.000` bài báo) được khóa nhất quán theo mốc thời gian thực hiện thu thập:
+- **Nguồn siêu dữ liệu ngoại tuyến (`--snapshot`):** Tệp `arxiv-metadata-oai-snapshot.json` (Kaggle arXiv Dataset) được đồng bộ ngay trước chiến dịch thu thập chính thức (`2026-11-20` UTC).
+- **Khoảng thời gian chạy thực tế trên Google Colab CPU-only:** Từ **`2026-11-20T06:28:58+00:00`** đến **`2026-11-27T18:56:56+00:00`** (UTC, hoàn tất chốt lưu trữ checkpoint cuối lúc `2026-11-27T19:18:08+00:00` qua `18` phiên chạy có dấu thời gian đầy đủ), ghi nhận trong `stats/m1/performance.json` và `stats/m1/summary.json`.
 ```
 
 Theo chuẩn đánh số 5 chữ số của arXiv áp dụng từ tháng 01/2015, các số thứ tự đầu tháng (như `1045`, `6045`, `7839`, `7938`) được chuẩn hóa đệm đủ chữ số `0` ở đầu thành `2408.01045`, `2408.06045`, `2407.07839`, `2406.07938`. Để đảm bảo tính nhất quán tuyệt đối của cơ sở dữ liệu trạng thái và tránh việc nhiều máy thành viên gửi yêu cầu chồng chéo lên máy chủ `export.arxiv.org`, nhóm gom toàn bộ 25.000 ID vào **một quy trình thu thập thống nhất** trên một máy chủ duy nhất (có khóa tiến trình cục bộ `_acquire_workspace_lock` tránh chạy trùng lặp).
@@ -114,7 +114,7 @@ Tuân thủ quy ước tổ chức dữ liệu gợi ý của đề bài và h�
     </div>
     <div class="ct-row">
       <div class="ct-path"><span class="ct-branch">│   └── </span><span class="ct-file">version_partition.json</span></div>
-      <div class="ct-desc">Thống kê phân loại bài <code>v1</code> duy nhất (56,62%) vs đa phiên bản (43,38%) từ <code>--snapshot</code></div>
+      <div class="ct-desc">Thống kê phân loại bài <code>v1</code> duy nhất (56,64%) vs đa phiên bản (43,36%) từ <code>--snapshot</code></div>
     </div>
     <div class="ct-row">
       <div class="ct-path"><span class="ct-branch">├── </span><span class="ct-dir">stats/</span></div>

@@ -11,18 +11,18 @@ kernelspec:
 
 # Chương 4. Đánh giá Hiệu năng Bộ Thu thập
 
-```{admonition} Phạm vi số đo hiệu năng: Toàn bộ 25.000 Định danh trên Google Colab (38 Lượt chạy tích lũy)
+```{admonition} Phạm vi số đo hiệu năng: Toàn bộ 25.000 Định danh trên Google Colab CPU-only (18 Phiên chạy)
 :class: note
-Toàn bộ số đo hiệu năng thời gian thực thi (Runtime), bộ nhớ RAM RSS và dung lượng đĩa dưới đây được đo đạc tự động bằng luồng `ResourceSampler` và `time.perf_counter()` trên **toàn bộ 25.000 ID (5 dải dữ liệu)** qua **38 lượt chạy tích lũy** (`2026-11-07T05:17:47+00:00` → `2026-11-13T16:13:34+00:00` UTC, hợp nhất `32` bản ghi phiên có dấu thời gian `Runs 7–38` trong `stats/m1/summary.json` và đối chiếu tổng tích lũy trong `stats/m1/performance.json`).
+Toàn bộ số đo hiệu năng thời gian thực thi (Runtime), bộ nhớ RAM RSS và dung lượng đĩa dưới đây được đo đạc tự động bằng luồng `ResourceSampler` và `time.perf_counter()` trên **toàn bộ 25.000 ID (`41.615` phiên bản thuộc 5 dải dữ liệu)** qua **18 phiên chạy có dấu thời gian UTC đầy đủ (`Runs 1–18`, `all_sessions_colab_cpu = true`)** từ **`2026-11-20T06:28:58+00:00`** đến **`2026-11-27T18:56:56+00:00`** UTC, trích xuất trực tiếp từ `stats/m1/performance.json` và `stats/m1/summary.json`.
 ```
 
 ## 4.1. Môi trường Kiểm thử, Phương pháp Đo lường & Quy tắc Tính Tổng Runtime
 
-Tuân thủ tiêu chuẩn đánh giá hiệu năng của đề bài, toàn bộ chiến dịch thu thập **25.000 ID** được thực thi trên môi trường **Google Colab chạy chỉ CPU (CPU-only, không sử dụng GPU/TPU)**:
+Tuân thủ tiêu chuẩn đánh giá hiệu năng của đề bài, toàn bộ chiến dịch thu thập **25.000 ID** được thực thi 100% trên môi trường **Google Colab chạy chỉ CPU (`all_sessions_colab_cpu = true`, không sử dụng GPU/TPU)**:
 
-- **Cấu hình phần cứng thực thi ghi nhận từ `stats/m1/performance.json`:**
-  - *Các phiên chính (Runs 13–33):* Máy ảo **Google Colab CPU-only** tiêu chuẩn (**`2` vCPU Intel Xeon**, **`~12,7 GiB` RAM**, hệ điều hành Linux x86_64, ổ đĩa cục bộ `/content/data`, **Python `3.13.18`**).
-  - *Các phiên khởi đầu và chốt S2 (Runs 7–12 & Runs 34–38):* Instance **Google Colab CPU-only** cấu hình **`12` vCPU**, **Python `3.13.16`** (hoàn toàn không gắn GPU/TPU).
+- **Cấu hình phần cứng thực thi ghi nhận từ `stats/m1/performance.json` & `summary.json`:**
+  - *16 phiên chính (`Runs 1–10`, `Runs 12–15`, `Runs 17–18`):* Máy ảo **Google Colab CPU-only** cấu hình **`8` vCPU** (hệ điều hành Linux x86_64, ổ đĩa SSD cục bộ `/content/data`, **Python `3.13.18`**, hoàn toàn không gắn GPU/TPU).
+  - *2 phiên xen kẽ (`Run 11` chạy Giai đoạn 2 `--s2-only` và `Run 16` chạy Giai đoạn 1 `--skip-s2`):* Máy ảo **Google Colab CPU-only** tiêu chuẩn **`2` vCPU** (`~12,7 GiB` RAM, Linux x86_64, **Python `3.13.18`**).
 - **Quy tắc tính Tổng Thời gian Thực thi Đầu–Cuối (*End-to-End Wall-Clock Time*):**
   1. **Bao gồm mọi thời gian chờ retry, backoff và cooldown:** Tổng Runtime báo cáo tính **đầy đủ** toàn bộ thời gian tải mạng, giải nén, chờ giới hạn tốc độ (`RateLimiter`), và **mọi khoảng chờ retry / backoff / cooldown khi gặp lỗi mạng hoặc HTTP `429`/`5xx`** (`cooldown_retry_seconds`). Khoảng thời gian duy nhất được loại trừ là `idle_gap_seconds` (khoảng thời gian tắt máy/ngắt kết nối giữa hai phiên Colab không liên tiếp).
   2. **Sửa công thức ghép chặng khi chạy 2 giai đoạn tách rời:** Công thức đường găng $\max(T_{\text{arXiv}}, T_{\text{S2}})$ chỉ đúng khi `s2-worker` chạy song song trong **cùng một phiên** với luồng tải arXiv. Khi vận hành quy trình 2 giai đoạn tách rời (**Giai đoạn 1 `--skip-s2`** ở các phiên đầu rồi **Giai đoạn 2 `--s2-only`** ở các phiên tiếp theo), tổng thời gian thực thi đầu–cuối của toàn hệ thống là **tổng tuần tự (`sum`) thời gian thực (`finished_at_utc - started_at_utc`) của toàn bộ các phiên Giai đoạn 1 và Giai đoạn 2** (bao gồm cả thời gian quét `--snapshot` đầu vào).
@@ -297,12 +297,13 @@ if HAS_PERF and sessions:
     sess_rows = []
     if legacy_wall_s > 0.0:
         legacy_act = legacy_disc_dl + legacy_ext + legacy_s2
+        first_ts = str(sessions[0].get("started_at_utc") or sessions[0].get("started_at") or "").replace("+00:00", "Z")
         sess_rows.append({
             "Phiên (#)": f"Runs 1–{total_runs - len(sessions)}*",
-            "Bắt đầu (UTC)": "Trước 2026-11-07T05:17",
-            "Kết thúc (UTC)": "2026-11-07T05:17:47Z",
+            "Bắt đầu (UTC)": f"Trước {first_ts[:16]}" if first_ts else "—",
+            "Kết thúc (UTC)": first_ts or "—",
             "Chế độ chạy": "Tiền v3.3 (tổng hợp delta)",
-            "Lượt bài xử lý": "3.069 (tích lũy)",
+            "Lượt bài xử lý": "—",
             "Active Stage (s)": f"{legacy_act:,.1f}",
             "Retry & Cooldown (s)": f"{legacy_cd:,.1f}",
             "Wall Time Phiên (s)": f"{legacy_wall_s:,.1f}",
@@ -316,21 +317,25 @@ if HAS_PERF and sessions:
         peak_mib = float(s.get("peak_rss_mib") or ((s.get("resources") or {}).get("peak_rss_mib") or 0.0))
         t_start = str(s.get("started_at_utc") or s.get("started_at") or "").replace("+00:00", "Z")
         t_end = str(s.get("finished_at_utc") or s.get("ended_at") or "").replace("+00:00", "Z")
+        mode_lbl = _infer_session_mode(s)
+        p_done = int(s.get("papers_done", 0) or 0)
+        done_lbl = "— (lô S2)" if (p_done == 0 and "--s2-only" in mode_lbl) else f"{p_done:,}"
         sess_rows.append({
             "Phiên (#)": f"Run {int(s.get('run', 0))}",
             "Bắt đầu (UTC)": t_start,
             "Kết thúc (UTC)": t_end,
-            "Chế độ chạy": _infer_session_mode(s),
-            "Lượt bài xử lý": f"{int(s.get('papers_done', 0) or 0):,}",
+            "Chế độ chạy": mode_lbl,
+            "Lượt bài xử lý": done_lbl,
             "Active Stage (s)": f"{act_sec:,.1f}",
             "Retry & Cooldown (s)": f"{cd_sec:,.1f}",
             "Wall Time Phiên (s)": f"{w_sec:,.1f}",
             "Đỉnh RAM (MiB)": f"{peak_mib:,.1f}" if peak_mib > 0 else "—",
         })
 
+    first_day = str(sessions[0].get("started_at_utc") or sessions[0].get("started_at") or "")[:10]
     sess_rows.append({
         "Phiên (#)": "Tổng hợp toàn trình",
-        "Bắt đầu (UTC)": "2026-11-07 (Run 1)",
+        "Bắt đầu (UTC)": f"{first_day} (Run 1)" if first_day else "Run 1",
         "Kết thúc (UTC)": str(sessions[-1].get("finished_at_utc") or "").replace("+00:00", "Z"),
         "Chế độ chạy": f"{total_runs} lượt (loại trừ {idle_gap_s / 3600:.2f} h tắt máy)",
         "Lượt bài xử lý": f"{int(summary.get('papers_total', 0)):,} bài duy nhất",
@@ -344,18 +349,20 @@ elif HAS_PERF:
     show_pending_perf_box("Bảng Nhật ký Từng Phiên Colab tại Mục 4.2.1 (chưa có mảng sessions)")
 ```
 
-**Phân tích hiệu năng thời gian và đối chiếu nâng cấp `v3.14` → `v3.18`:**
+**Phân tích hiệu năng thời gian thực nghiệm trên `v3.18` và đối chiếu với kiến trúc tiền nhiệm `v3.14`:**
 
-- **Tổng thời gian thực thi đầu–cuối tính đầy đủ retry/cooldown và Giai đoạn 2 (`318.666,4 s ≈ 88,52 giờ`):**
-  - Trên **32 phiên chạy có dấu thời gian UTC (`Runs 7–38`)**, tổng thời gian thực tế (`sum(finished_at_utc - started_at_utc)`, bao gồm toàn bộ thời gian chờ nhịp, backoff và cooldown nhưng không tính `72,35 giờ` nghỉ tắt máy giữa các phiên) là **`297.279,0 s` (`82,58 giờ`)**. Cộng thêm phần tích lũy của `Runs 1–6` trước khi bật log mảng `sessions` (`21.387,4 s` gồm `10.887,4 s` tải/khám phá và `10.500,0 s` cooldown), **tổng thời gian thực đầu–cuối toàn trình đạt `318.666,4 s` (`88,52 giờ`)** — tương ứng trung bình **`12,75 giây / ID`** và **`7,65 giây / phiên bản`** trên toàn bộ `41.629` phiên bản.
-  - Nếu tách riêng thời gian hoạt động chủ động chưa cộng cooldown phạt và Giai đoạn 2, tổng thời gian khối arXiv (`discovery + download + extract`) là **`242.271,31 s` (`67,30 giờ`)**, trong đó `discovery` chiếm `598,48 s` (~`9,97 phút`), `extract` chiếm `2.393,82 s` (~`39,90 phút` giải nén song song trên `extract-worker`), và `download` chiếm `239.279,01 s` (`66,47 giờ`), cộng thêm **`37.065,0 s` (`10,30 giờ`)** chờ phạt arXiv (`311` lần `429` + `96` thermal cooldown). Riêng các phiên chạy tách pha **Giai đoạn 2 (`--s2-only`, `Runs 15, 18, 35–38`)** tiêu tốn **`30.452,0 s` (`8,46 giờ`)** (chủ yếu nằm trong **`83.745,0 s ≈ 23,26 giờ`** chờ backoff qua **`2.592` lượt HTTP 429** của Semantic Scholar trên `2.077` lô `25` bài).
-- **Đối chiếu cận dưới lý thuyết & mốc tham khảo trung vị năm trước (`7–8 giờ / 5.000 ID`, tức `~35–40 giờ / 25.000 ID`):**
-  - Với `41.629` phiên bản và nhịp lịch sự tối thiểu `3,00 s` trên 1 kết nối tới `export.arxiv.org`, cận dưới lý thuyết thuần túy cho công đoạn `/src/` là:
-    $$T_{\text{floor, min}} \approx 41.629 \times 3{,}00\text{ s} \approx 124.887\text{ s} \approx 34{,}69\text{ giờ}$$
-  - Kết quả `88,52 giờ` của đợt chạy lịch sử phản ánh rõ ba nút thắt cổ chai đã được nhóm đo đạc và khắc phục triệt để trong kiến trúc **`v3.15` → `v3.18`**:
-    1. **Loại bỏ phạt kép End-to-Start & Van ngủ cứng `50 MiB → 12 s` (`v3.15`):** Ở các phiên cũ, sàn End-to-Start `>= 3,05–3,25 s` cộng dồn với thời gian tải mạng và các lần ngủ cứng `12 s` mỗi `50 MiB` đã làm mất thêm `~4,5 giờ / 5.000 ID` (`~22,5 giờ / 25.000 ID`). Cơ chế **Start-to-Start `3,05 s + jitter`** + đệm hậu tải `0,25 s` + **Deficit Breather** (trần `6,0 s`) đưa tốc độ lý tưởng về sát mốc tham khảo **`~7,5–8,0 giờ / 5.000 ID`** (`~37,5–40 giờ / 25.000 ID`).
-    2. **Zero-Body Header Early-Reject, Traffic-Shaping & CDN Self-Healing (`v3.16–v3.17.1`):** Ngắt sớm `2.751` gói PDF/ZIP ngay từ `Content-Type` header (`wire_bytes = 0`), kết hợp hoán vị tỷ lệ vàng + xen kẽ bài nặng `>= 25 MiB` + **Leaky Byte-Budget `360 MiB / 180 s`** giúp tránh cạn Token Bucket của Fastly CDN (nguyên nhân từng gây `311` lần `429` và `10,30 giờ` cooldown ở đợt chạy đầu).
-    3. **Semantic Scholar High-Density Batch `150` + Save-First + Diệt False-Positive `/references` (`v3.18`):** Nâng kích thước lô từ `25` lên **`150` bài/lô** giảm **`6×`** số HTTP request, kết hợp siết `_references_truncated()` để không bắn hàng nghìn request `/references` giả do mục `citedPaper = null` và **Save-First Isolation** lưu ngay bài đã xong, triệt tiêu nguyên nhân chính gây ra **`2.592` lần HTTP `429`** (`23,26 giờ` chờ phạt S2) ở kiến trúc cũ.
+- **Tổng thời gian thực thi đầu–cuối tính đầy đủ retry/cooldown và cả hai giai đoạn (`157.399,0 s ≈ 43,72 giờ`):**
+  - Xuyên suốt **18 phiên chạy có dấu thời gian UTC đầy đủ (`Runs 1–18`)** trên Google Colab CPU-only, tổng thời gian thực đầu–cuối (`sum(finished_at_utc - started_at_utc)`, tính trọn bộ thời gian tải mạng, chờ nhịp lịch sự, backoff, cooldown và đóng gói sao lưu cuối phiên, chỉ loại trừ `492.279,0 s ≈ 136,74 giờ` tắt máy nghỉ giữa các phiên) đạt **`157.399,0 s` (`43,72 giờ`)** — tương ứng trung bình **`6,30 giây / ID`** và **`3,78 giây / phiên bản`** trên toàn bộ `41.615` phiên bản.
+  - Phân rã chi tiết theo hai giai đoạn vận hành tách rời:
+    - **Giai đoạn 1 — Cào gói nguồn TeX (`--skip-s2`, `16` phiên: `Runs 1–10, 12–17`):** Tiêu tốn tổng cộng **`152.418,0 s` (`42,34 giờ`)** Wall Time. Trong đó, `download` chiếm **`149.437,14 s` (`41,51 giờ`**, gồm `99.916,01 s` chờ nhịp lịch sự `RateLimiter` và `49.278,09 s` truyền tải wire), `extract` chiếm **`1.643,70 s` (`27,40 phút`)**, và thời gian chờ phạt/cooldown kênh arXiv chỉ là **`852,49 s` (`14,21 phút`**, phát sinh từ **duy nhất `1` lượt HTTP `429`** dạng `edge_fast` trên POP châu Âu ở `Run 2`, **`0` lượt `429` trên toàn bộ `15` phiên còn lại**, và `2` lượt thermal cooldown). Thời gian `discovery` trực tuyến bên trong `run_pipeline` bằng **`0,00 s`** (`0` request Atom API) nhờ nạp ngoại tuyến qua `--snapshot` (bước quét streaming `arxiv-metadata-oai-snapshot.json` đầu phiên chỉ mất `~37–75 s/lượt`, ví dụ `47,48 s` cho đủ 25.000 ID, tổng cộng `834,12 s ≈ 13,90 phút` qua 16 lượt chạy). Đáng chú ý, ngay tại **`Run 1`**, crawler hoàn tất trọn vẹn **5.000 ID đầu tiên (`8.198` phiên bản)** chỉ trong **`26.563,0 s` (`7,38 giờ`)** với **`0` lỗi HTTP `429`**, nằm ngay chính giữa mốc tham khảo chuẩn **`7–8 giờ / 5.000 ID`**.
+    - **Giai đoạn 2 — Làm giàu trích dẫn Semantic Scholar (`--s2-only`, `2` phiên: `Run 11` & `Run 18`):** Toàn bộ 25.000 bài báo được làm giàu chỉ trong **`4.981,0 s` (`1,38 giờ = 83,02 phút`)** tổng Wall Time phiên (bao gồm cả thời gian nén sao lưu `.tar.gz` cuối phiên), gồm **`2.320,54 s` (`38,68 phút`)** hoạt động chủ động qua **`172` lô** (batch size `150`) và **`1.266,27 s` (`21,10 phút`)** chờ backoff qua `251` lượt HTTP `429`. Cụ thể theo nhật ký `crawl.log`, `Run 11` (`2 vCPU`) xử lý `15.000` bài đầu qua `101` lô trong `2.278,0 s` (`14.989` bài `found`, `11` bài `not_indexed`), và `Run 18` (`8 vCPU`) hoàn tất `10.635` bài còn lại kèm vòng vét deferred qua `71` lô trong `2.703,0 s`.
+- **Đối chiếu cận dưới lý thuyết (`34,68 giờ`) & Bước nhảy hiệu năng `v3.14` (`88,52 giờ`) → `v3.18` (`43,72 giờ`, tăng tốc `2,02×`):**
+  - Với `41.615` phiên bản và nhịp lịch sự tối thiểu `3,00 s` trên 1 kết nối tuần tự tới `export.arxiv.org`, cận dưới lý thuyết thuần túy cho công đoạn `/src/` là:
+    $$T_{\text{floor, min}} \approx 41.615 \times 3{,}00\text{ s} = 124.845\text{ s} \approx 34{,}68\text{ giờ}$$
+  - Đặt cạnh đợt thu thập tiền nhiệm trên kiến trúc cũ `v3.14` (từng mất `318.666,4 s ≈ 88,52 giờ`), đợt thu thập chính thức bằng **`v3.18` cắt giảm `50,61%` tổng Wall Time (tiết kiệm `44,80 giờ`)**, minh chứng thực nghiệm rõ rệt cho ba trụ cột tối ưu:
+    1. **Loại bỏ phạt kép End-to-Start & Van ngủ cứng `50 MiB → 12 s` (`v3.15`):** Nhịp **Start-to-Start `3,05 s + jitter`** kết hợp đệm hậu tải `0,25 s` và **Deficit Breather** (trần `6,0 s`) kéo tổng thời gian `download` từ `66,47 giờ` xuống còn **`41,51 giờ`** (`-37,55%`), tiệm cận sát cận dưới vật lý dù truyền tải tới **`167,119 GiB`** dữ liệu wire.
+    2. **Zero-Body Header Early-Reject, Cut-Through In-Flight & Traffic-Shaping (`v3.16–v3.17.1`):** Viễn trắc Fastly CDN ghi nhận **`41.763` phản hồi `2xx`** (`HIT / SHIELD_HIT / MISS = 25.702 / 6.662 / 9.399`, tốc độ truyền tải wire trung bình **`3,47 MiB/s`**, riêng `HIT` thuần đạt **`5,93 MiB/s`** trên `123,68 GiB`), ngắt sớm **`2.767` lượt** PDF/ZIP ngay từ `Content-Type` header với `0 B` tải thân, giải nén cắt dòng trực tiếp trên socket cho **`41.763` phiên bản**, điều tiết **`316` phiên bản nặng xen kẽ** và **`35` nhịp Byte-Budget Breather**. Kết quả là số lỗi HTTP `429` từ arXiv giảm từ `311` lần (`10,30 giờ` chờ phạt ở bản cũ) xuống **chỉ còn đúng `1` lần (`14,21 phút` tính cả 2 thermal cooldown — giảm `-99,68%` số lỗi `429`)**.
+    3. **Semantic Scholar High-Density Batch `150` + Save-First + Diệt False-Positive `/references` (`v3.18`):** Thu gọn số lô truy vấn từ `2.077` xuống **`172` lô (`-91,7%`)**, giảm số lượt HTTP `429` trên S2 từ `2.592` xuống **`251` lượt (`-90,3%`)** và ép thời gian chờ phạt S2 từ `23,26 giờ` xuống chỉ còn **`21,10 phút` (`-98,49%`)**, đồng thời loại bỏ triệt để hiện tượng nhân bản tham khảo ảo ở đuôi phân phối.
 
 ---
 
@@ -460,9 +467,9 @@ else:
 **Phân tích hiệu quả sử dụng bộ nhớ và lưu trữ:**
 
 - **Độ phức tạp không gian bộ nhớ $\mathcal{O}(1)$ theo quy mô kho ngữ liệu:** Nhờ giới hạn hàng đợi `extract_max_queue_bytes = 192 MiB`, đệm RAM Zero-Copy $\le 96\text{ MiB}$, bộ đọc `_FastGzipStream` (`512 KiB`) và chế độ giải nén cắt dòng trực tiếp trên luồng socket `--in-flight-extract` (`128 KiB`, `0 B` ghi tạm vào `.tmp/`), mức tiêu thụ RAM hoàn toàn phẳng bất kể kho dữ liệu tăng từ vài trăm lên `25.000` bài báo.
-- **Tối ưu hóa dung lượng đĩa và bảo vệ dữ liệu:** Việc loại bỏ toàn bộ ảnh nhị phân ngay trên luồng giải nén và chỉ lưu `.tex`, `.bib`, `.bbl` giúp toàn bộ kho ngữ liệu **25.000 bài báo (`41.629` phiên bản)** chỉ chiếm **23,686 GiB** (`24.254,81 MiB` / `25.433.014.346 B`) ở cả đỉnh quá trình chạy lẫn đầu ra cuối cùng (không phát sinh rác tệp tạm trên đĩa).
+- **Tối ưu hóa dung lượng đĩa và bảo vệ dữ liệu:** Việc loại bỏ toàn bộ ảnh nhị phân ngay trên luồng giải nén và chỉ lưu `.tex`, `.bib`, `.bbl` giúp toàn bộ kho ngữ liệu **25.000 bài báo (`41.615` phiên bản)** chỉ chiếm **22,517 GiB** (`23.057,23 MiB` / `24.177.261.700 B`) ở cả đỉnh quá trình chạy lẫn đầu ra cuối cùng (`disk_peak_bytes = disk_final_bytes`, không phát sinh rác tệp tạm trên đĩa).
 - **Đánh giá số đo thực nghiệm trên Google Colab:**
-  - **Bộ nhớ RAM thường trú (RSS):** Mức tiêu thụ RAM trung bình theo mẫu là **195,18 MiB** (trung bình theo trọng số thời gian giữa các phiên là **218,73 MiB**) và đỉnh RAM tối đa đạt **362,88 MiB** trên tổng số **60.774 mẫu** đo định kỳ. Con số đỉnh này chỉ chiếm khoảng **2,8%** dung lượng RAM khả dụng (`12,7 GiB`) của Google Colab CPU chuẩn `2 vCPU`, loại bỏ hoàn toàn nguy cơ tràn bộ nhớ (*Out-Of-Memory*).
+  - **Bộ nhớ RAM thường trú (RSS):** Mức tiêu thụ RAM trung bình theo mẫu là **103,17 MiB** (`108.178.712 B`; trung bình theo trọng số thời gian giữa các phiên là **101,93 MiB**) và đỉnh RAM tối đa chỉ ở mức **278,76 MiB** (`292.298.752 B`) trên tổng số **31.274 mẫu** đo định kỳ (giảm mạnh thêm so với mức `195,18 MiB` TB / `362,88 MiB` đỉnh của kiến trúc tiền nhiệm nhờ chế độ giải nén trực tiếp trên socket `--in-flight-extract`). Con số đỉnh `278,76 MiB` chỉ chiếm khoảng **2,1%** dung lượng RAM khả dụng (`12,7 GiB`) của Google Colab CPU chuẩn `2 vCPU`, loại bỏ hoàn toàn nguy cơ tràn bộ nhớ (*Out-Of-Memory*).
 
 ---
 
