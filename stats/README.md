@@ -25,6 +25,7 @@ Tập thống kê Milestone 1 quy mô toàn bộ `25.000` ID được đặt t�
 | `papers_stats.csv` | `crawler/export_data.py` (`export_stats`) | Chương 3 (Mục 3.1, 3.4 — phân phối & phân vị tham khảo) |
 | `versions_stats.csv` | `crawler/export_data.py` (`export_stats`) | Chương 3 (kiểm tra đối chiếu cấp phiên bản) |
 | `performance.json` | Bản sao `data/logs/metrics.json` qua `crawler/export_data.py` | Chương 4 (Mục 4.2 Runtime & Mục 4.3 RAM/Đĩa) |
+| `stats/crawl.log` *(nhật ký đối chiếu)* | Bản sao `data/logs/crawl.log` (`150.202` dòng, `14,59 MiB`, đã lọc bí mật qua `SecretRedactingFilter`) | Chương 4 (Mục 4.2.1 — liên kết GitHub đối chiếu trực tiếp thời gian chạy của cả 18 phiên Google Colab CPU-only) |
 
 ## 2. Bộ 4 tệp thống kê của Milestone 2 (`stats/m2/`)
 

@@ -14,6 +14,8 @@ kernelspec:
 ```{admonition} Phạm vi số đo hiệu năng: Toàn bộ 25.000 Định danh trên Google Colab CPU-only (18 Phiên chạy)
 :class: note
 Toàn bộ số đo hiệu năng thời gian thực thi (Runtime), bộ nhớ RAM RSS và dung lượng đĩa dưới đây được đo đạc tự động bằng luồng `ResourceSampler` và `time.perf_counter()` trên **toàn bộ 25.000 ID (`41.615` phiên bản thuộc 5 dải dữ liệu)** qua **18 phiên chạy có dấu thời gian UTC đầy đủ (`Runs 1–18`, `all_sessions_colab_cpu = true`)** từ **`2026-11-20T06:28:58+00:00`** đến **`2026-11-27T18:56:56+00:00`** UTC, trích xuất trực tiếp từ `stats/m1/performance.json` và `stats/m1/summary.json`.
+
+- **Nhật ký thực thi nguyên bản toàn trình trên GitHub (`stats/crawl.log` — `150.202` dòng, `14,59 MiB`):** [`github.com/GiaaPhuc/arxiv-book/blob/main/stats/crawl.log`](https://github.com/GiaaPhuc/arxiv-book/blob/main/stats/crawl.log) *(hoặc xem trực tiếp bản thô [`Raw`](https://raw.githubusercontent.com/GiaaPhuc/arxiv-book/main/stats/crawl.log) để đối chiếu thời gian từng phiên Colab)*.
 ```
 
 ## 4.1. Môi trường Kiểm thử, Phương pháp Đo lường & Quy tắc Tính Tổng Runtime
@@ -288,6 +290,16 @@ else:
 
 ### 4.2.1. Nhật ký Đối chiếu Từng Phiên Chạy trên Google Colab
 
+```{admonition} Tệp Nhật ký Thực thi Nguyên bản trên GitHub (stats/crawl.log — Kiểm chứng 18 Phiên Colab)
+:class: tip
+Để phục vụ kiểm tra và đối chiếu độc lập thời gian chạy thực tế của từng phiên checkpoint trên Google Colab theo đúng quy định đánh giá hiệu năng, toàn bộ tệp nhật ký vận hành gốc của chiến dịch thu thập 25.000 ID đã được lưu trữ công khai trên GitHub Repository của báo cáo:
+
+- **Trang tệp trên GitHub Repository:** [`https://github.com/GiaaPhuc/arxiv-book/blob/main/stats/crawl.log`](https://github.com/GiaaPhuc/arxiv-book/blob/main/stats/crawl.log)
+- **Xem / tải trực tiếp toàn văn bản thô (`Raw` — `150.202` dòng, `14,59 MiB`):** [`https://raw.githubusercontent.com/GiaaPhuc/arxiv-book/main/stats/crawl.log`](https://raw.githubusercontent.com/GiaaPhuc/arxiv-book/main/stats/crawl.log)
+
+Tệp `stats/crawl.log` ghi nhận liên tục dấu thời gian UTC từ phiên đầu tiên (`2026-11-20 06:28:05` — quét `--snapshot` và khởi chạy `Run 1`) đến phiên cuối cùng (`2026-11-27 19:18:08` — hoàn tất `Run 18`, sao lưu gói `arxiv-data.tar.gz` `5.652,4 MiB` và chốt trạng thái `{'pending': 0, 'ok': 38725, 'ok_no_tex': 5, 'no_source': 2749, 'not_found': 121, 'corrupt': 15, 'failed': 0}`), với toàn bộ khóa API đã được ẩn tự động qua `SecretRedactingFilter`.
+```
+
 Bảng dưới đây trích xuất trực tiếp từ mảng `sessions` trong `stats/m1/summary.json` / `stats/m1/performance.json` để đối chiếu minh bạch từng phiên checkpoint Colab với con số tổng hợp toàn trình:
 
 ```{code-cell} ipython3
@@ -355,7 +367,7 @@ elif HAS_PERF:
   - Xuyên suốt **18 phiên chạy có dấu thời gian UTC đầy đủ (`Runs 1–18`)** trên Google Colab CPU-only, tổng thời gian thực đầu–cuối (`sum(finished_at_utc - started_at_utc)`, tính trọn bộ thời gian tải mạng, chờ nhịp lịch sự, backoff, cooldown và đóng gói sao lưu cuối phiên, chỉ loại trừ `492.279,0 s ≈ 136,74 giờ` tắt máy nghỉ giữa các phiên) đạt **`157.399,0 s` (`43,72 giờ`)** — tương ứng trung bình **`6,30 giây / ID`** và **`3,78 giây / phiên bản`** trên toàn bộ `41.615` phiên bản.
   - Phân rã chi tiết theo hai giai đoạn vận hành tách rời:
     - **Giai đoạn 1 — Cào gói nguồn TeX (`--skip-s2`, `16` phiên: `Runs 1–10, 12–17`):** Tiêu tốn tổng cộng **`152.418,0 s` (`42,34 giờ`)** Wall Time. Trong đó, `download` chiếm **`149.437,14 s` (`41,51 giờ`**, gồm `99.916,01 s` chờ nhịp lịch sự `RateLimiter` và `49.278,09 s` truyền tải wire), `extract` chiếm **`1.643,70 s` (`27,40 phút`)**, và thời gian chờ phạt/cooldown kênh arXiv chỉ là **`852,49 s` (`14,21 phút`**, phát sinh từ **duy nhất `1` lượt HTTP `429`** dạng `edge_fast` trên POP châu Âu ở `Run 2`, **`0` lượt `429` trên toàn bộ `15` phiên còn lại**, và `2` lượt thermal cooldown). Thời gian `discovery` trực tuyến bên trong `run_pipeline` bằng **`0,00 s`** (`0` request Atom API) nhờ nạp ngoại tuyến qua `--snapshot` (bước quét streaming `arxiv-metadata-oai-snapshot.json` đầu phiên chỉ mất `~37–75 s/lượt`, ví dụ `47,48 s` cho đủ 25.000 ID, tổng cộng `834,12 s ≈ 13,90 phút` qua 16 lượt chạy). Đáng chú ý, ngay tại **`Run 1`**, crawler hoàn tất trọn vẹn **5.000 ID đầu tiên (`8.198` phiên bản)** chỉ trong **`26.563,0 s` (`7,38 giờ`)** với **`0` lỗi HTTP `429`**, nằm ngay chính giữa mốc tham khảo chuẩn **`7–8 giờ / 5.000 ID`**.
-    - **Giai đoạn 2 — Làm giàu trích dẫn Semantic Scholar (`--s2-only`, `2` phiên: `Run 11` & `Run 18`):** Toàn bộ 25.000 bài báo được làm giàu chỉ trong **`4.981,0 s` (`1,38 giờ = 83,02 phút`)** tổng Wall Time phiên (bao gồm cả thời gian nén sao lưu `.tar.gz` cuối phiên), gồm **`2.320,54 s` (`38,68 phút`)** hoạt động chủ động qua **`172` lô** (batch size `150`) và **`1.266,27 s` (`21,10 phút`)** chờ backoff qua `251` lượt HTTP `429`. Cụ thể theo nhật ký `crawl.log`, `Run 11` (`2 vCPU`) xử lý `15.000` bài đầu qua `101` lô trong `2.278,0 s` (`14.989` bài `found`, `11` bài `not_indexed`), và `Run 18` (`8 vCPU`) hoàn tất `10.635` bài còn lại kèm vòng vét deferred qua `71` lô trong `2.703,0 s`.
+    - **Giai đoạn 2 — Làm giàu trích dẫn Semantic Scholar (`--s2-only`, `2` phiên: `Run 11` & `Run 18`):** Toàn bộ 25.000 bài báo được làm giàu chỉ trong **`4.981,0 s` (`1,38 giờ = 83,02 phút`)** tổng Wall Time phiên (bao gồm cả thời gian nén sao lưu `.tar.gz` cuối phiên), gồm **`2.320,54 s` (`38,68 phút`)** hoạt động chủ động qua **`172` lô** (batch size `150`) và **`1.266,27 s` (`21,10 phút`)** chờ backoff qua `251` lượt HTTP `429`. Cụ thể theo nhật ký [`stats/crawl.log` trên GitHub](https://github.com/GiaaPhuc/arxiv-book/blob/main/stats/crawl.log), `Run 11` (`2 vCPU`) xử lý `15.000` bài đầu qua `101` lô trong `2.278,0 s` (`14.989` bài `found`, `11` bài `not_indexed`), và `Run 18` (`8 vCPU`) hoàn tất `10.635` bài còn lại kèm vòng vét deferred qua `71` lô trong `2.703,0 s`.
 - **Đối chiếu cận dưới lý thuyết (`34,68 giờ`) & Bước nhảy hiệu năng `v3.14` (`88,52 giờ`) → `v3.18` (`43,72 giờ`, tăng tốc `2,02×`):**
   - Với `41.615` phiên bản và nhịp lịch sự tối thiểu `3,00 s` trên 1 kết nối tuần tự tới `export.arxiv.org`, cận dưới lý thuyết thuần túy cho công đoạn `/src/` là:
     $$T_{\text{floor, min}} \approx 41.615 \times 3{,}00\text{ s} = 124.845\text{ s} \approx 34{,}68\text{ giờ}$$

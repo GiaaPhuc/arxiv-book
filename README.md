@@ -16,8 +16,9 @@ arxiv-book/
 ├── intro.md                         # Trang bìa: thông tin dự án, chiến lược D8 & bảng thành viên A–E
 ├── _static/custom.css               # Định dạng bảng biểu học thuật, sơ đồ luồng & thẻ DAG
 ├── requirements.txt                 # Môi trường biên dịch sách (Python 3.11)
-├── stats/                           # Nơi đặt tệp thống kê JSON/CSV gọn nhẹ của M1, M2 & M3
+├── stats/                           # Nơi đặt tệp thống kê JSON/CSV gọn nhẹ của M1, M2 & M3 và log đối chiếu
 │   ├── README.md                    # Quy định bộ tệp thống kê M1, M2 & M3
+│   ├── crawl.log                    # Nhật ký thực thi nguyên bản 18 phiên Colab CPU-only (150.202 dòng, kiểm chứng Chương 4)
 │   ├── m1/                          # Bộ 4 tệp thống kê Milestone 1 (25.000 ID — JSON/CSV)
 │   ├── m2/                          # Bộ 4 tệp thống kê Milestone 2 (25.000 ID — JSON/CSV)
 │   └── m3/                          # Bộ 4 tệp thống kê Milestone 3 (range_0 5.000 ID — JSON/CSV)
